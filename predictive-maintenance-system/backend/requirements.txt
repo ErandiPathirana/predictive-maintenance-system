@@ -1,0 +1,11 @@
+# Runtime dependencies. "~=" means "compatible release": patch updates allowed,
+# breaking changes are not. Keep scikit-learn the SAME minor version as Colab
+# used for training (see ml/README.md), otherwise the model may fail to load.
+fastapi~=0.115.6
+uvicorn[standard]~=0.34.0
+pydantic~=2.10.4
+pydantic-settings~=2.7.0
+numpy~=2.2.1
+pandas~=2.2.3
+scikit-learn~=1.6.1
+joblib~=1.4.2

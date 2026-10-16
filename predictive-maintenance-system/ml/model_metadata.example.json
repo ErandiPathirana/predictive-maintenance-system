@@ -1,0 +1,8 @@
+{
+  "model_name": "REPLACE_WITH_MODEL_NAME",
+  "model_version": "v1",
+  "trained_at": "REPLACE_WITH_ISO_DATETIME_OR_REMOVE",
+  "positive_class": 1,
+  "decision_threshold": null,
+  "notes": "decision_threshold must be chosen on validation data, not on the test set. null means the model's own predict() is used."
+}

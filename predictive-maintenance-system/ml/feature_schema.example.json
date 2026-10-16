@@ -1,0 +1,7 @@
+{
+  "_comment": "EXAMPLE ONLY. Replace names with your real dataset columns. Add min/max/unit ONLY if they come from your data or a domain expert. The real file is created by export_artifacts() in Colab.",
+  "features": [
+    { "name": "REPLACE_WITH_FEATURE_1", "unit": "REPLACE_OR_REMOVE", "description": "What this sensor measures" },
+    { "name": "REPLACE_WITH_FEATURE_2" }
+  ]
+}
