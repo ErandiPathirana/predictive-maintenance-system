@@ -57,6 +57,14 @@ class AuthError(AppError):
     status_code, code = 401, "unauthorized"
 
 
+class DatabaseUnavailableError(AppError):
+    status_code, code = 503, "database_unavailable"
+
+
+class IdempotencyConflictError(AppError):
+    status_code, code = 409, "idempotency_conflict"
+
+
 class PredictionError(AppError):
     status_code, code = 500, "prediction_failed"
 

@@ -1,6 +1,9 @@
 // These JSON files are REAL responses captured from the running backend (backend/scripts/export_api_fixtures.py).
 // Assigning them to the interfaces below makes `npm run typecheck` fail if the backend schema and the frontend types drift apart.
-import type { ApiErrorBody, BatchList, BatchPredictionResponse, CsvValidationReport, FeatureListResponse, HealthResponse, ModelInfoResponse, PredictionPage, PredictionResult } from "./api";
+import type { ApiErrorBody, AssessmentResponse, MotorList, BatchList, BatchPredictionResponse, CsvValidationReport, FeatureListResponse, HealthResponse, ModelInfoResponse, PredictionPage, PredictionResult } from "./api";
+import assessment from "../test/fixtures/assessment.json";
+import assessmentDanger from "../test/fixtures/assessment_danger.json";
+import motors from "../test/fixtures/motors.json";
 import batch from "../test/fixtures/batch_response.json";
 import batches from "../test/fixtures/batches.json";
 import errorInvalid from "../test/fixtures/error_invalid_request.json";
@@ -37,5 +40,15 @@ describe("frontend types match real backend responses", () => {
     expect(vb.valid).toBe(false);
     expect(e1.error.code).toBeTruthy();
     expect(e2.error.code).toBeTruthy();
+  });
+
+  it("assessment fixtures match the assessment types", () => {
+    const a: AssessmentResponse = assessment;
+    const d: AssessmentResponse = assessmentDanger;
+    const m: MotorList = motors;
+    expect(a.saved).toBe(true);
+    expect(a.recommendations.items.length).toBeGreaterThan(0);
+    expect(d.recommendations.urgent).toBe(true);
+    expect(m.items.length).toBeGreaterThan(0);
   });
 });

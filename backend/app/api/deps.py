@@ -28,6 +28,10 @@ def get_db(request: Request) -> Iterator[Session]:
         session.close()
 
 
+def get_site_guidance(request: Request):
+    return getattr(request.app.state, "site_guidance", None)
+
+
 def require_bundle(registry: ModelRegistry = Depends(get_registry)) -> LoadedBundle:
     if not registry.is_ready:
         raise ModelNotReadyError(registry.public_reason)

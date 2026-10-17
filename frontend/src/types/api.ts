@@ -119,6 +119,11 @@ export interface HistoryItem {
   model_version: string;
   provisional_label_provenance: boolean;
   demonstration_only: boolean;
+  // Present on assessments and on batch rows saved since Stage 2; older rows have none.
+  equipment_description?: string | null;
+  recorded_by?: string | null;
+  recommendation_summary?: string | null;
+  ruleset_version?: string | null;
 }
 
 export interface PredictionPage {
@@ -155,4 +160,76 @@ export interface HistoryFilters {
 /** Every backend error has this shape. */
 export interface ApiErrorBody {
   error: { code: string; message: string; details?: unknown };
+}
+
+// ---------- manual assessments (POST /api/assessments) ----------
+export interface AssessmentRequest {
+  motor_id: string;
+  measured_at: string; // "YYYY-MM-DDTHH:mm" as recorded by the operator
+  equipment_description?: string;
+  recorded_by?: string;
+  readings: Record<string, number>;
+}
+
+export interface RecommendationItem {
+  priority: number;
+  action: string;
+  reason: string;
+  responsible_role: string;
+  timing: string;
+  safety_note: string | null;
+  source: string; // "general_guidance" | "site_approved"
+  source_detail: string;
+  requires_confirmation: boolean;
+}
+
+export interface RecommendationBlock {
+  condition: string;
+  available: boolean;
+  ruleset_version: string;
+  headline: string;
+  items: RecommendationItem[];
+  summary: string;
+  disclaimer: string;
+  threshold_note: string;
+  site_guidance_version: string | null;
+  urgent: boolean;
+  return_to_service: string[];
+  return_to_service_note: string | null;
+}
+
+export interface AssessmentResponse {
+  saved: boolean;
+  duplicate: boolean;
+  assessment_id: number;
+  created_at: string;
+  motor_id: string | null;
+  equipment_description: string | null;
+  recorded_by: string | null;
+  recorded_by_verified: boolean;
+  measured_at: string | null;
+  predicted_condition: string;
+  predicted_class_id: number;
+  scores: Record<string, number>;
+  scores_are_calibrated_probabilities: boolean;
+  model_version: string;
+  provisional_label_provenance: boolean;
+  demonstration_only: boolean;
+  input_warnings: InputWarning[];
+  readings: Record<string, number> | null;
+  readings_stored: boolean;
+  recommendations: RecommendationBlock;
+  recommendations_regenerated: boolean;
+  interpretation_note: string;
+}
+
+export interface MotorSummary {
+  motor_id: string;
+  record_count: number;
+  last_measured_at: string | null;
+}
+
+export interface MotorList {
+  items: MotorSummary[];
+  note: string;
 }

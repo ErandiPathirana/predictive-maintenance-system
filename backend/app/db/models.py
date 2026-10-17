@@ -30,6 +30,7 @@ class Prediction(Base):
         Index("ix_predictions_measured_at", "measured_at"),
         Index("ix_predictions_batch_id", "batch_id"),
         Index("ix_predictions_motor_created", "motor_id", "created_at"),
+        Index("ix_predictions_idempotency_key", "idempotency_key", unique=True),
     )
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     batch_id: Mapped[str | None] = mapped_column(ForeignKey("upload_batches.id"), nullable=True)
@@ -45,3 +46,11 @@ class Prediction(Base):
     provisional_label_provenance: Mapped[bool] = mapped_column(Boolean)
     demonstration_only: Mapped[bool] = mapped_column(Boolean)
     input_readings: Mapped[dict | None] = mapped_column(JSON, nullable=True)  # only if STORE_INPUT_READINGS=true
+    # --- added in migration 0002 (manual assessments and recommendations) ---
+    equipment_description: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    recorded_by: Mapped[str | None] = mapped_column(String(64), nullable=True)      # free text, NOT a verified identity
+    recommendation_summary: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    ruleset_version: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    recommendations: Mapped[dict | None] = mapped_column(JSON, nullable=True)       # full recommendations as shown (manual assessments)
+    idempotency_key: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    request_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)

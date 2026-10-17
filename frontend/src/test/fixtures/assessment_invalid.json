@@ -1,0 +1,11 @@
+{
+  "error": {
+    "code": "invalid_sensor_readings",
+    "message": "Some sensor readings are missing or invalid. No prediction was made.",
+    "details": {
+      "missing_features": [
+        "de_h_ge"
+      ]
+    }
+  }
+}

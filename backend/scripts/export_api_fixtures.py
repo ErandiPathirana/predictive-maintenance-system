@@ -47,6 +47,20 @@ def main():
             save("batch_response", c.post("/api/predict/batch", files=files(text)))
             readings = {n: float(m) for n, m in zip(loaded.feature_names, loaded.mean)}
             save("predict_single", c.post("/api/predict", json={"record_id": "ONE", "motor_id": "MOT01", "readings": readings}))
+            body = {"motor_id": "MOT01", "measured_at": "2025-04-01T07:20:00", "equipment_description": "Fixture motor", "recorded_by": "Fixture", "readings": readings}
+            save("assessment", c.post("/api/assessments", json=body))
+            import numpy as np
+            import app.api.routes_assessments as ra
+            real = ra.score_matrix
+            def forced(k):
+                def fake(bundle, X):
+                    out = np.full((len(X), 3), 0.05); out[:, k] = 0.9; return out
+                return fake
+            ra.score_matrix = forced(2)
+            save("assessment_danger", c.post("/api/assessments", json={**body, "motor_id": "MOT02"}))
+            ra.score_matrix = real
+            save("assessment_invalid", c.post("/api/assessments", json={**body, "readings": {k: v for k, v in readings.items() if k != "de_h_ge"}}))
+            save("motors", c.get("/api/motors"))
             save("predictions_page", c.get("/api/predictions", params={"limit": 50}))
             save("batches", c.get("/api/batches"))
             save("error_not_found", c.get("/api/predictions/999"))

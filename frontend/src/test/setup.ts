@@ -8,3 +8,4 @@ if (!window.matchMedia) {
 class RO { observe() {} unobserve() {} disconnect() {} }
 (globalThis as unknown as { ResizeObserver: unknown }).ResizeObserver ??= RO;
 window.HTMLElement.prototype.scrollIntoView ??= () => {};
+window.scrollTo = (() => {}) as typeof window.scrollTo;

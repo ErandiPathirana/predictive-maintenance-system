@@ -7,12 +7,11 @@ import { AccessKeyModal } from "./AccessKeyModal";
 
 export const NAV_ITEMS = [
   { to: "/", label: "Dashboard", hint: "Overview of all motors" },
+  { to: "/assess", label: "New assessment", hint: "Enter readings and get next steps" },
   { to: "/monitoring", label: "Motor monitoring", hint: "Sensor trends for one motor" },
-  { to: "/upload", label: "Upload and analyse", hint: "Check a CSV and get predictions" },
+  { to: "/upload", label: "Upload a CSV file", hint: "Check and analyse many records" },
   { to: "/results", label: "Prediction results", hint: "Results of the latest analysis" },
-  { to: "/history", label: "Prediction history", hint: "Stored predictions and export" },
-  { to: "/evaluation", label: "Model evaluation", hint: "Saved research test results" },
-  { to: "/research", label: "Research information", hint: "Purpose, data and limits" },
+  { to: "/history", label: "Assessment history", hint: "Saved results, steps and export" },
 ] as const;
 
 function BackendLamp() {

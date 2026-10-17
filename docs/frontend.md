@@ -11,8 +11,6 @@ The frontend is a **separate service**: it only talks to the backend through `fr
 | Upload and analyse | `#/upload` | `GET /api/template.csv`, `POST /api/uploads/validate`, `POST /api/predict/batch`, `GET /api/reports/predictions.csv` |
 | Prediction results | `#/results` | Response of the last `POST /api/predict/batch` in this tab |
 | Prediction history | `#/history` | `GET /api/predictions`, `GET /api/reports/predictions.csv` |
-| Model evaluation | `#/evaluation` | `evaluation_report.json` (a saved file, see below). **No backend endpoint exists for this.** |
-| Research information | `#/research` | `GET /api/model-info`, `GET /api/features`, saved report, fixed text |
 
 Only endpoints that exist in the backend are used. Because the backend has no summary endpoint and does not store sensor readings by default:
 - Dashboard counts are computed in the browser from the newest stored predictions (a notice appears if there are more than it loaded).
@@ -72,3 +70,14 @@ Skip link, landmarks, keyboard-reachable tables and filters, visible focus, stat
 - Charts show every reading. Files near the 5,000-row limit draw without markers and are fine, but are not downsampled.
 - The dashboard summarises at most the newest 5,000 stored predictions.
 - A file with an empty sensor cell can be charted (gaps are shown) but the backend refuses to analyse it, by design.
+
+## New motor assessment (Prompt 10, Stage 3)
+
+- **Page:** `#/assess`. The form is built from `GET /api/features`, so field names, units and order always match the loaded model. Inputs are grouped by bearing position (drive end / non-drive end, horizontal / vertical) plus operating conditions (rotational speed, load).
+- **Validation (before anything is sent):** every reading must be a plain number. Empty, text, NaN, infinity and "1,5" are refused and are never replaced with zero. Timestamps must be real dates. Entries are kept when validation fails. Values outside the training range give a soft warning only (not an alarm limit).
+- **Submitting:** one request at a time. Each form session has an `Idempotency-Key`; it is reused only for an identical payload, so a repeat click or retry cannot create a second record. "Saved" is shown only when the server says `saved: true`.
+- **Result:** predicted condition (shape + word + colour), prioritised next steps with timing, role and source, return-to-service questions, a Danger notice, model scores labelled as not calibrated, and print / CSV download.
+- **History:** each row links to `#/assessment/<id>`, which reopens the stored result and recommendations.
+- Fixtures `assessment*.json` and `motors.json` are real backend responses (`backend/scripts/export_api_fixtures.py`).
+
+> The Model evaluation and Research information pages were removed from the website. The evaluation export script (`ml/scripts/export_evaluation_report.py`) still works and can feed a report or the written thesis.

@@ -20,7 +20,7 @@ from datetime import date
 from pathlib import Path
 from typing import Iterable
 
-RULESET_VERSION = "general-guidance-1.0"
+RULESET_VERSION = "general-guidance-1.1"
 
 # Timing categories, from most to least urgent. Exact repair deadlines are NOT defined here: they must come from site procedures.
 TIMING_IMMEDIATE = "Immediate safety review"
@@ -77,6 +77,19 @@ class Recommendation:
         }
 
 
+RETURN_TO_SERVICE_NOTE = (
+    "These are questions to settle, not pass/fail criteria. This system cannot decide that a motor is safe to return to service. "
+    "The actual criteria must come from the site's approved procedures, and the decision belongs to authorised, qualified personnel."
+)
+_RETURN_TO_SERVICE = (
+    "A qualified person has inspected the motor and recorded what they found.",
+    "The reason for the predicted condition has been identified, or ruled out, by that inspection. This system does not identify causes.",
+    "Any repair or adjustment was carried out under the approved maintenance procedure and recorded.",
+    "A new measurement has been taken after the inspection and entered here, and its predicted condition has been reviewed by the maintenance engineer.",
+    "Return to service has been authorised under the site's procedure, including removal of any lockout/tagout by the authorised person.",
+)
+
+
 @dataclass(frozen=True)
 class RecommendationSet:
     condition: str
@@ -89,6 +102,8 @@ class RecommendationSet:
     threshold_note: str = THRESHOLD_NOTE
     site_guidance_version: str | None = None
     urgent: bool = False                # True for Danger: the page shows a prominent notice
+    return_to_service: tuple[str, ...] = ()   # questions to settle before the motor returns to service (Alert and Danger only)
+    return_to_service_note: str | None = None
 
     def to_dict(self) -> dict:
         return {
@@ -96,6 +111,7 @@ class RecommendationSet:
             "headline": self.headline, "items": [i.to_dict() for i in self.items], "summary": self.summary,
             "disclaimer": self.disclaimer, "threshold_note": self.threshold_note,
             "site_guidance_version": self.site_guidance_version, "urgent": self.urgent,
+            "return_to_service": list(self.return_to_service), "return_to_service_note": self.return_to_service_note,
         }
 
 
@@ -274,4 +290,6 @@ def recommend(predicted_condition: str, out_of_range_features: Iterable[str] = (
     numbered = tuple(Recommendation(n, r.action, r.reason, r.responsible_role, r.timing, r.source, r.source_detail, r.safety_note,
                                     r.requires_confirmation) for n, r in enumerate(ordered, 1))
     return RecommendationSet(condition=condition, available=True, ruleset_version=RULESET_VERSION, headline=_HEADLINES[condition], items=numbered,
-                             summary=_summary(condition, numbered), site_guidance_version=site_version, urgent=condition == DANGER)
+                             summary=_summary(condition, numbered), site_guidance_version=site_version, urgent=condition == DANGER,
+                             return_to_service=_RETURN_TO_SERVICE if condition in (ALERT, DANGER) else (),
+                             return_to_service_note=RETURN_TO_SERVICE_NOTE if condition in (ALERT, DANGER) else None)

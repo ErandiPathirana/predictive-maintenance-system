@@ -1,0 +1,15 @@
+{
+  "items": [
+    {
+      "motor_id": "MOT01",
+      "record_count": 5,
+      "last_measured_at": "2025-04-05T07:20:00"
+    },
+    {
+      "motor_id": "MOT02",
+      "record_count": 4,
+      "last_measured_at": "2025-04-06T07:20:00"
+    }
+  ],
+  "note": "Motors seen in stored predictions. Other IDs are accepted if they match the allowed pattern."
+}

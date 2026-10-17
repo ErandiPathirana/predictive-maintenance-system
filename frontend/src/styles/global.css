@@ -97,3 +97,37 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: 0.005em; }
 .key-long { display: inline; }
 @media (max-width: 62em) { .brand small, .key-long { display: none; } .brand { font-size: 0.95rem; } }
 @media (max-width: 36em) { .brand { max-width: 7.5rem; } .lamp-text { font-size: 0.78rem; max-width: 6.5rem; overflow: hidden; text-overflow: ellipsis; } }
+
+/* ---------- New motor assessment ---------- */
+.assess-form { display: flex; flex-direction: column; gap: 14px; }
+.form-section { margin: 0; min-width: 0; }
+.form-section > legend { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; padding: 0 6px; color: var(--accent-strong); }
+.form-summary:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+.form-summary:empty { display: none; }
+.form-actions { padding: 10px 0; }
+
+.result-banner { border: 2px solid; border-radius: 8px; padding: 16px 18px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; }
+.result-banner__state { display: flex; align-items: center; gap: 12px; }
+.result-banner__icon { font-size: 2.2rem; line-height: 1; }
+.result-banner__label { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); }
+.result-banner__word { font-family: var(--font-display); font-size: 2rem; font-weight: 700; line-height: 1.1; }
+.result-banner__headline { margin: 0; flex: 1 1 280px; font-size: 1.05rem; font-weight: 500; }
+
+.rec-list { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.rec-item { border: 1px solid var(--border); border-radius: 6px; padding: 12px; background: var(--surface-2); }
+.rec-item__top { display: flex; gap: 12px; align-items: flex-start; }
+.rec-item__no { flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--accent-strong); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; }
+.rec-item__body { min-width: 0; }
+.rec-item__safety { border-left: 3px solid var(--status-alert); padding-left: 8px; }
+
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px 20px; margin: 10px 0 0; }
+.fact dt { font-size: 0.8rem; color: var(--text-secondary); font-weight: 600; }
+.fact dd { margin: 0; font-weight: 500; overflow-wrap: anywhere; }
+
+@media print {
+  .no-print, .mantine-AppShell-navbar, .mantine-AppShell-header, .skip-link { display: none !important; }
+  body { background: #fff; }
+  .mantine-AppShell-main { padding: 0 !important; }
+  .panel, .result-banner, .rec-item { break-inside: avoid; }
+  .result-banner { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

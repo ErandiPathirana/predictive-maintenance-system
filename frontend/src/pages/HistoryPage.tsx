@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Anchor, Alert, Button, Group, SegmentedControl, Select, Stack, Text, TextInput } from "@mantine/core";
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -68,7 +69,7 @@ export default function HistoryPage() {
 
   return (
     <>
-      <PageHeader title="Prediction history" intro="Every prediction stored by the server, newest first. Raw sensor readings are not stored." />
+      <PageHeader title="Assessment history" intro="Every saved assessment, newest first. Open one to see its recommended next steps. Raw sensor readings are not stored unless the server is set to keep them." />
       <Stack gap="sm">
         <ModelNotice compact />
         <form className="panel" onSubmit={apply} aria-label="Filter history">
@@ -110,11 +111,12 @@ export default function HistoryPage() {
               caption="Stored predictions, newest first"
               rows={data.items} rowKey={(r) => r.id}
               columns={[
-                { key: "id", header: "ID", numeric: true, render: (r) => r.id },
+                { key: "id", header: "ID", numeric: true, render: (r) => <Anchor component={Link} to={`/assessment/${r.id}`} aria-label={`Open assessment ${r.id}`}>{r.id}</Anchor> },
                 { key: "m", header: "Motor", render: (r) => r.motor_id ?? "Not recorded" },
                 { key: "r", header: "Record", render: (r) => r.record_id ?? "Not recorded" },
                 { key: "at", header: "Measured at", render: (r) => formatTimestamp(r.measured_at) },
                 { key: "c", header: "Predicted condition", render: (r) => <ConditionBadge condition={r.predicted_condition} /> },
+                { key: "rec", header: "Recommended next step", render: (r) => r.recommendation_summary ?? <Text size="sm" c="dimmed" component="span">Open the record to see the steps</Text> },
                 { key: "s", header: "Model score (predicted class)", numeric: true, render: (r) => formatScore(topScore(r)) },
                 { key: "st", header: "Analysed (UTC)", render: (r) => formatTimestamp(r.created_at) },
                 { key: "v", header: "Model version", render: (r) => r.model_version },

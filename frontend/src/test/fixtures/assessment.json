@@ -1,0 +1,101 @@
+{
+  "saved": true,
+  "duplicate": false,
+  "assessment_id": 8,
+  "created_at": "2026-10-17T15:36:36.398751",
+  "motor_id": "MOT01",
+  "equipment_description": "Fixture motor",
+  "recorded_by": "Fixture",
+  "recorded_by_verified": false,
+  "measured_at": "2025-04-01T07:20:00",
+  "predicted_condition": "Normal",
+  "predicted_class_id": 0,
+  "scores": {
+    "Normal": 0.6909083812727594,
+    "Alert": 0.15101701455789024,
+    "Danger": 0.15807460416935024
+  },
+  "scores_are_calibrated_probabilities": false,
+  "model_version": "v9.9.9",
+  "provisional_label_provenance": true,
+  "demonstration_only": true,
+  "input_warnings": [],
+  "readings": {
+    "de_h_velocity_mm_s": 32.21112267875126,
+    "de_h_ge": 14.219548974429646,
+    "de_h_temp_c": 3.0077026728735397,
+    "de_v_velocity_mm_s": 1.8098541408979256,
+    "de_v_ge": 40.85024172081335,
+    "de_v_temp_c": 45.72502328660836,
+    "nde_h_velocity_mm_s": 30.725153012591814,
+    "nde_h_ge": 36.745331488215925,
+    "nde_h_temp_c": 27.63762458180572,
+    "nde_v_velocity_mm_s": 46.818548765600646,
+    "nde_v_ge": 40.97682415195508,
+    "nde_v_temp_c": 1.1341865083372566,
+    "rotational_speed_rpm": 43.0128095527909,
+    "load_percent": 2.645693189967753
+  },
+  "readings_stored": false,
+  "recommendations": {
+    "condition": "Normal",
+    "available": true,
+    "ruleset_version": "general-guidance-1.1",
+    "headline": "Predicted condition: Normal. Continue routine monitoring.",
+    "items": [
+      {
+        "priority": 1,
+        "action": "Continue routine monitoring according to the approved maintenance schedule.",
+        "reason": "The model classed these readings as Normal. This is not a guarantee that the motor is healthy.",
+        "responsible_role": "Machine operator",
+        "timing": "Routine monitoring",
+        "safety_note": null,
+        "source": "general_guidance",
+        "source_detail": "General guidance. Requires maintenance-engineer confirmation. No site-approved procedure is configured for this action.",
+        "requires_confirmation": true
+      },
+      {
+        "priority": 2,
+        "action": "Review the motor's historical trend for unexpected changes.",
+        "reason": "A single reading cannot show a slow change. Trends are easier to judge over time.",
+        "responsible_role": "Responsible maintenance engineer",
+        "timing": "Routine monitoring",
+        "safety_note": null,
+        "source": "general_guidance",
+        "source_detail": "General guidance. Requires maintenance-engineer confirmation. No site-approved procedure is configured for this action.",
+        "requires_confirmation": true
+      },
+      {
+        "priority": 3,
+        "action": "Record this assessment.",
+        "reason": "A complete record makes later comparison possible.",
+        "responsible_role": "Machine operator",
+        "timing": "Routine monitoring",
+        "safety_note": null,
+        "source": "general_guidance",
+        "source_detail": "General guidance. Requires maintenance-engineer confirmation. No site-approved procedure is configured for this action.",
+        "requires_confirmation": true
+      },
+      {
+        "priority": 4,
+        "action": "Follow the existing preventive-maintenance plan.",
+        "reason": "A Normal prediction does not take the place of planned maintenance.",
+        "responsible_role": "Responsible maintenance engineer",
+        "timing": "Planned maintenance review",
+        "safety_note": null,
+        "source": "general_guidance",
+        "source_detail": "General guidance. Requires maintenance-engineer confirmation. No site-approved procedure is configured for this action.",
+        "requires_confirmation": true
+      }
+    ],
+    "summary": "Normal: 4 recommended actions. First: Continue routine monitoring according to the approved maintenance schedule.",
+    "disclaimer": "This is decision support from a research prototype, not a safety-rated control system. It does not issue shutdown commands and does not diagnose a fault. Site safety procedures and qualified personnel always take precedence.",
+    "threshold_note": "These recommendations follow the model's predicted class only. No approved engineering thresholds are configured, so no sensor value is judged high or low here. Thresholds need approval from a qualified engineer before they can be used.",
+    "site_guidance_version": null,
+    "urgent": false,
+    "return_to_service": [],
+    "return_to_service_note": null
+  },
+  "recommendations_regenerated": false,
+  "interpretation_note": "Predicted condition class from a statistical model. It is NOT a confirmed machine failure, and the scores are model outputs, not calibrated probabilities."
+}

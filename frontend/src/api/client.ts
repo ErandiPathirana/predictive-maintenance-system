@@ -1,6 +1,6 @@
 /** The ONLY module that talks to the backend. Pages never call fetch directly. */
 import type {
-  ApiErrorBody, BatchList, BatchPredictionResponse, CsvValidationReport, FeatureListResponse, HealthResponse,
+  ApiErrorBody, AssessmentRequest, AssessmentResponse, BatchList, MotorList, BatchPredictionResponse, CsvValidationReport, FeatureListResponse, HealthResponse,
   HistoryFilters, ModelInfoResponse, PredictionPage,
 } from "../types/api";
 
@@ -47,7 +47,7 @@ function buildUrl(path: string, query?: Query): string {
   return `${base}${path}${qs ? `?${qs}` : ""}`;
 }
 
-async function send(path: string, opts: { query?: Query; method?: string; body?: BodyInit; timeoutMs?: number } = {}): Promise<Response> {
+async function send(path: string, opts: { query?: Query; method?: string; body?: BodyInit; timeoutMs?: number; headers?: Record<string, string> } = {}): Promise<Response> {
   const url = buildUrl(path, opts.query);
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), opts.timeoutMs ?? DEFAULT_TIMEOUT_MS);
@@ -56,7 +56,7 @@ async function send(path: string, opts: { query?: Query; method?: string; body?:
     response = await fetch(url, {
       method: opts.method ?? "GET",
       body: opts.body,
-      headers: accessKey ? { "X-API-Key": accessKey } : undefined,
+      headers: accessKey || opts.headers ? { ...(opts.headers ?? {}), ...(accessKey ? { "X-API-Key": accessKey } : {}) } : undefined,
       signal: controller.signal,
     });
   } catch (err) {
@@ -93,6 +93,15 @@ export const getHealth = () => json<HealthResponse>("/api/health");
 export const getModelInfo = () => json<ModelInfoResponse>("/api/model-info");
 export const getFeatures = () => json<FeatureListResponse>("/api/features");
 export const getBatches = () => json<BatchList>("/api/batches");
+export const getMotors = () => json<MotorList>("/api/motors");
+export const getAssessment = (id: number) => json<AssessmentResponse>(`/api/assessments/${id}`);
+
+/** Saves one manual assessment. The Idempotency-Key makes an accidental repeat (double click, retry after a timeout)
+ *  return the first record instead of creating a second one. */
+export const createAssessment = (body: AssessmentRequest, idempotencyKey: string) =>
+  json<AssessmentResponse>("/api/assessments", {
+    method: "POST", body: JSON.stringify(body), headers: { "Content-Type": "application/json", "Idempotency-Key": idempotencyKey },
+  });
 
 export function getPredictions(filters: HistoryFilters, limit: number, offset: number) {
   return json<PredictionPage>("/api/predictions", { query: { ...filters, limit, offset } });

@@ -71,7 +71,7 @@ def build_report_csv(rows: list[Prediction]) -> str:
                 class_cols.append(c)
     header = ["prediction_id", "batch_id", "source", "record_id", "motor_id", "measured_at", "predicted_at_utc", "predicted_condition",
               "predicted_class_id", *[f"model_score_{c}" for c in class_cols], "model_version", "label_provenance_provisional",
-              "demonstration_only", "note"]
+              "demonstration_only", "equipment_description", "recorded_by_unverified", "recommendation_summary", "recommendation_ruleset", "note"]
     out = io.StringIO()
     w = csv.writer(out, lineterminator="\r\n")
     w.writerow(header)
@@ -79,7 +79,8 @@ def build_report_csv(rows: list[Prediction]) -> str:
         w.writerow([r.id, r.batch_id or "", r.source, _safe_cell(r.record_id or ""), _safe_cell(r.motor_id or ""),
                     r.measured_at.isoformat(sep=" ") if r.measured_at else "", r.created_at.isoformat(sep=" ", timespec="seconds"),
                     r.predicted_condition, r.predicted_class_id, *[f"{r.scores.get(c, ''):.6f}" if c in r.scores else "" for c in class_cols],
-                    r.model_version, r.provisional_label_provenance, r.demonstration_only, INTERPRETATION_NOTE])
+                    r.model_version, r.provisional_label_provenance, r.demonstration_only, _safe_cell(r.equipment_description or ""),
+                    _safe_cell(r.recorded_by or ""), _safe_cell(r.recommendation_summary or ""), r.ruleset_version or "", INTERPRETATION_NOTE])
     return out.getvalue()
 
 

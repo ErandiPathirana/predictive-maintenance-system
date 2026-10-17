@@ -60,7 +60,9 @@ export default function DashboardPage() {
 
   return (
     <>
-      <PageHeader title="Dashboard" intro="The most recent predicted condition of every motor that has stored predictions." />
+      <PageHeader title="Dashboard" intro="The most recent predicted condition of every motor that has stored predictions.">
+        <Group mt={6}><Button component={Link} to="/assess">New motor assessment</Button></Group>
+      </PageHeader>
       <ModelNotice compact />
       <div style={{ height: 12 }} />
       {all.loading ? (
@@ -76,7 +78,7 @@ export default function DashboardPage() {
         <>
           {all.truncated && (
             <Text size="sm" c="dimmed" mb="sm" role="note">
-              The server holds {formatInt(all.total)} stored predictions. This page summarises the newest {formatInt(all.items.length)}. Use Prediction history for all of them.
+              The server holds {formatInt(all.total)} stored predictions. This page summarises the newest {formatInt(all.items.length)}. Use Assessment history for all of them.
             </Text>
           )}
           <SimpleGrid cols={{ base: 2, sm: 3, lg: 5 }} spacing="sm" mb="md">
@@ -116,7 +118,7 @@ export default function DashboardPage() {
               { key: "m", header: "Motor", render: (r) => r.motor_id ?? "Not recorded" },
               { key: "r", header: "Record", render: (r) => r.record_id ?? "Not recorded" },
               { key: "c", header: "Predicted condition", render: (r) => <ConditionBadge condition={r.predicted_condition} /> },
-              { key: "src", header: "Source", render: (r) => (r.source === "csv" ? "CSV upload" : "Single reading") },
+              { key: "src", header: "Source", render: (r) => (r.source === "csv" ? "CSV upload" : "Manual entry") },
             ]}
           />
           <Group mt="xs"><Anchor component={Link} to="/history" size="sm">Open full history</Anchor></Group>

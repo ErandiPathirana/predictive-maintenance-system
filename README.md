@@ -11,7 +11,7 @@ Final-year Computer Science research artefact (prototype).
 |---|---|
 | FastAPI backend: artifact loading with startup validation, strict CSV and JSON validation, single + batch prediction, SQLAlchemy history (SQLite/PostgreSQL), Alembic migrations, filtered history, CSV export, Swagger docs | Done, 134 tests |
 | Colab notebook (`ml/notebooks/`) producing the versioned artifact bundle | Done (tested on synthetic data only) |
-| React dashboard (7 pages: Dashboard, Motor monitoring, Upload and analyse, Results, History, Model evaluation, Research information). See `docs/frontend.md` | Done, 45 tests; checked in a real browser against the backend using a random-weight test model |
+| React app (Dashboard, New assessment, Motor monitoring, Upload a CSV, Results, Assessment history). See `docs/frontend.md` | Done, 86 tests; checked in a real browser against the backend using a random-weight test model |
 | Dataset cleaning module, data dictionary, data-quality report | Pending your answers to the open questions |
 
 ## Folders
@@ -52,7 +52,7 @@ python -m alembic upgrade head
 
 ### 3. Test, then run
 ```powershell
-python -m pytest                                  # expect: 134 passed, 1 skipped
+python -m pytest                                  # expect: all tests pass (about 215 at Stage 2; a skip or two is normal)
 python -m uvicorn app.main:app --reload
 ```
 Open <http://localhost:8000/docs> (Swagger UI). Step-by-step Swagger testing is in `docs/api.md`.

@@ -1,0 +1,118 @@
+{
+  "saved": true,
+  "duplicate": false,
+  "assessment_id": 9,
+  "created_at": "2026-10-17T15:36:36.405135",
+  "motor_id": "MOT02",
+  "equipment_description": "Fixture motor",
+  "recorded_by": "Fixture",
+  "recorded_by_verified": false,
+  "measured_at": "2025-04-01T07:20:00",
+  "predicted_condition": "Danger",
+  "predicted_class_id": 2,
+  "scores": {
+    "Normal": 0.05,
+    "Alert": 0.05,
+    "Danger": 0.9
+  },
+  "scores_are_calibrated_probabilities": false,
+  "model_version": "v9.9.9",
+  "provisional_label_provenance": true,
+  "demonstration_only": true,
+  "input_warnings": [],
+  "readings": {
+    "de_h_velocity_mm_s": 32.21112267875126,
+    "de_h_ge": 14.219548974429646,
+    "de_h_temp_c": 3.0077026728735397,
+    "de_v_velocity_mm_s": 1.8098541408979256,
+    "de_v_ge": 40.85024172081335,
+    "de_v_temp_c": 45.72502328660836,
+    "nde_h_velocity_mm_s": 30.725153012591814,
+    "nde_h_ge": 36.745331488215925,
+    "nde_h_temp_c": 27.63762458180572,
+    "nde_v_velocity_mm_s": 46.818548765600646,
+    "nde_v_ge": 40.97682415195508,
+    "nde_v_temp_c": 1.1341865083372566,
+    "rotational_speed_rpm": 43.0128095527909,
+    "load_percent": 2.645693189967753
+  },
+  "readings_stored": false,
+  "recommendations": {
+    "condition": "Danger",
+    "available": true,
+    "ruleset_version": "general-guidance-1.1",
+    "headline": "Predicted condition: Danger. Tell a maintenance engineer now and follow site safety procedures.",
+    "items": [
+      {
+        "priority": 1,
+        "action": "Notify the responsible maintenance engineer immediately.",
+        "reason": "Danger is the most serious class the model predicts. A qualified person must assess it now.",
+        "responsible_role": "Machine operator",
+        "timing": "Immediate safety review",
+        "safety_note": "If you see signs of an immediate hazard, such as smoke, burning smell, sparks or severe vibration, follow the site's emergency procedure first.",
+        "source": "general_guidance",
+        "source_detail": "General guidance. Requires maintenance-engineer confirmation. No site-approved procedure is configured for this action.",
+        "requires_confirmation": true
+      },
+      {
+        "priority": 2,
+        "action": "If the equipment may be unsafe to run, stop or isolate it only through the site's approved shutdown, lockout/tagout and authorisation procedures.",
+        "reason": "This system cannot judge whether the equipment is unsafe and does not control the machine. That decision belongs to authorised personnel.",
+        "responsible_role": "Shift supervisor",
+        "timing": "Immediate safety review",
+        "safety_note": "Do not open electrical equipment, remove guards or touch moving parts unless you are qualified and authorised.",
+        "source": "general_guidance",
+        "source_detail": "General guidance. Requires maintenance-engineer confirmation. No site-approved procedure is configured for this action.",
+        "requires_confirmation": true
+      },
+      {
+        "priority": 3,
+        "action": "Arrange a qualified inspection before the equipment returns to service, where site procedures require it.",
+        "reason": "A Danger prediction is not a confirmed fault. Only an inspection can confirm or dismiss it.",
+        "responsible_role": "Qualified maintenance personnel",
+        "timing": "Prompt engineering assessment",
+        "safety_note": null,
+        "source": "general_guidance",
+        "source_detail": "General guidance. Requires maintenance-engineer confirmation. No site-approved procedure is configured for this action.",
+        "requires_confirmation": true
+      },
+      {
+        "priority": 4,
+        "action": "Record the sensor readings, the model output, the timestamp and every action taken.",
+        "reason": "A complete record supports the investigation and later review.",
+        "responsible_role": "Machine operator",
+        "timing": "Prompt engineering assessment",
+        "safety_note": null,
+        "source": "general_guidance",
+        "source_detail": "General guidance. Requires maintenance-engineer confirmation. No site-approved procedure is configured for this action.",
+        "requires_confirmation": true
+      },
+      {
+        "priority": 5,
+        "action": "Check the approved maintenance instructions before deciding on any repair.",
+        "reason": "The model does not identify a mechanical cause. Repairs need a qualified diagnosis.",
+        "responsible_role": "Responsible maintenance engineer",
+        "timing": "Prompt engineering assessment",
+        "safety_note": null,
+        "source": "general_guidance",
+        "source_detail": "General guidance. Requires maintenance-engineer confirmation. No site-approved procedure is configured for this action.",
+        "requires_confirmation": true
+      }
+    ],
+    "summary": "Danger: 5 recommended actions. First: Notify the responsible maintenance engineer immediately.",
+    "disclaimer": "This is decision support from a research prototype, not a safety-rated control system. It does not issue shutdown commands and does not diagnose a fault. Site safety procedures and qualified personnel always take precedence.",
+    "threshold_note": "These recommendations follow the model's predicted class only. No approved engineering thresholds are configured, so no sensor value is judged high or low here. Thresholds need approval from a qualified engineer before they can be used.",
+    "site_guidance_version": null,
+    "urgent": true,
+    "return_to_service": [
+      "A qualified person has inspected the motor and recorded what they found.",
+      "The reason for the predicted condition has been identified, or ruled out, by that inspection. This system does not identify causes.",
+      "Any repair or adjustment was carried out under the approved maintenance procedure and recorded.",
+      "A new measurement has been taken after the inspection and entered here, and its predicted condition has been reviewed by the maintenance engineer.",
+      "Return to service has been authorised under the site's procedure, including removal of any lockout/tagout by the authorised person."
+    ],
+    "return_to_service_note": "These are questions to settle, not pass/fail criteria. This system cannot decide that a motor is safe to return to service. The actual criteria must come from the site's approved procedures, and the decision belongs to authorised, qualified personnel."
+  },
+  "recommendations_regenerated": false,
+  "interpretation_note": "Predicted condition class from a statistical model. It is NOT a confirmed machine failure, and the scores are model outputs, not calibrated probabilities."
+}

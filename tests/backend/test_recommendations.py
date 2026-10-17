@@ -172,3 +172,16 @@ def test_result_is_serialisable_and_immutable():
     assert d["urgent"] is True and d["ruleset_version"] == rec.RULESET_VERSION
     with pytest.raises(Exception):
         recommend(DANGER).items[0].action = "x"          # type: ignore[misc]
+
+
+def test_return_to_service_is_a_checklist_of_questions_not_numeric_criteria():
+    assert recommend(NORMAL).return_to_service == () and recommend(NORMAL).return_to_service_note is None
+    for c in (ALERT, DANGER):
+        r = recommend(c)
+        assert len(r.return_to_service) == 5
+        text = " ".join(r.return_to_service) + r.return_to_service_note
+        assert "qualified person has inspected" in text and "authorised" in text and "lockout/tagout" in text
+        assert "not pass/fail criteria" in r.return_to_service_note and "site's approved procedures" in r.return_to_service_note
+        assert not re.search(r"\d", " ".join(r.return_to_service))          # no invented numbers, limits or deadlines
+        assert not FORBIDDEN.search(text)
+    assert recommend("Critical").return_to_service == ()

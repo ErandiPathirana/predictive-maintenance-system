@@ -33,6 +33,9 @@ class Settings(BaseSettings):
     allow_smoke_test_bundle: bool = False      # a FAST_DEBUG notebook bundle is refused unless this is True
     force_demonstration_banner: bool | None = None  # None = decide automatically from bundle metadata
 
+    # Optional approved maintenance guidance (JSON). Unset = only the built-in general guidance is used. An invalid file stops startup.
+    site_guidance_file: Path | None = None
+
     # Database. SQLite for local work; PostgreSQL URL for hosted deployment.
     database_url: str = "sqlite:///predictions.db"
     auto_create_tables: bool = False           # development convenience only; use Alembic otherwise
@@ -50,6 +53,14 @@ class Settings(BaseSettings):
     @classmethod
     def _resolve_bundle_dir(cls, value: Path) -> Path:
         return value if value.is_absolute() else (PROJECT_ROOT / value).resolve()
+
+    @field_validator("site_guidance_file", mode="before")
+    @classmethod
+    def _resolve_site_guidance(cls, value):
+        if value in (None, ""):
+            return None
+        p = Path(value)
+        return p if p.is_absolute() else (PROJECT_ROOT / p).resolve()
 
     @field_validator("database_url")
     @classmethod

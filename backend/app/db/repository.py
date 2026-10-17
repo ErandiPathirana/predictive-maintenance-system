@@ -43,7 +43,8 @@ def create_batch(session: Session, filename: str, count: int, model_version: str
 
 
 def create_predictions(session: Session, *, source: str, batch_id: str | None, bundle, demonstration: bool, scores: np.ndarray,
-                       X: np.ndarray, record_ids, motor_ids, measured_at, store_inputs: bool) -> list[Prediction]:
+                       X: np.ndarray, record_ids, motor_ids, measured_at, store_inputs: bool,
+                       recommendation_summaries: list[str] | None = None, ruleset_version: str | None = None) -> list[Prediction]:
     rows = []
     for i in range(len(scores)):
         k = int(scores[i].argmax())
@@ -52,10 +53,42 @@ def create_predictions(session: Session, *, source: str, batch_id: str | None, b
             predicted_condition=bundle.class_names[k], predicted_class_id=k,
             scores={c: float(s) for c, s in zip(bundle.class_names, scores[i])}, model_version=bundle.version,
             provisional_label_provenance=bundle.provisional, demonstration_only=demonstration,
-            input_readings={n: float(v) for n, v in zip(bundle.feature_names, X[i])} if store_inputs else None))
+            input_readings={n: float(v) for n, v in zip(bundle.feature_names, X[i])} if store_inputs else None,
+            recommendation_summary=recommendation_summaries[i] if recommendation_summaries else None,
+            ruleset_version=ruleset_version if recommendation_summaries else None))
     session.add_all(rows)
     session.flush()          # assigns primary keys
     return rows
+
+
+def create_assessment(session: Session, *, bundle, demonstration: bool, scores: np.ndarray, X: np.ndarray, motor_id: str, measured_at,
+                      equipment_description: str | None, recorded_by: str | None, recommendations: dict, idempotency_key: str | None,
+                      request_hash: str, store_inputs: bool) -> Prediction:
+    """One manual assessment. Flushes (so a unique-key clash raises here) but does NOT commit: the caller commits and only then reports 'saved'."""
+    k = int(scores[0].argmax())
+    row = Prediction(
+        batch_id=None, source="single", record_id=None, motor_id=motor_id, measured_at=measured_at,
+        predicted_condition=bundle.class_names[k], predicted_class_id=k,
+        scores={c: float(v) for c, v in zip(bundle.class_names, scores[0])}, model_version=bundle.version,
+        provisional_label_provenance=bundle.provisional, demonstration_only=demonstration,
+        input_readings={n: float(v) for n, v in zip(bundle.feature_names, X[0])} if store_inputs else None,
+        equipment_description=equipment_description, recorded_by=recorded_by,
+        recommendation_summary=recommendations["summary"], ruleset_version=recommendations["ruleset_version"],
+        recommendations=recommendations, idempotency_key=idempotency_key, request_hash=request_hash)
+    session.add(row)
+    session.flush()
+    return row
+
+
+def find_by_idempotency_key(session: Session, key: str) -> Prediction | None:
+    return session.scalar(select(Prediction).where(Prediction.idempotency_key == key))
+
+
+def motor_summaries(session: Session, limit: int = 500) -> list[dict]:
+    rows = session.execute(
+        select(Prediction.motor_id, func.count(), func.max(Prediction.measured_at)).where(Prediction.motor_id.is_not(None))
+        .group_by(Prediction.motor_id).order_by(Prediction.motor_id).limit(limit)).all()
+    return [{"motor_id": m, "record_count": int(c), "last_measured_at": t} for m, c, t in rows]
 
 
 def query_page(session: Session, f: PredictionFilters, limit: int, offset: int) -> tuple[int, list[Prediction]]:

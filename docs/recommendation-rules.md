@@ -34,3 +34,11 @@ Loading a file into the running API is added in a later stage. See `docs/site_gu
 ## Changing the rules
 1. Edit the text in `recommendations.py`. 2. Increase `RULESET_VERSION`. 3. Update the tests and this page. 4. Ask the responsible maintenance engineer to review the wording.
 Each stored assessment records the ruleset version it used.
+
+## Return-to-service questions (Alert and Danger)
+
+For Alert and Danger the result includes five **questions to settle** before a motor goes back into normal service (qualified inspection recorded; reason identified or ruled out; repair done under an approved procedure; new measurement reviewed by an engineer; return authorised under site procedure, including lockout/tagout removal). They are not pass/fail criteria: this system cannot decide a motor is safe. The actual criteria come from your site's approved procedures.
+
+## Loading site-approved guidance
+
+Set `SITE_GUIDANCE_FILE` in `.env` to a JSON file shaped like `docs/site_guidance.example.json`. It needs `guidance_version`, `approved_by`, `approved_on`, and for every action: `action`, `reason`, `responsible_role`, `timing`, `procedure_ref`. If anything is missing the backend **refuses to start** (it never half-loads). Site actions appear after the general guidance, labelled "Site-approved". Restart the backend after changing the file.

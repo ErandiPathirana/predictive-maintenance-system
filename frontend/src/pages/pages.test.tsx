@@ -2,7 +2,6 @@ import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Route, Routes } from "react-router-dom";
 import DashboardPage from "./DashboardPage";
-import EvaluationPage from "./EvaluationPage";
 import HistoryPage from "./HistoryPage";
 import ResultsPage from "./ResultsPage";
 import UploadPage from "./UploadPage";
@@ -146,48 +145,5 @@ describe("Results", () => {
     expect(screen.getAllByText(/not calibrated probabilities/i).length).toBeGreaterThan(0);
     expect(screen.getAllByText("Model score: Normal").length).toBeGreaterThan(0);
     expect(screen.queryByText(/Probability:/)).not.toBeInTheDocument();
-  });
-});
-
-describe("Model evaluation", () => {
-  it("shows no numbers when no report was saved", async () => {
-    vi.stubGlobal("fetch", vi.fn(async () => new Response("nope", { status: 404 })));
-    renderApp(<EvaluationPage />);
-    expect(await screen.findByText(/No evaluation report has been saved/)).toBeInTheDocument();
-    expect(screen.queryByText("Accuracy")).not.toBeInTheDocument();
-  });
-
-  it("refuses an unrecognised report", async () => {
-    vi.stubGlobal("fetch", vi.fn(async () => jsonResponse({ accuracy: 0.99 })));
-    renderApp(<EvaluationPage />);
-    expect(await screen.findByText(/cannot be used/)).toBeInTheDocument();
-    expect(screen.queryByText("Accuracy")).not.toBeInTheDocument();
-  });
-
-  const report = (origin: string, provisional = true) => ({
-    schema: "pm.evaluation_report.v1", source: "t", bundle_version: "v9.9.9", created_utc: null, test_evaluated_at_utc: "2026-01-01", task: "t",
-    classes: ["Normal", "Alert", "Danger"], data_origin: origin, smoke_test: false, provisional_label_provenance: provisional, label_provenance: null,
-    dataset: { file_name: "d.csv", records: 100, motors: 5, time_range: null }, split: null, split_strategy: "motor-grouped", baselines: {}, bootstrap_ci_by_motor: null,
-    model: {
-      n: 100, accuracy: 0.9, balanced_accuracy: 0.8, macro_f1: 0.7, weighted_f1: 0.85, macro_precision: 0.7, macro_recall: 0.7, mcc: 0.6, roc_auc_ovr_macro: null, pr_auc_macro: null,
-      per_class: { Normal: { precision: 0.9, recall: 0.95, f1: 0.92, support: 80 }, Alert: { precision: 0.5, recall: 0.4, f1: 0.44, support: 15 }, Danger: { precision: 0.3, recall: 0.2, f1: 0.24, support: 5 } },
-      confusion_matrix: [[76, 3, 1], [8, 6, 1], [3, 1, 1]],
-    },
-  });
-
-  it("shows metrics, per-class results and the confusion matrix from a valid report", async () => {
-    vi.stubGlobal("fetch", vi.fn(async (input: RequestInfo | URL) => String(input).includes("evaluation_report") ? jsonResponse(report("real")) : jsonResponse({}, 404)));
-    renderApp(<EvaluationPage />);
-    expect((await screen.findAllByText("0.900")).length).toBeGreaterThan(0);
-    expect(screen.getByRole("table", { name: /per-class|precision, recall/i })).toBeInTheDocument();
-    const cm = screen.getByRole("region", { name: "Confusion matrix" });
-    expect(within(cm).getByText("76")).toBeInTheDocument();
-    expect(screen.getByText(/Real data, provisional labels/)).toBeInTheDocument();
-  });
-
-  it("labels synthetic data clearly", async () => {
-    vi.stubGlobal("fetch", vi.fn(async (input: RequestInfo | URL) => String(input).includes("evaluation_report") ? jsonResponse(report("synthetic")) : jsonResponse({}, 404)));
-    renderApp(<EvaluationPage />);
-    expect(await screen.findByText("Synthetic demonstration")).toBeInTheDocument();
   });
 });

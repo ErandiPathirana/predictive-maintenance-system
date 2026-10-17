@@ -153,7 +153,7 @@
             }
           },
           "422": {
-            "description": "Unprocessable Entity",
+            "description": "Unprocessable Content",
             "content": {
               "application/json": {
                 "schema": {
@@ -163,7 +163,7 @@
             }
           },
           "413": {
-            "description": "Request Entity Too Large",
+            "description": "Content Too Large",
             "content": {
               "application/json": {
                 "schema": {
@@ -229,7 +229,7 @@
             }
           },
           "422": {
-            "description": "Unprocessable Entity",
+            "description": "Unprocessable Content",
             "content": {
               "application/json": {
                 "schema": {
@@ -239,7 +239,7 @@
             }
           },
           "413": {
-            "description": "Request Entity Too Large",
+            "description": "Content Too Large",
             "content": {
               "application/json": {
                 "schema": {
@@ -305,7 +305,7 @@
             }
           },
           "422": {
-            "description": "Unprocessable Entity",
+            "description": "Unprocessable Content",
             "content": {
               "application/json": {
                 "schema": {
@@ -315,7 +315,7 @@
             }
           },
           "413": {
-            "description": "Request Entity Too Large",
+            "description": "Content Too Large",
             "content": {
               "application/json": {
                 "schema": {
@@ -340,6 +340,185 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/api/assessments": {
+      "post": {
+        "tags": [
+          "Assessment"
+        ],
+        "summary": "Assess ONE motor from manually entered readings, get recommendations, and save the result",
+        "operationId": "create_assessment_api_assessments_post",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "8-64 characters. Send the same key when retrying the same form, so it is saved once.",
+              "title": "Idempotency-Key"
+            },
+            "description": "8-64 characters. Send the same key when retrying the same form, so it is saved once."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssessmentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssessmentResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          },
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssessmentResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/assessments/{assessment_id}": {
+      "get": {
+        "tags": [
+          "Assessment"
+        ],
+        "summary": "One stored assessment with its recommendations",
+        "operationId": "get_assessment_api_assessments__assessment_id__get",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "assessment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Assessment Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssessmentResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/motors": {
+      "get": {
+        "tags": [
+          "Assessment"
+        ],
+        "summary": "Motor IDs seen in stored predictions",
+        "operationId": "list_motors_api_motors_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MotorList"
                 }
               }
             }
@@ -558,7 +737,7 @@
                 }
               }
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           }
         }
       }
@@ -828,7 +1007,7 @@
                 }
               }
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           }
         }
       }
@@ -836,6 +1015,238 @@
   },
   "components": {
     "schemas": {
+      "AssessmentRequest": {
+        "properties": {
+          "motor_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._\\-]{1,64}$",
+            "title": "Motor Id",
+            "description": "Motor reference (letters, digits, . _ -). New IDs are allowed if they match this pattern."
+          },
+          "measured_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Measured At",
+            "description": "When the reading was taken (ISO 8601). Required for assessments."
+          },
+          "equipment_description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Equipment Description",
+            "description": "Optional name or description of the equipment."
+          },
+          "recorded_by": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recorded By",
+            "description": "Optional free-text name or initials. NOT verified: the API has no user login."
+          },
+          "readings": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "type": "object",
+            "title": "Readings",
+            "description": "One numeric value per model input, keyed by feature name (see GET /api/features). Text, booleans, NaN and infinity are rejected."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "motor_id",
+          "measured_at",
+          "readings"
+        ],
+        "title": "AssessmentRequest",
+        "description": "A manual motor assessment. The same strict checks and preprocessing as CSV rows are applied to `readings`."
+      },
+      "AssessmentResponse": {
+        "properties": {
+          "saved": {
+            "type": "boolean",
+            "title": "Saved",
+            "description": "True only after the database confirmed the save."
+          },
+          "duplicate": {
+            "type": "boolean",
+            "title": "Duplicate",
+            "description": "True when this is a replay of an earlier submission with the same Idempotency-Key. Nothing new was saved."
+          },
+          "assessment_id": {
+            "type": "integer",
+            "title": "Assessment Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "motor_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Motor Id"
+          },
+          "equipment_description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Equipment Description"
+          },
+          "recorded_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recorded By"
+          },
+          "recorded_by_verified": {
+            "type": "boolean",
+            "title": "Recorded By Verified",
+            "default": false
+          },
+          "measured_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Measured At"
+          },
+          "predicted_condition": {
+            "type": "string",
+            "title": "Predicted Condition"
+          },
+          "predicted_class_id": {
+            "type": "integer",
+            "title": "Predicted Class Id"
+          },
+          "scores": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Scores"
+          },
+          "scores_are_calibrated_probabilities": {
+            "type": "boolean",
+            "title": "Scores Are Calibrated Probabilities",
+            "default": false
+          },
+          "model_version": {
+            "type": "string",
+            "title": "Model Version"
+          },
+          "provisional_label_provenance": {
+            "type": "boolean",
+            "title": "Provisional Label Provenance"
+          },
+          "demonstration_only": {
+            "type": "boolean",
+            "title": "Demonstration Only"
+          },
+          "input_warnings": {
+            "items": {
+              "$ref": "#/components/schemas/InputWarning"
+            },
+            "type": "array",
+            "title": "Input Warnings",
+            "default": []
+          },
+          "readings": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "number"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Readings",
+            "description": "The validated readings. Returned on creation, and later only if the server stores readings."
+          },
+          "readings_stored": {
+            "type": "boolean",
+            "title": "Readings Stored"
+          },
+          "recommendations": {
+            "$ref": "#/components/schemas/RecommendationBlock"
+          },
+          "recommendations_regenerated": {
+            "type": "boolean",
+            "title": "Recommendations Regenerated",
+            "description": "True when an older record had no stored recommendations and they were rebuilt from the stored condition.",
+            "default": false
+          },
+          "interpretation_note": {
+            "type": "string",
+            "title": "Interpretation Note",
+            "default": "Predicted condition class from a statistical model. It is NOT a confirmed machine failure, and the scores are model outputs, not calibrated probabilities."
+          }
+        },
+        "type": "object",
+        "required": [
+          "saved",
+          "duplicate",
+          "assessment_id",
+          "created_at",
+          "motor_id",
+          "equipment_description",
+          "recorded_by",
+          "measured_at",
+          "predicted_condition",
+          "predicted_class_id",
+          "scores",
+          "model_version",
+          "provisional_label_provenance",
+          "demonstration_only",
+          "readings_stored",
+          "recommendations"
+        ],
+        "title": "AssessmentResponse"
+      },
       "BatchList": {
         "properties": {
           "items": {
@@ -1333,6 +1744,51 @@
       },
       "HistoryItem": {
         "properties": {
+          "equipment_description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Equipment Description"
+          },
+          "recorded_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recorded By",
+            "description": "Free text typed by the user. NOT a verified identity."
+          },
+          "recommendation_summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recommendation Summary"
+          },
+          "ruleset_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ruleset Version"
+          },
           "id": {
             "type": "integer",
             "title": "Id"
@@ -1518,6 +1974,58 @@
         ],
         "title": "ModelInfoResponse"
       },
+      "MotorList": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/MotorSummary"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "note": {
+            "type": "string",
+            "title": "Note",
+            "default": "Motors seen in stored predictions. Other IDs are accepted if they match the allowed pattern."
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "MotorList"
+      },
+      "MotorSummary": {
+        "properties": {
+          "motor_id": {
+            "type": "string",
+            "title": "Motor Id"
+          },
+          "record_count": {
+            "type": "integer",
+            "title": "Record Count"
+          },
+          "last_measured_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Measured At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "motor_id",
+          "record_count",
+          "last_measured_at"
+        ],
+        "title": "MotorSummary"
+      },
       "PredictionPage": {
         "properties": {
           "total": {
@@ -1657,6 +2165,155 @@
           "demonstration_only"
         ],
         "title": "PredictionResult"
+      },
+      "RecommendationBlock": {
+        "properties": {
+          "condition": {
+            "type": "string",
+            "title": "Condition"
+          },
+          "available": {
+            "type": "boolean",
+            "title": "Available",
+            "description": "False when the model returned a class the rules do not cover. Nothing is invented then."
+          },
+          "ruleset_version": {
+            "type": "string",
+            "title": "Ruleset Version"
+          },
+          "headline": {
+            "type": "string",
+            "title": "Headline"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/RecommendationItem"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          },
+          "disclaimer": {
+            "type": "string",
+            "title": "Disclaimer"
+          },
+          "threshold_note": {
+            "type": "string",
+            "title": "Threshold Note"
+          },
+          "site_guidance_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Site Guidance Version"
+          },
+          "urgent": {
+            "type": "boolean",
+            "title": "Urgent"
+          },
+          "return_to_service": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Return To Service",
+            "description": "Questions to settle before return to service. Not pass/fail criteria."
+          },
+          "return_to_service_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Return To Service Note"
+          }
+        },
+        "type": "object",
+        "required": [
+          "condition",
+          "available",
+          "ruleset_version",
+          "headline",
+          "items",
+          "summary",
+          "disclaimer",
+          "threshold_note",
+          "urgent",
+          "return_to_service"
+        ],
+        "title": "RecommendationBlock"
+      },
+      "RecommendationItem": {
+        "properties": {
+          "priority": {
+            "type": "integer",
+            "title": "Priority"
+          },
+          "action": {
+            "type": "string",
+            "title": "Action"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason"
+          },
+          "responsible_role": {
+            "type": "string",
+            "title": "Responsible Role"
+          },
+          "timing": {
+            "type": "string",
+            "title": "Timing",
+            "description": "Immediate safety review, Prompt engineering assessment, Planned maintenance review or Routine monitoring. No exact deadlines."
+          },
+          "safety_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Safety Note"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source",
+            "description": "'general_guidance' or 'site_approved'"
+          },
+          "source_detail": {
+            "type": "string",
+            "title": "Source Detail"
+          },
+          "requires_confirmation": {
+            "type": "boolean",
+            "title": "Requires Confirmation"
+          }
+        },
+        "type": "object",
+        "required": [
+          "priority",
+          "action",
+          "reason",
+          "responsible_role",
+          "timing",
+          "source",
+          "source_detail",
+          "requires_confirmation"
+        ],
+        "title": "RecommendationItem"
       },
       "SinglePredictionRequest": {
         "properties": {
