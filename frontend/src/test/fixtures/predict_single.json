@@ -1,0 +1,19 @@
+{
+  "prediction_id": 7,
+  "record_id": "ONE",
+  "motor_id": "MOT01",
+  "measured_at": null,
+  "predicted_condition": "Normal",
+  "predicted_class_id": 0,
+  "scores": {
+    "Normal": 0.6909083812727594,
+    "Alert": 0.15101701455789024,
+    "Danger": 0.15807460416935024
+  },
+  "scores_are_calibrated_probabilities": false,
+  "model_version": "v9.9.9",
+  "provisional_label_provenance": true,
+  "demonstration_only": true,
+  "input_warnings": [],
+  "interpretation_note": "Predicted condition class from a statistical model. It is NOT a confirmed machine failure, and the scores are model outputs, not calibrated probabilities."
+}

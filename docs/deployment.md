@@ -44,7 +44,7 @@ Any static host works (Vercel, Netlify, Cloudflare Pages, GitHub Pages).
 
 ## Step 5: Connect them
 1. Put the frontend address into the backend's `CORS_ORIGINS` (no trailing slash).
-2. Open the frontend. The System status page should show Server **Running**, Database **Connected** and Trained model **Ready**.
+2. Open the frontend. The top-right light should read **Model <version> ready**. The Dashboard and Research information pages show more detail.
 
 ## Pre-viva checklist
 - [ ] Works on a phone and a laptop that you did not develop on

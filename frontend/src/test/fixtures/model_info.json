@@ -1,0 +1,61 @@
+{
+  "model_ready": true,
+  "reason": null,
+  "bundle": {
+    "model_name": "pm_condition_ann_vTEST",
+    "bundle_version": "v9.9.9",
+    "task": "test task",
+    "classes": [
+      {
+        "id": 0,
+        "name": "Normal"
+      },
+      {
+        "id": 1,
+        "name": "Alert"
+      },
+      {
+        "id": 2,
+        "name": "Danger"
+      }
+    ],
+    "feature_count": 14,
+    "features": [
+      "de_h_velocity_mm_s",
+      "de_h_ge",
+      "de_h_temp_c",
+      "de_v_velocity_mm_s",
+      "de_v_ge",
+      "de_v_temp_c",
+      "nde_h_velocity_mm_s",
+      "nde_h_ge",
+      "nde_h_temp_c",
+      "nde_v_velocity_mm_s",
+      "nde_v_ge",
+      "nde_v_temp_c",
+      "rotational_speed_rpm",
+      "load_percent"
+    ],
+    "created_utc": "2026-01-01T00:00:00+00:00",
+    "label_provenance_documented": false,
+    "provisional_label_provenance": true,
+    "demonstration_only": true,
+    "deployable_for_decisions": false,
+    "scores_are_calibrated_probabilities": false,
+    "future_failure_prediction_supported": false,
+    "smoke_test_bundle": false,
+    "reported_test_metrics": {
+      "n": 100,
+      "accuracy": 0.5,
+      "balanced_accuracy": 0.4,
+      "macro_f1": 0.3
+    },
+    "notes": [
+      "Predicted condition class only. It is NOT a confirmed machine failure.",
+      "Scores are model outputs, not calibrated probabilities (calibration was not evaluated).",
+      "Label provenance is NOT documented: results describe agreement with an unverified label.",
+      "DEMONSTRATION: do not use for operational decisions.",
+      "reported_test_metrics come from the training notebook (held-out motors); see the model card."
+    ]
+  }
+}

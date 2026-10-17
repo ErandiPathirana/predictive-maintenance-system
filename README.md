@@ -9,10 +9,9 @@ Final-year Computer Science research artefact (prototype).
 ## What is built
 | Part | Status |
 |---|---|
-| FastAPI backend: artifact loading with startup validation, strict CSV and JSON validation, single + batch prediction, SQLAlchemy history (SQLite/PostgreSQL), Alembic migrations, filtered history, CSV export, Swagger docs | Done, 131 tests |
+| FastAPI backend: artifact loading with startup validation, strict CSV and JSON validation, single + batch prediction, SQLAlchemy history (SQLite/PostgreSQL), Alembic migrations, filtered history, CSV export, Swagger docs | Done, 134 tests |
 | Colab notebook (`ml/notebooks/`) producing the versioned artifact bundle | Done (tested on synthetic data only) |
-| React status page (server, database, model, demonstration banner) | Done, 11 tests |
-| Prediction form, CSV upload and history screens in the frontend | **Next stage** |
+| React dashboard (7 pages: Dashboard, Motor monitoring, Upload and analyse, Results, History, Model evaluation, Research information). See `docs/frontend.md` | Done, 45 tests; checked in a real browser against the backend using a random-weight test model |
 | Dataset cleaning module, data dictionary, data-quality report | Pending your answers to the open questions |
 
 ## Folders
@@ -22,7 +21,7 @@ Final-year Computer Science research artefact (prototype).
 | `frontend/` | React + TypeScript (Vite) |
 | `ml/` | Training notebook, bundle validator, git-ignored `artifacts/` |
 | `docs/` | API, schemas, artifact contract, database, architecture, deployment, testing, evaluation, dataset, model card |
-| `tests/backend/` | pytest unit and integration tests |
+| `tests/backend/` | pytest unit and integration tests (frontend tests sit next to the code in `frontend/src`) |
 
 ## Setup on Windows (PowerShell)
 Use **Python 3.12** (3.14 has no ready-made numpy builds for these pins). If `python --version` shows another version, create the environment with the full path to 3.12, e.g.
@@ -53,7 +52,7 @@ python -m alembic upgrade head
 
 ### 3. Test, then run
 ```powershell
-python -m pytest                                  # expect: 131 passed, 1 skipped
+python -m pytest                                  # expect: 134 passed, 1 skipped
 python -m uvicorn app.main:app --reload
 ```
 Open <http://localhost:8000/docs> (Swagger UI). Step-by-step Swagger testing is in `docs/api.md`.
@@ -63,7 +62,7 @@ If the bundle is missing or invalid, the server **refuses to start** and prints 
 ```powershell
 cd C:\path\to\predictive-maintenance-system\frontend
 npm install
-npm test                                          # expect: 11 passed
+npm test                                          # expect: 45 passed
 npm run dev                                       # http://localhost:5173
 ```
 

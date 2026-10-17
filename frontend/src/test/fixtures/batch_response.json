@@ -1,0 +1,130 @@
+{
+  "batch_id": "e0a00944-f16f-4091-81f3-8b2f26148cf3",
+  "filename": "fixture.csv",
+  "record_count": 6,
+  "class_counts": {
+    "Normal": 6,
+    "Alert": 0,
+    "Danger": 0
+  },
+  "model_version": "v9.9.9",
+  "provisional_label_provenance": true,
+  "demonstration_only": true,
+  "interpretation_note": "Predicted condition class from a statistical model. It is NOT a confirmed machine failure, and the scores are model outputs, not calibrated probabilities.",
+  "results": [
+    {
+      "prediction_id": 1,
+      "record_id": "REC001",
+      "motor_id": "MOT01",
+      "measured_at": "2025-04-01T07:20:00",
+      "predicted_condition": "Normal",
+      "predicted_class_id": 0,
+      "scores": {
+        "Normal": 0.6907111403200894,
+        "Alert": 0.15115453732441927,
+        "Danger": 0.15813432235549127
+      },
+      "scores_are_calibrated_probabilities": false,
+      "model_version": "v9.9.9",
+      "provisional_label_provenance": true,
+      "demonstration_only": true,
+      "input_warnings": [],
+      "interpretation_note": "Predicted condition class from a statistical model. It is NOT a confirmed machine failure, and the scores are model outputs, not calibrated probabilities."
+    },
+    {
+      "prediction_id": 2,
+      "record_id": "REC002",
+      "motor_id": "MOT02",
+      "measured_at": "2025-04-02T07:20:00",
+      "predicted_condition": "Normal",
+      "predicted_class_id": 0,
+      "scores": {
+        "Normal": 0.9276624385857476,
+        "Alert": 0.03737288913894193,
+        "Danger": 0.03496467227531035
+      },
+      "scores_are_calibrated_probabilities": false,
+      "model_version": "v9.9.9",
+      "provisional_label_provenance": true,
+      "demonstration_only": true,
+      "input_warnings": [],
+      "interpretation_note": "Predicted condition class from a statistical model. It is NOT a confirmed machine failure, and the scores are model outputs, not calibrated probabilities."
+    },
+    {
+      "prediction_id": 3,
+      "record_id": "REC003",
+      "motor_id": "MOT01",
+      "measured_at": "2025-04-03T07:20:00",
+      "predicted_condition": "Normal",
+      "predicted_class_id": 0,
+      "scores": {
+        "Normal": 0.9813938405806265,
+        "Alert": 0.011754021821160567,
+        "Danger": 0.006852137598212952
+      },
+      "scores_are_calibrated_probabilities": false,
+      "model_version": "v9.9.9",
+      "provisional_label_provenance": true,
+      "demonstration_only": true,
+      "input_warnings": [],
+      "interpretation_note": "Predicted condition class from a statistical model. It is NOT a confirmed machine failure, and the scores are model outputs, not calibrated probabilities."
+    },
+    {
+      "prediction_id": 4,
+      "record_id": "REC004",
+      "motor_id": "MOT02",
+      "measured_at": "2025-04-04T07:20:00",
+      "predicted_condition": "Normal",
+      "predicted_class_id": 0,
+      "scores": {
+        "Normal": 0.9930945975944732,
+        "Alert": 0.005538859179666513,
+        "Danger": 0.001366543225860283
+      },
+      "scores_are_calibrated_probabilities": false,
+      "model_version": "v9.9.9",
+      "provisional_label_provenance": true,
+      "demonstration_only": true,
+      "input_warnings": [],
+      "interpretation_note": "Predicted condition class from a statistical model. It is NOT a confirmed machine failure, and the scores are model outputs, not calibrated probabilities."
+    },
+    {
+      "prediction_id": 5,
+      "record_id": "REC005",
+      "motor_id": "MOT01",
+      "measured_at": "2025-04-05T07:20:00",
+      "predicted_condition": "Normal",
+      "predicted_class_id": 0,
+      "scores": {
+        "Normal": 0.9971397439692031,
+        "Alert": 0.0025898360436841946,
+        "Danger": 0.0002704199871125895
+      },
+      "scores_are_calibrated_probabilities": false,
+      "model_version": "v9.9.9",
+      "provisional_label_provenance": true,
+      "demonstration_only": true,
+      "input_warnings": [],
+      "interpretation_note": "Predicted condition class from a statistical model. It is NOT a confirmed machine failure, and the scores are model outputs, not calibrated probabilities."
+    },
+    {
+      "prediction_id": 6,
+      "record_id": "REC006",
+      "motor_id": "MOT02",
+      "measured_at": "2025-04-06T07:20:00",
+      "predicted_condition": "Normal",
+      "predicted_class_id": 0,
+      "scores": {
+        "Normal": 0.9987386534457975,
+        "Alert": 0.001207965809750402,
+        "Danger": 5.338074445210349e-05
+      },
+      "scores_are_calibrated_probabilities": false,
+      "model_version": "v9.9.9",
+      "provisional_label_provenance": true,
+      "demonstration_only": true,
+      "input_warnings": [],
+      "interpretation_note": "Predicted condition class from a statistical model. It is NOT a confirmed machine failure, and the scores are model outputs, not calibrated probabilities."
+    }
+  ]
+}

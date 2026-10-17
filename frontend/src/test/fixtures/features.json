@@ -1,0 +1,103 @@
+{
+  "features": [
+    {
+      "name": "de_h_velocity_mm_s",
+      "unit": "u",
+      "description": "desc de_h_velocity_mm_s",
+      "observed_train_min": 20.860774151947012,
+      "observed_train_max": 43.561471205555506
+    },
+    {
+      "name": "de_h_ge",
+      "unit": "u",
+      "description": "desc de_h_ge",
+      "observed_train_min": 10.3481980962951,
+      "observed_train_max": 18.090899852564192
+    },
+    {
+      "name": "de_h_temp_c",
+      "unit": "u",
+      "description": "desc de_h_temp_c",
+      "observed_train_min": -10.145212778849928,
+      "observed_train_max": 16.160618124597008
+    },
+    {
+      "name": "de_v_velocity_mm_s",
+      "unit": "u",
+      "description": "desc de_v_velocity_mm_s",
+      "observed_train_min": -6.999872332464813,
+      "observed_train_max": 10.619580614260665
+    },
+    {
+      "name": "de_v_ge",
+      "unit": "u",
+      "description": "desc de_v_ge",
+      "observed_train_min": 35.30413119855866,
+      "observed_train_max": 46.396352243068044
+    },
+    {
+      "name": "de_v_temp_c",
+      "unit": "u",
+      "description": "desc de_v_temp_c",
+      "observed_train_min": 38.51874580043997,
+      "observed_train_max": 52.93130077277675
+    },
+    {
+      "name": "nde_h_velocity_mm_s",
+      "unit": "u",
+      "description": "desc nde_h_velocity_mm_s",
+      "observed_train_min": 28.842837452128066,
+      "observed_train_max": 32.60746857305556
+    },
+    {
+      "name": "nde_h_ge",
+      "unit": "u",
+      "description": "desc nde_h_ge",
+      "observed_train_min": 33.56750725547181,
+      "observed_train_max": 39.92315572096004
+    },
+    {
+      "name": "nde_h_temp_c",
+      "unit": "u",
+      "description": "desc nde_h_temp_c",
+      "observed_train_min": 17.084194983441712,
+      "observed_train_max": 38.19105418016973
+    },
+    {
+      "name": "nde_v_velocity_mm_s",
+      "unit": "u",
+      "description": "desc nde_v_velocity_mm_s",
+      "observed_train_min": 36.581490359348265,
+      "observed_train_max": 57.055607171853026
+    },
+    {
+      "name": "nde_v_ge",
+      "unit": "u",
+      "description": "desc nde_v_ge",
+      "observed_train_min": 31.16912514695815,
+      "observed_train_max": 50.784523156952005
+    },
+    {
+      "name": "nde_v_temp_c",
+      "unit": "u",
+      "description": "desc nde_v_temp_c",
+      "observed_train_min": -5.545460474198171,
+      "observed_train_max": 7.813833490872684
+    },
+    {
+      "name": "rotational_speed_rpm",
+      "unit": "u",
+      "description": "desc rotational_speed_rpm",
+      "observed_train_min": 28.05047541963655,
+      "observed_train_max": 57.97514368594525
+    },
+    {
+      "name": "load_percent",
+      "unit": "u",
+      "description": "desc load_percent",
+      "observed_train_min": -12.095583883511354,
+      "observed_train_max": 17.386970263446862
+    }
+  ],
+  "note": "observed_train_min/max describe the training data only. They are NOT validity limits or alarm thresholds."
+}

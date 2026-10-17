@@ -1,0 +1,17 @@
+{
+  "guidance_version": "EXAMPLE-ONLY",
+  "approved_by": "EXAMPLE: replace with the approver's name and role",
+  "approved_on": "2000-01-01",
+  "conditions": {
+    "Alert": [
+      {
+        "action": "EXAMPLE: complete the site inspection form for this motor.",
+        "reason": "EXAMPLE: placeholder text. This file is NOT an approved procedure.",
+        "responsible_role": "Responsible maintenance engineer",
+        "timing": "Prompt engineering assessment",
+        "procedure_ref": "EXAMPLE: your procedure number and revision",
+        "safety_note": "EXAMPLE: cite the lockout/tagout procedure that applies."
+      }
+    ]
+  }
+}

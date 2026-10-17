@@ -1,0 +1,27 @@
+{
+  "valid": true,
+  "record_count": 6,
+  "columns_found": [
+    "record_id",
+    "motor_id",
+    "measured_at",
+    "de_h_velocity_mm_s",
+    "de_h_ge",
+    "de_h_temp_c",
+    "de_v_velocity_mm_s",
+    "de_v_ge",
+    "de_v_temp_c",
+    "nde_h_velocity_mm_s",
+    "nde_h_ge",
+    "nde_h_temp_c",
+    "nde_v_velocity_mm_s",
+    "nde_v_ge",
+    "nde_v_temp_c",
+    "rotational_speed_rpm",
+    "load_percent"
+  ],
+  "ignored_columns": [],
+  "issues_total": 0,
+  "issues": [],
+  "note": "Dry run: nothing was predicted or stored."
+}
