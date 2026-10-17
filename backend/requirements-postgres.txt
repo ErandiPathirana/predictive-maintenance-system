@@ -1,0 +1,3 @@
+# Only needed when DATABASE_URL points to PostgreSQL (hosted deployment).
+-r requirements.txt
+psycopg[binary]~=3.2.3

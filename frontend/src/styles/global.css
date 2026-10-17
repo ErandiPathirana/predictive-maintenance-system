@@ -1,0 +1,239 @@
+/* Design tokens: a cool grey control panel with status-lamp colours. */
+:root {
+  --panel: #e6ebed;
+  --surface: #f6f8f9;
+  --ink: #16242b;
+  --steel: #4e616b;
+  --line: #c3cdd2;
+  --signal: #0e6674;
+  --ok: #1f7547;
+  --warn: #955700;
+  --fault: #b42318;
+  --idle: #7a8b94;
+
+  --font-display: Bahnschrift, "Segoe UI Semibold", system-ui, sans-serif;
+  --font-body: "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--panel);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+.shell {
+  width: min(100% - 2rem, 60rem);
+  margin-inline: auto;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.app-header {
+  background: var(--ink);
+  color: #f2f6f7;
+  padding: 1.5rem 0 1.25rem;
+}
+.app-header h1 {
+  font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem);
+  letter-spacing: 0.01em;
+}
+.app-header p {
+  margin: 0.35rem 0 0;
+  color: #b8c7ce;
+  max-width: 60ch;
+}
+
+main {
+  padding-block: 2rem 1.5rem;
+}
+main h2 {
+  font-size: 1.5rem;
+}
+.lede {
+  max-width: 60ch;
+  color: var(--steel);
+  margin: 0.4rem 0 1.5rem;
+}
+
+/* ---- Status lamps (the one memorable element) ---- */
+.lamps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.lamp-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1rem 1.25rem;
+}
+.lamp-row + .lamp-row {
+  border-top: 1px solid var(--line);
+}
+.lamp {
+  flex: none;
+  width: 1.1rem;
+  height: 1.1rem;
+  margin-top: 0.2rem;
+  border-radius: 50%;
+  background: var(--idle);
+  box-shadow: inset 0 -2px 3px rgb(0 0 0 / 0.25), 0 0 0 3px var(--surface), 0 0 0 4px var(--line);
+}
+[data-tone="ok"] .lamp {
+  background: var(--ok);
+}
+[data-tone="warn"] .lamp {
+  background: var(--warn);
+}
+[data-tone="fault"] .lamp {
+  background: var(--fault);
+}
+.lamp-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+}
+.lamp-state {
+  margin-left: 0.5rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--steel);
+}
+[data-tone="ok"] .lamp-state {
+  color: var(--ok);
+}
+[data-tone="warn"] .lamp-state {
+  color: var(--warn);
+}
+[data-tone="fault"] .lamp-state {
+  color: var(--fault);
+}
+.lamp-detail {
+  margin: 0.2rem 0 0;
+  color: var(--steel);
+  max-width: 65ch;
+  overflow-wrap: anywhere;
+}
+
+/* Only the "checking" lamps move, to show that something is in progress. */
+@media (prefers-reduced-motion: no-preference) {
+  [data-tone="idle"] .lamp {
+    animation: breathe 1.4s ease-in-out infinite;
+  }
+}
+@keyframes breathe {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.hint {
+  color: var(--steel);
+  max-width: 60ch;
+  margin-top: 1rem;
+}
+
+/* ---- Model facts ---- */
+.facts {
+  margin: 1.5rem 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.facts > div {
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--line);
+}
+.facts dt {
+  font-size: 0.875rem;
+  color: var(--steel);
+}
+.facts dd {
+  margin: 0.1rem 0 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+/* ---- Error notice and button ---- */
+.notice {
+  margin-top: 1.25rem;
+  padding: 1rem 1.25rem;
+  background: #fbefed;
+  border: 1px solid #e3b4ae;
+  border-left: 4px solid var(--fault);
+  border-radius: 6px;
+  max-width: 44rem;
+}
+.notice h3 {
+  font-size: 1.1rem;
+}
+.notice p {
+  margin: 0.4rem 0 0.9rem;
+}
+
+.button {
+  font: inherit;
+  font-weight: 600;
+  min-height: 2.75rem;
+  padding: 0.5rem 1.25rem;
+  color: #fff;
+  background: var(--signal);
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.button:hover {
+  background: #0a5561;
+}
+:focus-visible {
+  outline: 3px solid #1d8fa3;
+  outline-offset: 2px;
+}
+
+.app-footer {
+  padding-block: 1.5rem 2.5rem;
+  color: var(--steel);
+  font-size: 0.9rem;
+  max-width: 60rem;
+  border-top: 1px solid var(--line);
+}
+
+/* ---- Demonstration banner and notes ---- */
+.banner {
+  margin-top: 1.5rem;
+  padding: 0.85rem 1.25rem;
+  background: #fbf3e4;
+  border: 1px solid #e0c48f;
+  border-left: 4px solid var(--warn);
+  border-radius: 6px;
+  max-width: 44rem;
+}
+.notes {
+  margin: 1.25rem 0 0;
+  padding-left: 1.2rem;
+  color: var(--steel);
+  max-width: 65ch;
+}

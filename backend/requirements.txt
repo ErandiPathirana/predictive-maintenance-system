@@ -1,0 +1,11 @@
+# Runtime dependencies. "~=" = compatible release (patch updates only).
+# No TensorFlow, pandas, scikit-learn or joblib: the model runs with NumPy only,
+# and no pickle file is ever loaded.
+fastapi~=0.115.6
+uvicorn[standard]~=0.34.0
+pydantic~=2.10.4
+pydantic-settings~=2.7.0
+numpy~=2.2.1
+sqlalchemy~=2.0.36
+alembic~=1.14.0
+python-multipart~=0.0.20

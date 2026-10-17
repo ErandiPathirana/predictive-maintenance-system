@@ -1,0 +1,1804 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Motor Condition Prediction API",
+    "description": "\nResearch prototype: classifies **recorded motor condition** (class labels) from sensor readings.\n\n* A prediction is a **predicted condition class, not a confirmed machine failure**.\n* Scores are model outputs, **not calibrated probabilities**.\n* Results flagged `demonstration_only` must not be used for operational decisions.\n",
+    "version": "0.2.0"
+  },
+  "paths": {
+    "/api/health": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "summary": "Is the API running?",
+        "operationId": "health_api_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/model-info": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "summary": "Describe the loaded model bundle",
+        "operationId": "model_info_api_model_info_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelInfoResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/api/features": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "summary": "List the model inputs, in the order the model expects",
+        "operationId": "features_api_features_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeatureListResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/api/template.csv": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "summary": "Download an empty CSV template with the correct columns",
+        "operationId": "template_csv_api_template_csv_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              },
+              "text/csv": {}
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/api/uploads/validate": {
+      "post": {
+        "tags": [
+          "Upload"
+        ],
+        "summary": "Check a CSV file without predicting or storing anything",
+        "operationId": "validate_upload_api_uploads_validate_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_validate_upload_api_uploads_validate_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CsvValidationReport"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request Entity Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported Media Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/api/predict": {
+      "post": {
+        "tags": [
+          "Prediction"
+        ],
+        "summary": "Predict the condition class for ONE set of sensor readings",
+        "operationId": "predict_one_api_predict_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SinglePredictionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PredictionResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request Entity Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported Media Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/api/predict/batch": {
+      "post": {
+        "tags": [
+          "Prediction"
+        ],
+        "summary": "Predict the condition class for every record in an uploaded CSV",
+        "operationId": "predict_batch_api_predict_batch_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_predict_batch_api_predict_batch_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchPredictionResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request Entity Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported Media Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/api/predictions": {
+      "get": {
+        "tags": [
+          "History"
+        ],
+        "summary": "Prediction history (newest first), filter by motor, batch, class or date",
+        "operationId": "list_predictions_api_predictions_get",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "motor_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 64
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Exact motor ID",
+              "title": "Motor Id"
+            },
+            "description": "Exact motor ID"
+          },
+          {
+            "name": "record_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 64
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Record Id"
+            }
+          },
+          {
+            "name": "batch_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 36
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Upload batch ID returned by /api/predict/batch",
+              "title": "Batch Id"
+            },
+            "description": "Upload batch ID returned by /api/predict/batch"
+          },
+          {
+            "name": "predicted_condition",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 64
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "e.g. Alert",
+              "title": "Predicted Condition"
+            },
+            "description": "e.g. Alert"
+          },
+          {
+            "name": "date_from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Predictions made on/after this UTC date (YYYY-MM-DD)",
+              "title": "Date From"
+            },
+            "description": "Predictions made on/after this UTC date (YYYY-MM-DD)"
+          },
+          {
+            "name": "date_to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Predictions made on/before this UTC date (inclusive)",
+              "title": "Date To"
+            },
+            "description": "Predictions made on/before this UTC date (inclusive)"
+          },
+          {
+            "name": "measured_from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Readings measured on/after this date",
+              "title": "Measured From"
+            },
+            "description": "Readings measured on/after this date"
+          },
+          {
+            "name": "measured_to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Readings measured on/before this date (inclusive)",
+              "title": "Measured To"
+            },
+            "description": "Readings measured on/before this date (inclusive)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PredictionPage"
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          }
+        }
+      }
+    },
+    "/api/predictions/{prediction_id}": {
+      "get": {
+        "tags": [
+          "History"
+        ],
+        "summary": "One stored prediction",
+        "operationId": "get_one_api_predictions__prediction_id__get",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "prediction_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Prediction Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HistoryItem"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/batches": {
+      "get": {
+        "tags": [
+          "History"
+        ],
+        "summary": "Recent CSV upload batches",
+        "operationId": "batches_api_batches_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchList"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/api/reports/predictions.csv": {
+      "get": {
+        "tags": [
+          "History"
+        ],
+        "summary": "Export prediction results to CSV (same filters as the history)",
+        "operationId": "export_csv_api_reports_predictions_csv_get",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "motor_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 64
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Exact motor ID",
+              "title": "Motor Id"
+            },
+            "description": "Exact motor ID"
+          },
+          {
+            "name": "record_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 64
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Record Id"
+            }
+          },
+          {
+            "name": "batch_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 36
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Upload batch ID returned by /api/predict/batch",
+              "title": "Batch Id"
+            },
+            "description": "Upload batch ID returned by /api/predict/batch"
+          },
+          {
+            "name": "predicted_condition",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 64
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "e.g. Alert",
+              "title": "Predicted Condition"
+            },
+            "description": "e.g. Alert"
+          },
+          {
+            "name": "date_from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Predictions made on/after this UTC date (YYYY-MM-DD)",
+              "title": "Date From"
+            },
+            "description": "Predictions made on/after this UTC date (YYYY-MM-DD)"
+          },
+          {
+            "name": "date_to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Predictions made on/before this UTC date (inclusive)",
+              "title": "Date To"
+            },
+            "description": "Predictions made on/before this UTC date (inclusive)"
+          },
+          {
+            "name": "measured_from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Readings measured on/after this date",
+              "title": "Measured From"
+            },
+            "description": "Readings measured on/after this date"
+          },
+          {
+            "name": "measured_to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Readings measured on/before this date (inclusive)",
+              "title": "Measured To"
+            },
+            "description": "Readings measured on/before this date (inclusive)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              },
+              "text/csv": {}
+            }
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BatchList": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/BatchSummary"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "BatchList"
+      },
+      "BatchPredictionResponse": {
+        "properties": {
+          "batch_id": {
+            "type": "string",
+            "title": "Batch Id"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename"
+          },
+          "record_count": {
+            "type": "integer",
+            "title": "Record Count"
+          },
+          "class_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Class Counts"
+          },
+          "model_version": {
+            "type": "string",
+            "title": "Model Version"
+          },
+          "provisional_label_provenance": {
+            "type": "boolean",
+            "title": "Provisional Label Provenance"
+          },
+          "demonstration_only": {
+            "type": "boolean",
+            "title": "Demonstration Only"
+          },
+          "interpretation_note": {
+            "type": "string",
+            "title": "Interpretation Note",
+            "default": "Predicted condition class from a statistical model. It is NOT a confirmed machine failure, and the scores are model outputs, not calibrated probabilities."
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/PredictionResult"
+            },
+            "type": "array",
+            "title": "Results"
+          }
+        },
+        "type": "object",
+        "required": [
+          "batch_id",
+          "filename",
+          "record_count",
+          "class_counts",
+          "model_version",
+          "provisional_label_provenance",
+          "demonstration_only",
+          "results"
+        ],
+        "title": "BatchPredictionResponse"
+      },
+      "BatchSummary": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename"
+          },
+          "record_count": {
+            "type": "integer",
+            "title": "Record Count"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "model_version": {
+            "type": "string",
+            "title": "Model Version"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "filename",
+          "record_count",
+          "created_at",
+          "model_version"
+        ],
+        "title": "BatchSummary"
+      },
+      "Body_predict_batch_api_predict_batch_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File",
+            "description": "A .csv file with the columns from GET /api/template.csv"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_predict_batch_api_predict_batch_post"
+      },
+      "Body_validate_upload_api_uploads_validate_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File",
+            "description": "A .csv file with the columns from GET /api/template.csv"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_validate_upload_api_uploads_validate_post"
+      },
+      "BundleInfo": {
+        "properties": {
+          "model_name": {
+            "type": "string",
+            "title": "Model Name"
+          },
+          "bundle_version": {
+            "type": "string",
+            "title": "Bundle Version"
+          },
+          "task": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Task"
+          },
+          "classes": {
+            "items": {
+              "$ref": "#/components/schemas/ClassInfo"
+            },
+            "type": "array",
+            "title": "Classes"
+          },
+          "feature_count": {
+            "type": "integer",
+            "title": "Feature Count"
+          },
+          "features": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Features"
+          },
+          "created_utc": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created Utc"
+          },
+          "label_provenance_documented": {
+            "type": "boolean",
+            "title": "Label Provenance Documented"
+          },
+          "provisional_label_provenance": {
+            "type": "boolean",
+            "title": "Provisional Label Provenance"
+          },
+          "demonstration_only": {
+            "type": "boolean",
+            "title": "Demonstration Only"
+          },
+          "deployable_for_decisions": {
+            "type": "boolean",
+            "title": "Deployable For Decisions"
+          },
+          "scores_are_calibrated_probabilities": {
+            "type": "boolean",
+            "title": "Scores Are Calibrated Probabilities",
+            "default": false
+          },
+          "future_failure_prediction_supported": {
+            "type": "boolean",
+            "title": "Future Failure Prediction Supported"
+          },
+          "smoke_test_bundle": {
+            "type": "boolean",
+            "title": "Smoke Test Bundle"
+          },
+          "reported_test_metrics": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reported Test Metrics"
+          },
+          "notes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Notes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "model_name",
+          "bundle_version",
+          "task",
+          "classes",
+          "feature_count",
+          "features",
+          "created_utc",
+          "label_provenance_documented",
+          "provisional_label_provenance",
+          "demonstration_only",
+          "deployable_for_decisions",
+          "future_failure_prediction_supported",
+          "smoke_test_bundle",
+          "notes"
+        ],
+        "title": "BundleInfo"
+      },
+      "ClassInfo": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "ClassInfo"
+      },
+      "CsvValidationReport": {
+        "properties": {
+          "valid": {
+            "type": "boolean",
+            "title": "Valid"
+          },
+          "record_count": {
+            "type": "integer",
+            "title": "Record Count"
+          },
+          "columns_found": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Columns Found"
+          },
+          "ignored_columns": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Ignored Columns"
+          },
+          "issues_total": {
+            "type": "integer",
+            "title": "Issues Total"
+          },
+          "issues": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationIssue"
+            },
+            "type": "array",
+            "title": "Issues"
+          },
+          "note": {
+            "type": "string",
+            "title": "Note",
+            "default": "Dry run: nothing was predicted or stored."
+          }
+        },
+        "type": "object",
+        "required": [
+          "valid",
+          "record_count",
+          "columns_found",
+          "ignored_columns",
+          "issues_total",
+          "issues"
+        ],
+        "title": "CsvValidationReport"
+      },
+      "ErrorBody": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "details": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Details"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "ErrorBody"
+      },
+      "ErrorResponse": {
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ErrorBody"
+          }
+        },
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "title": "ErrorResponse"
+      },
+      "FeatureInfo": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "observed_train_min": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observed Train Min"
+          },
+          "observed_train_max": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observed Train Max"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "FeatureInfo"
+      },
+      "FeatureListResponse": {
+        "properties": {
+          "features": {
+            "items": {
+              "$ref": "#/components/schemas/FeatureInfo"
+            },
+            "type": "array",
+            "title": "Features"
+          },
+          "note": {
+            "type": "string",
+            "title": "Note",
+            "default": "observed_train_min/max describe the training data only. They are NOT validity limits or alarm thresholds."
+          }
+        },
+        "type": "object",
+        "required": [
+          "features"
+        ],
+        "title": "FeatureListResponse"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HealthResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "'ok' or 'degraded' (model or database unavailable)."
+          },
+          "app_name": {
+            "type": "string",
+            "title": "App Name"
+          },
+          "app_version": {
+            "type": "string",
+            "title": "App Version"
+          },
+          "environment": {
+            "type": "string",
+            "title": "Environment"
+          },
+          "model_ready": {
+            "type": "boolean",
+            "title": "Model Ready"
+          },
+          "database": {
+            "type": "string",
+            "title": "Database"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "app_name",
+          "app_version",
+          "environment",
+          "model_ready",
+          "database"
+        ],
+        "title": "HealthResponse"
+      },
+      "HistoryItem": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "batch_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Batch Id"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source"
+          },
+          "record_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Record Id"
+          },
+          "motor_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Motor Id"
+          },
+          "measured_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Measured At"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "predicted_condition": {
+            "type": "string",
+            "title": "Predicted Condition"
+          },
+          "predicted_class_id": {
+            "type": "integer",
+            "title": "Predicted Class Id"
+          },
+          "scores": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Scores"
+          },
+          "model_version": {
+            "type": "string",
+            "title": "Model Version"
+          },
+          "provisional_label_provenance": {
+            "type": "boolean",
+            "title": "Provisional Label Provenance"
+          },
+          "demonstration_only": {
+            "type": "boolean",
+            "title": "Demonstration Only"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "batch_id",
+          "source",
+          "record_id",
+          "motor_id",
+          "measured_at",
+          "created_at",
+          "predicted_condition",
+          "predicted_class_id",
+          "scores",
+          "model_version",
+          "provisional_label_provenance",
+          "demonstration_only"
+        ],
+        "title": "HistoryItem"
+      },
+      "InputWarning": {
+        "properties": {
+          "feature": {
+            "type": "string",
+            "title": "Feature"
+          },
+          "value": {
+            "type": "number",
+            "title": "Value"
+          },
+          "observed_train_min": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observed Train Min"
+          },
+          "observed_train_max": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observed Train Max"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "feature",
+          "value",
+          "observed_train_min",
+          "observed_train_max",
+          "message"
+        ],
+        "title": "InputWarning"
+      },
+      "ModelInfoResponse": {
+        "properties": {
+          "model_ready": {
+            "type": "boolean",
+            "title": "Model Ready"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "bundle": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BundleInfo"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "model_ready"
+        ],
+        "title": "ModelInfoResponse"
+      },
+      "PredictionPage": {
+        "properties": {
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/HistoryItem"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total",
+          "limit",
+          "offset",
+          "items"
+        ],
+        "title": "PredictionPage"
+      },
+      "PredictionResult": {
+        "properties": {
+          "prediction_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prediction Id"
+          },
+          "record_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Record Id"
+          },
+          "motor_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Motor Id"
+          },
+          "measured_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Measured At"
+          },
+          "predicted_condition": {
+            "type": "string",
+            "title": "Predicted Condition",
+            "description": "Predicted condition class. Not a confirmed failure."
+          },
+          "predicted_class_id": {
+            "type": "integer",
+            "title": "Predicted Class Id"
+          },
+          "scores": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Scores",
+            "description": "Model output score per class (sum to 1). Not calibrated probabilities."
+          },
+          "scores_are_calibrated_probabilities": {
+            "type": "boolean",
+            "title": "Scores Are Calibrated Probabilities",
+            "default": false
+          },
+          "model_version": {
+            "type": "string",
+            "title": "Model Version"
+          },
+          "provisional_label_provenance": {
+            "type": "boolean",
+            "title": "Provisional Label Provenance"
+          },
+          "demonstration_only": {
+            "type": "boolean",
+            "title": "Demonstration Only"
+          },
+          "input_warnings": {
+            "items": {
+              "$ref": "#/components/schemas/InputWarning"
+            },
+            "type": "array",
+            "title": "Input Warnings",
+            "default": []
+          },
+          "interpretation_note": {
+            "type": "string",
+            "title": "Interpretation Note",
+            "default": "Predicted condition class from a statistical model. It is NOT a confirmed machine failure, and the scores are model outputs, not calibrated probabilities."
+          }
+        },
+        "type": "object",
+        "required": [
+          "record_id",
+          "motor_id",
+          "measured_at",
+          "predicted_condition",
+          "predicted_class_id",
+          "scores",
+          "model_version",
+          "provisional_label_provenance",
+          "demonstration_only"
+        ],
+        "title": "PredictionResult"
+      },
+      "SinglePredictionRequest": {
+        "properties": {
+          "record_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9._\\-]{1,64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Record Id",
+            "description": "Your own record reference (letters, digits, . _ -)."
+          },
+          "motor_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9._\\-]{1,64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Motor Id",
+            "description": "Motor reference (letters, digits, . _ -)."
+          },
+          "measured_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Measured At",
+            "description": "When the reading was taken (ISO 8601). Stored for history only; not a model input."
+          },
+          "readings": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "type": "object",
+            "title": "Readings",
+            "description": "One numeric value per model input, keyed by feature name (see GET /api/features). Text and booleans are rejected."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "readings"
+        ],
+        "title": "SinglePredictionRequest"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "ValidationIssue": {
+        "properties": {
+          "row": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Row",
+            "description": "Line number in the file (header = line 1)."
+          },
+          "column": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Column"
+          },
+          "problem": {
+            "type": "string",
+            "title": "Problem"
+          }
+        },
+        "type": "object",
+        "required": [
+          "problem"
+        ],
+        "title": "ValidationIssue"
+      }
+    },
+    "securitySchemes": {
+      "APIKeyHeader": {
+        "type": "apiKey",
+        "description": "Only required when the server sets API_KEY.",
+        "in": "header",
+        "name": "X-API-Key"
+      }
+    }
+  }
+}

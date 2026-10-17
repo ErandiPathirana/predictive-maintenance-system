@@ -1,0 +1,83 @@
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+
+# ---------- Virtual environments ----------
+.venv/
+venv/
+env/
+ENV/
+
+# ---------- Node / frontend ----------
+node_modules/
+frontend/dist/
+frontend/coverage/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.vite/
+
+# ---------- Secrets (NEVER commit these) ----------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+service-account*.json
+
+# ---------- Datasets and confidential sensor data ----------
+data/
+ml/data/
+*.csv
+*.tsv
+*.xlsx
+*.xls
+*.parquet
+*.feather
+*.sqlite
+*.db
+
+# ---------- Trained model artifacts (large and/or confidential) ----------
+ml/artifacts/*
+!ml/artifacts/.gitkeep
+*.joblib
+*.pkl
+*.pickle
+*.h5
+*.keras
+*.onnx
+*.pt
+*.pth
+*.pb
+*.ckpt
+*.safetensors
+
+# ---------- Notebooks ----------
+.ipynb_checkpoints/
+# Notebook outputs can leak data. Clear outputs before committing.
+
+# ---------- Logs and caches ----------
+*.log
+logs/
+.cache/
+tmp/
+temp/
+
+# ---------- Editors and OS ----------
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
