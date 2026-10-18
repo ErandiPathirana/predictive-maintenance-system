@@ -1,0 +1,29 @@
+[
+  {
+    "id": "E05-NOR",
+    "title": "Submit valid readings → backend returns Normal; banner shows word + shape + 'Predicted condition'",
+    "scenario": "Normal",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E09-NOR",
+    "title": "Normal: corrective-action guidance matches the rules and stays inside the safety limits",
+    "scenario": "Normal",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "4 recommendation cards",
+    "consoleErrors": []
+  },
+  {
+    "id": "A11Y-result-Normal",
+    "title": "axe-core (WCAG 2.2 A/AA) on the Normal result page",
+    "scenario": "Normal",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  }
+]

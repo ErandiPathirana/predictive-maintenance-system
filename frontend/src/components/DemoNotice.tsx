@@ -16,7 +16,7 @@ export function ModelNotice({ compact = false }: { compact?: boolean }) {
   if (loading) return null;
   if (!bundle) {
     return (
-      <Alert color="yellow" variant="light" title="No model is loaded">
+      <Alert color="yellow" variant="light" title={modelError ? "The model could not be checked" : "No model is loaded"} role="status">
         {modelError ? modelError.message : modelReason ?? "The backend has no trained model, so predictions are unavailable."}
       </Alert>
     );
@@ -29,7 +29,7 @@ export function ModelNotice({ compact = false }: { compact?: boolean }) {
   if (items.length === 0) return null;
   const strong = bundle.demonstration_only || bundle.provisional_label_provenance;
   return (
-    <Alert color={strong ? "yellow" : "blue"} variant="light" title={compact ? "Read with care" : "How to read these results"} data-testid="model-notice">
+    <Alert color={strong ? "yellow" : "blue"} variant="light" title={compact ? "Read with care" : "How to read these results"} data-testid="model-notice" role="note">
       <List size="sm" spacing={2}>
         {items.map((t) => <List.Item key={t}>{t}</List.Item>)}
       </List>

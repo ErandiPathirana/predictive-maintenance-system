@@ -1,6 +1,6 @@
 import { AppShell, Burger, Button, Group, NavLink, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useModel } from "../context/ModelContext";
 import { AccessKeyModal } from "./AccessKeyModal";
@@ -13,6 +13,14 @@ export const NAV_ITEMS = [
   { to: "/results", label: "Prediction results", hint: "Results of the latest analysis" },
   { to: "/history", label: "Assessment history", hint: "Saved results, steps and export" },
 ] as const;
+
+const APP_NAME = "Motor condition monitor";
+/** Title for the browser tab and screen readers. Detail pages are not in the menu, so they are matched by prefix. */
+export function titleFor(pathname: string): string {
+  if (pathname.startsWith("/assessment/")) return `Assessment details - ${APP_NAME}`;
+  const item = NAV_ITEMS.find((n) => (n.to === "/" ? pathname === "/" : pathname.startsWith(n.to)));
+  return item ? `${item.label} - ${APP_NAME}` : `Page not found - ${APP_NAME}`;
+}
 
 function BackendLamp() {
   const { loading, health, healthError, bundle } = useModel();
@@ -38,9 +46,18 @@ export function AppLayout() {
   const [keyOpen, setKeyOpen] = useState(false);
   const { pathname } = useLocation();
   const { reload } = useModel();
+  // A single-page app does not reload, so without this a screen-reader or keyboard user is never told the page changed.
+  const first = useRef(true);
+  useEffect(() => {
+    document.title = titleFor(pathname);
+    if (first.current) { first.current = false; return; }
+    document.getElementById("main")?.focus({ preventScroll: true });
+    window.scrollTo?.({ top: 0 });
+  }, [pathname]);
   return (
     <>
-      <a href="#main" className="skip-link">Skip to main content</a>
+      {/* The app uses HashRouter, so a plain href="#main" would be read as the route "/main" and show "Page not found". Move focus by script instead. */}
+      <a href="#main" className="skip-link" onClick={(e) => { e.preventDefault(); const m = document.getElementById("main"); m?.focus(); m?.scrollIntoView?.(); }}>Skip to main content</a>
       <AppShell header={{ height: 56 }} navbar={{ width: 250, breakpoint: "md", collapsed: { mobile: !opened } }} padding="md">
         <AppShell.Header style={{ background: "var(--nav-bg)", borderBottom: "1px solid #0d2129" }}>
           <Group h="100%" px="md" justify="space-between" wrap="nowrap">
@@ -50,7 +67,7 @@ export function AppLayout() {
             </Group>
             <Group gap="md" wrap="nowrap">
                             <BackendLamp />
-              <Button size="compact-xs" variant="white" color="dark" onClick={() => setKeyOpen(true)} aria-label="Access key">Key<span className="key-long">&nbsp;(access)</span></Button>
+              <Button size="compact-sm" variant="white" color="dark" onClick={() => setKeyOpen(true)} aria-label="Access key">Key<span className="key-long">&nbsp;(access)</span></Button>
             </Group>
           </Group>
         </AppShell.Header>

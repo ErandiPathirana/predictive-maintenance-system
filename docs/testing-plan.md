@@ -12,6 +12,7 @@
 | Database | pytest + Alembic | `test_database_and_contract.py` | Migrations create exactly the model schema; app starts on a migrated database |
 | Real bundle contract | pytest (opt-in) | `PM_TEST_BUNDLE_DIR=<bundle> python -m pytest -k real_notebook` | A real notebook bundle satisfies the contract |
 | Frontend | Vitest + Testing Library | `frontend/src/**/*.test.tsx` | Loading, ready, not-loaded, database-fault, error-and-retry states |
+| Frontend (browser) | Playwright + Chromium, real backend, axe-core | `tests/e2e/` | Workflows, safety wording, keyboard, contrast, layouts, outage (see `docs/frontend-qa-report.md`) |
 | Manual / usability | checklist | below | Real use on real devices |
 | Backend QA audit (18 areas) | pytest | `test_qa_01_*.py` to `test_qa_07_*.py`, helpers in `qa_support.py` | Startup/shutdown, trained-model loading (BLOCKED until a bundle exists), input validation, CSV limits, class and recommendation mapping, database faults, export, CORS/config, logging/leaks, API docs. Full report: `docs/backend-qa-report.md` |
 

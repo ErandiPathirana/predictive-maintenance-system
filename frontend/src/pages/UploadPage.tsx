@@ -118,7 +118,7 @@ export default function UploadPage() {
           {v && (
             <div style={{ marginTop: 16 }} aria-live="polite">
               {v.valid ? (
-                <Alert color="green" variant="light" title="File check passed">{formatInt(v.record_count)} records are in the expected format.
+                <Alert color="green" variant="light" title="File check passed" role="status">{formatInt(v.record_count)} records are in the expected format.
                   {v.ignored_columns.length > 0 && ` Ignored columns: ${v.ignored_columns.join(", ")}.`}</Alert>
               ) : (
                 <>

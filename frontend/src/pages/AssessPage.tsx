@@ -17,7 +17,7 @@ const fmtRange = (f: FeatureInfo) =>
   f.observed_train_min !== null && f.observed_train_max !== null ? `Seen in training data: ${f.observed_train_min.toFixed(1)} to ${f.observed_train_max.toFixed(1)}. Not a limit.` : undefined;
 
 export default function AssessPage() {
-  const { features, bundle, loading, modelError, health } = useModel();
+  const { features, bundle, loading, modelError, health, reload } = useModel();
   const [values, setValues] = useState<FormValues | null>(null);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [attempted, setAttempted] = useState(false);
@@ -46,9 +46,10 @@ export default function AssessPage() {
     return (
       <>
         <PageHeader title="New motor assessment" />
-        <ModelNotice />
-        {modelError && <ErrorState error={modelError} title="The model could not be checked" />}
-        {!modelError && <Alert color="yellow" variant="light" title="Assessments are unavailable">{health && !health.model_ready ? "The backend is running but has no trained model loaded." : "The backend did not return the model's input list."} No prediction is made without a model.</Alert>}
+        {/* When the server cannot be reached the error box below says so; a second "no model" box would repeat it and be misleading. */}
+        {!modelError && <ModelNotice />}
+        {modelError && <ErrorState error={modelError} title="The model could not be checked" onRetry={reload} />}
+        {!modelError && <Alert color="yellow" variant="light" title="Assessments are unavailable" role="status">{health && !health.model_ready ? "The backend is running but has no trained model loaded." : "The backend did not return the model's input list."} No prediction is made without a model.</Alert>}
       </>
     );
   }

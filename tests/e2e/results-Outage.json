@@ -1,0 +1,55 @@
+[
+  {
+    "id": "E13-out-a",
+    "title": "Backend OFF: header shows 'offline' with a shape and words, not only colour",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "Backend unreachable",
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    ]
+  },
+  {
+    "id": "E13-out-b",
+    "title": "Backend OFF: New assessment explains the problem in plain words and offers Try again",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "New motor assessment The model could not be checked  Cannot reach the prediction server. Check that the backend is running and that you are online.  Check that the backend is running (see the Status l",
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    ]
+  },
+  {
+    "id": "E13-out-c",
+    "title": "Backend OFF: History and Upload show an error state, not an endless spinner or blank page",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    ]
+  },
+  {
+    "id": "E13-out-d",
+    "title": "Backend dies while the user is on the filled form: Analyse gives a clear error, entries are kept, and work resumes when the backend returns",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    ]
+  }
+]

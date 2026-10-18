@@ -1,0 +1,8 @@
+{
+  "name": "pm-e2e",
+  "private": true,
+  "type": "module",
+  "description": "Browser (Chromium) end-to-end tests for the Predictive Maintenance frontend, run against the real FastAPI backend.",
+  "scripts": { "e2e": "node run_scenario.mjs" },
+  "dependencies": { "playwright": "1.56.0", "axe-core": "4.10.2" }
+}

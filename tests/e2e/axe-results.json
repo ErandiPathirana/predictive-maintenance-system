@@ -1,0 +1,58 @@
+[
+  {
+    "label": "desktop/dashboard",
+    "violations": []
+  },
+  {
+    "label": "desktop/assess",
+    "violations": []
+  },
+  {
+    "label": "desktop/upload",
+    "violations": []
+  },
+  {
+    "label": "desktop/results",
+    "violations": []
+  },
+  {
+    "label": "desktop/history",
+    "violations": []
+  },
+  {
+    "label": "desktop/monitoring",
+    "violations": []
+  },
+  {
+    "label": "mobile/dashboard",
+    "violations": []
+  },
+  {
+    "label": "mobile/assess",
+    "violations": []
+  },
+  {
+    "label": "mobile/upload",
+    "violations": []
+  },
+  {
+    "label": "mobile/results",
+    "violations": []
+  },
+  {
+    "label": "mobile/history",
+    "violations": []
+  },
+  {
+    "label": "mobile/monitoring",
+    "violations": []
+  },
+  {
+    "label": "assess/errors",
+    "violations": []
+  },
+  {
+    "label": "assess/result-danger",
+    "violations": []
+  }
+]

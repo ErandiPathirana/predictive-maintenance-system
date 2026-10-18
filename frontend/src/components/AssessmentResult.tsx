@@ -1,7 +1,7 @@
 import { Accordion, Alert, Badge, Button, Group, List, Stack, Text, Title } from "@mantine/core";
 import type { ReactNode } from "react";
 import { assessmentToCsv } from "../lib/assessmentExport";
-import { fieldLabel } from "../lib/assessmentForm";
+import { fieldLabel, groupFeatures } from "../lib/assessmentForm";
 import { conditionMeta } from "../lib/condition";
 import { formatScore, formatTimestamp } from "../lib/format";
 import type { AssessmentResponse, FeatureInfo, RecommendationItem } from "../types/api";
@@ -38,9 +38,9 @@ function ItemCard({ item }: { item: RecommendationItem }) {
           <Text fw={600}>{item.action}</Text>
           <Text size="sm" c="dimmed">Why: {item.reason}</Text>
           <Group gap="xs" mt={6}>
-            <Badge variant="light" color="gray" radius="sm" tt="none">{item.timing}</Badge>
-            <Badge variant="outline" color="gray" radius="sm" tt="none">Who: {item.responsible_role}</Badge>
-            <Badge variant={site ? "filled" : "light"} color={site ? "teal" : "yellow"} radius="sm" tt="none">
+            <Badge className="pill" radius="sm" tt="none">{item.timing}</Badge>
+            <Badge className="pill pill--outline" radius="sm" tt="none">Who: {item.responsible_role}</Badge>
+            <Badge className={site ? "pill pill--site" : "pill pill--general"} radius="sm" tt="none">
               {site ? `Site-approved: ${item.source_detail}` : "General guidance"}
             </Badge>
           </Group>
@@ -61,6 +61,13 @@ export function AssessmentResult({ a, features, actions }: { a: AssessmentRespon
   const r = a.recommendations;
   const scoreRows = Object.entries(a.scores).sort((x, y) => y[1] - x[1]);
   const labelOf = (name: string) => features.find((f) => f.name === name);
+  /** "Drive end, horizontal: Vibration velocity", the same words as on the form. The raw column name stays visible beside it for traceability. */
+  const readableName = (name: string) => {
+    const f = labelOf(name);
+    if (!f) return name;
+    const g = groupFeatures(features).find((x) => x.features.includes(f));
+    return g && g.id !== "other" ? `${g.title}: ${fieldLabel(f).label}` : fieldLabel(f).label;
+  };
   const saveCsv = () => {
     const url = URL.createObjectURL(new Blob([assessmentToCsv(a)], { type: "text/csv" }));
     const el = document.createElement("a");
@@ -117,7 +124,7 @@ export function AssessmentResult({ a, features, actions }: { a: AssessmentRespon
           <Fact label="Saved">{formatTimestamp(a.created_at)} (UTC)</Fact>
         </dl>
         {(a.demonstration_only || a.provisional_label_provenance) && (
-          <Alert color="yellow" variant="light" mt="sm" title="Read with care">
+          <Alert color="yellow" variant="light" mt="sm" title="Read with care" role="note">
             {a.demonstration_only ? "This model is a demonstration. Do not use the result for operational decisions. " : ""}
             {a.provisional_label_provenance ? "The training labels are provisional, so the result shows agreement with labels of unverified origin." : ""}
           </Alert>
@@ -133,15 +140,15 @@ export function AssessmentResult({ a, features, actions }: { a: AssessmentRespon
           ]}
         />
         {a.input_warnings.length > 0 && (
-          <Alert color="yellow" variant="light" mt="sm" title="Check these entries">
-            <List size="sm">{a.input_warnings.map((w) => <List.Item key={w.feature}>{w.feature}: {w.message}</List.Item>)}</List>
+          <Alert color="yellow" variant="light" mt="sm" title="Check these entries" role="note">
+            <List size="sm">{a.input_warnings.map((w) => <List.Item key={w.feature}>{readableName(w.feature)}: {w.message}</List.Item>)}</List>
           </Alert>
         )}
         <Title order={3} size="h4" mt="md">Readings used</Title>
         {a.readings
           ? <DataTable caption="Sensor readings used for this assessment" rows={Object.entries(a.readings)} rowKey={(r2) => r2[0]}
               columns={[
-                { key: "n", header: "Input", render: (r2) => r2[0] },
+                { key: "n", header: "Input", render: (r2) => <>{readableName(r2[0])} <Text span size="xs" c="dimmed">({r2[0]})</Text></> },
                 { key: "v", header: "Value", numeric: true, render: (r2) => r2[1] },
                 { key: "u", header: "Unit", render: (r2) => { const f = labelOf(r2[0]); return f ? fieldLabel(f).unit : ""; } },
               ]} />

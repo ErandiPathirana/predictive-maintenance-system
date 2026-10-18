@@ -182,9 +182,32 @@ describe("Saved assessment page", () => {
     expect(screen.getByText(/does not store raw sensor readings/i)).toBeInTheDocument();
   });
 
+  it("names each reading the way the form does, not only by its column name (F7)", async () => {
+    mockApi({ "/api/assessments/6": { ...okAssessment, assessment_id: 6 } });
+    renderApp(<Routes><Route path="/assessment/:id" element={<AssessmentDetailPage />} /></Routes>, "/assessment/6");
+    const table = await screen.findByRole("table", { name: /Sensor readings used/ });
+    expect(within(table).getAllByText(/Drive end, horizontal: Vibration velocity/).length).toBeGreaterThan(0);
+    expect(within(table).getAllByText(/Non-drive end, vertical: Temperature/).length).toBeGreaterThan(0);
+  });
+
   it("explains a missing record", async () => {
     mockApi({ "/api/assessments/99": () => jsonResponse({ error: { code: "not_found", message: "No assessment with that number." } }, 404) });
     renderApp(<Routes><Route path="/assessment/:id" element={<AssessmentDetailPage />} /></Routes>, "/assessment/99");
     expect(await screen.findByText("No assessment with that number.")).toBeInTheDocument();
+  });
+});
+
+describe("Assessment page when the server cannot be reached (F6)", () => {
+  it("shows ONE error box with a Try again button, and no misleading 'No model is loaded' box", async () => {
+    mockApi({
+      "/api/health": () => { throw new TypeError("Failed to fetch"); },
+      "/api/model-info": () => { throw new TypeError("Failed to fetch"); },
+      "/api/features": () => { throw new TypeError("Failed to fetch"); },
+    });
+    renderApp(<AssessPage />);
+    expect(await screen.findByText("The model could not be checked")).toBeInTheDocument();
+    expect(screen.queryByText("No model is loaded")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Try again" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Analyse motor" })).not.toBeInTheDocument();
   });
 });

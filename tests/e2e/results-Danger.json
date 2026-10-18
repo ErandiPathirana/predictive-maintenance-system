@@ -1,0 +1,663 @@
+[
+  {
+    "id": "E05-DAN",
+    "title": "Submit valid readings → backend returns Danger; banner shows word + shape + 'Predicted condition'",
+    "scenario": "Danger",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E09-DAN",
+    "title": "Danger: corrective-action guidance matches the rules and stays inside the safety limits",
+    "scenario": "Danger",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "5 recommendation cards",
+    "consoleErrors": []
+  },
+  {
+    "id": "A11Y-result-Danger",
+    "title": "axe-core (WCAG 2.2 A/AA) on the Danger result page",
+    "scenario": "Danger",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E01",
+    "title": "Open the assessment form: title, nav, required fields, labels, skip link",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E02",
+    "title": "Motor ID: type a new ID, save, then it is offered as a suggestion next time",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E03",
+    "title": "Measurement time: 'Use now' fills it; future time warns; empty time is an error",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E06",
+    "title": "Validation: errors are listed, focus moves to the summary, entries are kept, fixing fields allows submit",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "messages: Enter a number such as 4.2 (digits only, no units or letters). / Use a dot for decimals, for example 2.5. / That number is too large. / Enter a value. Missing readings are never replaced with zero.",
+    "consoleErrors": []
+  },
+  {
+    "id": "E06c",
+    "title": "Out-of-training-range value warns but is accepted (not silently blocked)",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E06d",
+    "title": "Keyboard only: Tab through every control, type values, press Enter to submit",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E06e",
+    "title": "Clear form: needs confirmation, Escape cancels and returns focus, confirm clears",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E06f",
+    "title": "Server rejects the request (422) → plain message shown, entries kept, no result shown",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": [
+      "Failed to load resource: the server responded with a status of 422 (Unprocessable Entity)"
+    ]
+  },
+  {
+    "id": "E13d",
+    "title": "Server error (500): says nothing was saved, keeps entries, retry works",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": [
+      "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    ]
+  },
+  {
+    "id": "E17",
+    "title": "Double-click on 'Analyse motor' stores exactly one record",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E07a",
+    "title": "Valid CSV: 5-row preview appears, Check file passes, Analyse returns a result per record",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E08-missing_column",
+    "title": "Malformed CSV (missing_column) is rejected with a reason the user can understand",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "1 required column is missing  de_h_ge  Column names must match exactly. Download the template and copy your values into it.",
+    "consoleErrors": []
+  },
+  {
+    "id": "E08-text_value",
+    "title": "Malformed CSV (text_value) is rejected with a reason the user can understand",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "File check found 1 problem Nothing was stored. Fix the items below in your file and choose it again. Problems found File row\tColumn\tProblem 2\tde_h_ge\t'abc' is n",
+    "consoleErrors": []
+  },
+  {
+    "id": "E08-empty_value",
+    "title": "Malformed CSV (empty_value) is rejected with a reason the user can understand",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "File check found 1 problem Nothing was stored. Fix the items below in your file and choose it again. Problems found File row\tColumn\tProblem 2\tde_h_ge\tValue is e",
+    "consoleErrors": []
+  },
+  {
+    "id": "E08-bad_date",
+    "title": "Malformed CSV (bad_date) is rejected with a reason the user can understand",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "File check found 1 problem Nothing was stored. Fix the items below in your file and choose it again. Problems found File row\tColumn\tProblem All\tmeasured_at\tTime",
+    "consoleErrors": []
+  },
+  {
+    "id": "E08-header_only",
+    "title": "Malformed CSV (header_only) is rejected with a reason the user can understand",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "This file cannot be used The file has no data rows. Check that the first row contains column names.",
+    "consoleErrors": []
+  },
+  {
+    "id": "E08-empty_file",
+    "title": "Malformed CSV (empty_file) is rejected with a reason the user can understand",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "This file cannot be used The file is empty.",
+    "consoleErrors": []
+  },
+  {
+    "id": "E08-not_csv",
+    "title": "Malformed CSV (not_csv) is rejected with a reason the user can understand",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "This file cannot be used Please choose a .csv file.",
+    "consoleErrors": []
+  },
+  {
+    "id": "E08-binary",
+    "title": "Malformed CSV (binary) is rejected with a reason the user can understand",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "This file cannot be used The file has no data rows. Check that the first row contains column names.",
+    "consoleErrors": []
+  },
+  {
+    "id": "E08-nan_inf",
+    "title": "Malformed CSV (nan_inf) is rejected with a reason the user can understand",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "File check found 2 problems Nothing was stored. Fix the items below in your file and choose it again. Problems found File row\tColumn\tProblem 2\tde_h_ge\t'NaN' is ",
+    "consoleErrors": []
+  },
+  {
+    "id": "E08-too_many_columns",
+    "title": "Malformed CSV (too_many_columns) is rejected with a reason the user can understand",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "File check found 1 problem Nothing was stored. Fix the items below in your file and choose it again. Problems found File row\tColumn\tProblem 2\tWhole file\tRow has",
+    "consoleErrors": []
+  },
+  {
+    "id": "E08x",
+    "title": "Upload page: removing a file asks for confirmation",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E07t",
+    "title": "Download CSV template works and matches the model's columns",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "motor_upload_template.csv",
+    "consoleErrors": []
+  },
+  {
+    "id": "E10",
+    "title": "Prediction history lists saved records (newest first) and links to the detail page",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E11a",
+    "title": "History filters: motor ID, condition, no-match empty state, clear",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "Model vQA.1 ready / 8 matching predictions. Showing 1 to 8.",
+    "consoleErrors": []
+  },
+  {
+    "id": "E11b",
+    "title": "History export: file downloads, header + rows, filter respected, safe against spreadsheet formulas",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "6 rows, file predictions_20261018_050714.csv",
+    "consoleErrors": []
+  },
+  {
+    "id": "E11c",
+    "title": "Date filter: 'From' later than 'To' is explained and blocks the filter",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E12a",
+    "title": "Monitoring: before any file is loaded, the page explains what to do (no empty charts)",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E12b",
+    "title": "Monitoring: after loading a CSV, trend charts render for a chosen motor, with a table alternative",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "3 chart svg elements",
+    "consoleErrors": []
+  },
+  {
+    "id": "E12c",
+    "title": "Dashboard: shows motors/conditions from history and sensor summary after a file load",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E12d",
+    "title": "Evaluation metrics: is there any screen that shows model evaluation metrics?",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "N/A",
+    "note": "No evaluation-metrics screen exists. docs/frontend.md (line 83) says the Model evaluation page was removed on purpose; nothing to test. Metrics can still be exported with ml/scripts/export_evaluation_report.py.",
+    "consoleErrors": []
+  },
+  {
+    "id": "K01",
+    "title": "Skip link moves focus to the main content and keeps the page",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "K02",
+    "title": "Every page: every control reachable by Tab has a visible focus indicator",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "K03",
+    "title": "Route change: keyboard/screen-reader user is told the page changed (focus or title moves)",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "K04",
+    "title": "Mobile menu: Escape/Burger closes it and focus returns to the menu button",
+    "scenario": "",
+    "viewport": "mobile",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "K05",
+    "title": "Text size: page still works with browser zoom 200% (viewport 640 wide ≈ 1280 at 200%)",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "A11Y-desktop-dashboard",
+    "title": "axe-core (WCAG 2.2 A/AA) on dashboard at desktop",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "A11Y-desktop-assess",
+    "title": "axe-core (WCAG 2.2 A/AA) on assess at desktop",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "A11Y-desktop-upload",
+    "title": "axe-core (WCAG 2.2 A/AA) on upload at desktop",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "A11Y-desktop-results",
+    "title": "axe-core (WCAG 2.2 A/AA) on results at desktop",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "A11Y-desktop-history",
+    "title": "axe-core (WCAG 2.2 A/AA) on history at desktop",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "A11Y-desktop-monitoring",
+    "title": "axe-core (WCAG 2.2 A/AA) on monitoring at desktop",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "A11Y-mobile-dashboard",
+    "title": "axe-core (WCAG 2.2 A/AA) on dashboard at mobile",
+    "scenario": "",
+    "viewport": "mobile",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "A11Y-mobile-assess",
+    "title": "axe-core (WCAG 2.2 A/AA) on assess at mobile",
+    "scenario": "",
+    "viewport": "mobile",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "A11Y-mobile-upload",
+    "title": "axe-core (WCAG 2.2 A/AA) on upload at mobile",
+    "scenario": "",
+    "viewport": "mobile",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "A11Y-mobile-results",
+    "title": "axe-core (WCAG 2.2 A/AA) on results at mobile",
+    "scenario": "",
+    "viewport": "mobile",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "A11Y-mobile-history",
+    "title": "axe-core (WCAG 2.2 A/AA) on history at mobile",
+    "scenario": "",
+    "viewport": "mobile",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "A11Y-mobile-monitoring",
+    "title": "axe-core (WCAG 2.2 A/AA) on monitoring at mobile",
+    "scenario": "",
+    "viewport": "mobile",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "A11Y-result",
+    "title": "axe-core on the Danger result page, the error state and the validation-error state",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E14-desktop-dashboard",
+    "title": "Layout at desktop (1280px): dashboard has no sideways page scroll, header/nav usable",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E14-desktop-assess",
+    "title": "Layout at desktop (1280px): assess has no sideways page scroll, header/nav usable",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E14-desktop-upload",
+    "title": "Layout at desktop (1280px): upload has no sideways page scroll, header/nav usable",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E14-desktop-results",
+    "title": "Layout at desktop (1280px): results has no sideways page scroll, header/nav usable",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E14-desktop-history",
+    "title": "Layout at desktop (1280px): history has no sideways page scroll, header/nav usable",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E14-desktop-monitoring",
+    "title": "Layout at desktop (1280px): monitoring has no sideways page scroll, header/nav usable",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E14-desktop-flow",
+    "title": "Full assessment flow at desktop: fill form, submit, read Danger guidance, nothing clipped",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "all targets >= 24 px",
+    "consoleErrors": []
+  },
+  {
+    "id": "E14-tablet-dashboard",
+    "title": "Layout at tablet (768px): dashboard has no sideways page scroll, header/nav usable",
+    "scenario": "",
+    "viewport": "tablet",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E14-tablet-assess",
+    "title": "Layout at tablet (768px): assess has no sideways page scroll, header/nav usable",
+    "scenario": "",
+    "viewport": "tablet",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E14-tablet-upload",
+    "title": "Layout at tablet (768px): upload has no sideways page scroll, header/nav usable",
+    "scenario": "",
+    "viewport": "tablet",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E14-tablet-results",
+    "title": "Layout at tablet (768px): results has no sideways page scroll, header/nav usable",
+    "scenario": "",
+    "viewport": "tablet",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E14-tablet-history",
+    "title": "Layout at tablet (768px): history has no sideways page scroll, header/nav usable",
+    "scenario": "",
+    "viewport": "tablet",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E14-tablet-monitoring",
+    "title": "Layout at tablet (768px): monitoring has no sideways page scroll, header/nav usable",
+    "scenario": "",
+    "viewport": "tablet",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E14-tablet-flow",
+    "title": "Full assessment flow at tablet: fill form, submit, read Danger guidance, nothing clipped",
+    "scenario": "",
+    "viewport": "tablet",
+    "status": "PASS",
+    "note": "all targets >= 24 px",
+    "consoleErrors": []
+  },
+  {
+    "id": "E14-mobile-dashboard",
+    "title": "Layout at mobile (375px): dashboard has no sideways page scroll, header/nav usable",
+    "scenario": "",
+    "viewport": "mobile",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E14-mobile-assess",
+    "title": "Layout at mobile (375px): assess has no sideways page scroll, header/nav usable",
+    "scenario": "",
+    "viewport": "mobile",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E14-mobile-upload",
+    "title": "Layout at mobile (375px): upload has no sideways page scroll, header/nav usable",
+    "scenario": "",
+    "viewport": "mobile",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E14-mobile-results",
+    "title": "Layout at mobile (375px): results has no sideways page scroll, header/nav usable",
+    "scenario": "",
+    "viewport": "mobile",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E14-mobile-history",
+    "title": "Layout at mobile (375px): history has no sideways page scroll, header/nav usable",
+    "scenario": "",
+    "viewport": "mobile",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E14-mobile-monitoring",
+    "title": "Layout at mobile (375px): monitoring has no sideways page scroll, header/nav usable",
+    "scenario": "",
+    "viewport": "mobile",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E14-mobile-flow",
+    "title": "Full assessment flow at mobile: fill form, submit, read Danger guidance, nothing clipped",
+    "scenario": "",
+    "viewport": "mobile",
+    "status": "PASS",
+    "note": "all targets >= 24 px",
+    "consoleErrors": []
+  }
+]

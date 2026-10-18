@@ -1,0 +1,29 @@
+[
+  {
+    "id": "E13-slow-a",
+    "title": "Slow backend (3 s): loading text appears, button is busy/disabled, a second click does not create a second record",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E13-slow-b",
+    "title": "Slow backend: History shows a loading message while waiting",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E13-slow-c",
+    "title": "Very slow backend (no answer within the 20 s limit): user gets a time-out message, can retry, entries are kept",
+    "scenario": "",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "The server took too long to answer. Try again in a moment. On free hosting the first request can take up",
+    "consoleErrors": []
+  }
+]

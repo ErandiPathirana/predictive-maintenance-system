@@ -1,0 +1,29 @@
+[
+  {
+    "id": "E05-ALE",
+    "title": "Submit valid readings → backend returns Alert; banner shows word + shape + 'Predicted condition'",
+    "scenario": "Alert",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  },
+  {
+    "id": "E09-ALE",
+    "title": "Alert: corrective-action guidance matches the rules and stays inside the safety limits",
+    "scenario": "Alert",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "5 recommendation cards",
+    "consoleErrors": []
+  },
+  {
+    "id": "A11Y-result-Alert",
+    "title": "axe-core (WCAG 2.2 A/AA) on the Alert result page",
+    "scenario": "Alert",
+    "viewport": "desktop",
+    "status": "PASS",
+    "note": "",
+    "consoleErrors": []
+  }
+]
