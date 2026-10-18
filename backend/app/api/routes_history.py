@@ -5,7 +5,7 @@ from datetime import date, datetime, timezone
 from fastapi import APIRouter, Depends, Query, Response
 from sqlalchemy.orm import Session
 
-from app.api.deps import api_key_guard, get_db, get_registry, get_settings_dep
+from app.api.deps import row_id, api_key_guard, get_db, get_registry, get_settings_dep
 from app.core.config import Settings
 from app.core.errors import BadQueryError, NotFoundError
 from app.db import repository as repo
@@ -44,7 +44,7 @@ def list_predictions(f: repo.PredictionFilters = Depends(history_filters), limit
 
 @router.get("/predictions/{prediction_id}", response_model=HistoryItem, responses={404: {"model": ErrorResponse}}, tags=["History"],
             summary="One stored prediction")
-def get_one(prediction_id: int, db: Session = Depends(get_db)):
+def get_one(prediction_id: int = row_id(), db: Session = Depends(get_db)):
     row = repo.get_prediction(db, prediction_id)
     if row is None:
         raise NotFoundError("No prediction with that ID.")

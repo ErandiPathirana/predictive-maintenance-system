@@ -13,6 +13,7 @@
 | Real bundle contract | pytest (opt-in) | `PM_TEST_BUNDLE_DIR=<bundle> python -m pytest -k real_notebook` | A real notebook bundle satisfies the contract |
 | Frontend | Vitest + Testing Library | `frontend/src/**/*.test.tsx` | Loading, ready, not-loaded, database-fault, error-and-retry states |
 | Manual / usability | checklist | below | Real use on real devices |
+| Backend QA audit (18 areas) | pytest | `test_qa_01_*.py` to `test_qa_07_*.py`, helpers in `qa_support.py` | Startup/shutdown, trained-model loading (BLOCKED until a bundle exists), input validation, CSV limits, class and recommendation mapping, database faults, export, CORS/config, logging/leaks, API docs. Full report: `docs/backend-qa-report.md` |
 
 Test models use **random weights** and only check the software. Their outputs are never research results.
 The suite was also checked by *mutation*: deliberately breaking the code (CSV-formula protection, all-or-nothing batches, log hygiene, scaling, CORS) makes the matching tests fail.

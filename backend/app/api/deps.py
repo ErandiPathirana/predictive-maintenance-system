@@ -1,13 +1,18 @@
 import secrets
 from collections.abc import Iterator
 
-from fastapi import Depends, Request, Security
+from fastapi import Depends, Path, Request, Security
 from fastapi.security import APIKeyHeader
 from sqlalchemy.orm import Session
 
 from app.core.config import Settings
 from app.core.errors import AuthError, ModelNotReadyError
 from app.services.artifacts import LoadedBundle, ModelRegistry
+
+# A database row ID. The upper bound stops values that no database integer column can hold from reaching the driver (SQLite raised OverflowError).
+def row_id():
+    """A fresh Path() per parameter: FastAPI binds the parameter name into the object, so one instance must not be shared."""
+    return Path(ge=1, le=2**63 - 1, description="Numeric ID (1 or greater).")
 
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False, description="Only required when the server sets API_KEY.")
 

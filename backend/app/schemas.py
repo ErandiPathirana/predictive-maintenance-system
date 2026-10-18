@@ -1,11 +1,13 @@
 """Every request and response shape of the API."""
 
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from typing import Any, Union
 
 from pydantic import BaseModel, ConfigDict, Field, StrictFloat, StrictInt, field_validator
 
 ID_PATTERN = r"^[A-Za-z0-9._\-]{1,64}$"
+MIN_YEAR, MAX_YEAR = 1970, 2100          # plausible measurement window; the CSV upload enforces the same limits
+MAX_READINGS = 100                       # the model has 14 inputs; this only stops absurd request bodies
 INTERPRETATION_NOTE = (
     "Predicted condition class from a statistical model. It is NOT a confirmed machine failure, "
     "and the scores are model outputs, not calibrated probabilities."
@@ -13,13 +15,44 @@ INTERPRETATION_NOTE = (
 
 
 # ---------- inputs ----------
+def timestamp_must_be_text(v):
+    # Pydantic would otherwise read a bare number as a Unix timestamp; a typo such as 12345.5 must not become a date.
+    if v is not None and not isinstance(v, str):
+        raise ValueError("measured_at must be a date-time text such as 2025-04-01T07:20:00")
+    return v
+
+
+def plausible_timestamp(v: datetime | None) -> datetime | None:
+    """Same window as the CSV upload (years 1970-2100, judged in UTC). Also turns an overflow on UTC conversion into a normal 422."""
+    if v is None:
+        return v
+    try:
+        utc = v.astimezone(timezone.utc) if v.tzinfo is not None else v
+    except (OverflowError, ValueError, OSError):
+        raise ValueError(f"measured_at must be a date between {MIN_YEAR} and {MAX_YEAR}")
+    if not MIN_YEAR <= utc.year <= MAX_YEAR:
+        raise ValueError(f"measured_at must be a date between {MIN_YEAR} and {MAX_YEAR}")
+    return v
+
+
 class SinglePredictionRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     record_id: str | None = Field(default=None, pattern=ID_PATTERN, description="Your own record reference (letters, digits, . _ -).")
     motor_id: str | None = Field(default=None, pattern=ID_PATTERN, description="Motor reference (letters, digits, . _ -).")
     measured_at: datetime | None = Field(default=None, description="When the reading was taken (ISO 8601). Stored for history only; not a model input.")
     readings: dict[str, Union[StrictInt, StrictFloat]] = Field(
+        max_length=MAX_READINGS,
         description="One numeric value per model input, keyed by feature name (see GET /api/features). Text and booleans are rejected.")
+
+    @field_validator("measured_at", mode="before")
+    @classmethod
+    def _timestamp_must_be_text(cls, v):
+        return timestamp_must_be_text(v)
+
+    @field_validator("measured_at")
+    @classmethod
+    def _timestamp_window(cls, v):
+        return plausible_timestamp(v)
 
 
 def _no_control_chars(v: str | None) -> str | None:
@@ -41,6 +74,7 @@ class AssessmentRequest(BaseModel):
     equipment_description: str | None = Field(default=None, max_length=120, description="Optional name or description of the equipment.")
     recorded_by: str | None = Field(default=None, max_length=64, description="Optional free-text name or initials. NOT verified: the API has no user login.")
     readings: dict[str, Union[StrictInt, StrictFloat]] = Field(
+        max_length=MAX_READINGS,
         description="One numeric value per model input, keyed by feature name (see GET /api/features). Text, booleans, NaN and infinity are rejected.")
 
     @field_validator("equipment_description", "recorded_by")
@@ -51,10 +85,14 @@ class AssessmentRequest(BaseModel):
     @field_validator("measured_at", mode="before")
     @classmethod
     def _timestamp_must_be_text(cls, v):
-        # Pydantic would otherwise read a bare number as a Unix timestamp; a typo such as 12345.5 must not become a date.
-        if not isinstance(v, str):
-            raise ValueError("measured_at must be a date-time text such as 2025-04-01T07:20:00")
-        return v
+        if v is None:
+            raise ValueError("measured_at is required")
+        return timestamp_must_be_text(v)
+
+    @field_validator("measured_at")
+    @classmethod
+    def _timestamp_window(cls, v):
+        return plausible_timestamp(v)
 
 
 # ---------- results ----------

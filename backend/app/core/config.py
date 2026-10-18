@@ -4,7 +4,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import field_validator, model_validator
+from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BACKEND_DIR = Path(__file__).resolve().parents[2]
@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     app_name: str = "Motor Condition Prediction API"
     app_version: str = "0.2.0"
     environment: Literal["development", "test", "production"] = "development"
-    log_level: str = "INFO"
+    log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "INFO"
 
     # Explicit, comma-separated list of frontend origins allowed to call the API.
     cors_origins: str = "http://localhost:5173"
@@ -42,9 +42,9 @@ class Settings(BaseSettings):
     store_input_readings: bool = False         # False = sensor values are NOT written to the database
 
     # Upload and export limits
-    max_upload_bytes: int = 2_000_000
-    max_batch_rows: int = 5_000
-    max_export_rows: int = 50_000
+    max_upload_bytes: int = Field(2_000_000, gt=0)     # zero or negative would silently reject every upload, so it is a startup error
+    max_batch_rows: int = Field(5_000, gt=0)
+    max_export_rows: int = Field(50_000, gt=0)
 
     # Optional shared secret. When set, every endpoint except /api/health needs header X-API-Key.
     api_key: str | None = None
@@ -76,10 +76,19 @@ class Settings(BaseSettings):
                 return "sqlite:///" + (BACKEND_DIR / raw).as_posix()
         return url
 
+    @field_validator("log_level", mode="before")
+    @classmethod
+    def _log_level_any_case(cls, v):
+        return v.strip().upper() if isinstance(v, str) else v
+
     @field_validator("api_key")
     @classmethod
     def _blank_key_is_none(cls, v: str | None) -> str | None:
-        return v or None
+        v = v or None
+        if v is not None and not (v.isascii() and v.isprintable()):
+            # The key travels in an HTTP header, which can only carry ASCII reliably; a non-ASCII key could never be matched by any client.
+            raise ValueError("API_KEY must contain only printable ASCII characters.")
+        return v
 
     @model_validator(mode="after")
     def _production_rules(self) -> "Settings":

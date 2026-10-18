@@ -10,6 +10,9 @@ from app.services.artifacts import LoadedBundle
 from app.services.inference import forward
 
 
+ABSURD_STANDARDISED_VALUE = 1e100     # |(x - mean) / scale| above this cannot come from a sensor and can overflow the network
+
+
 def is_demonstration(bundle: LoadedBundle, settings) -> bool:
     """Flag results as a demonstration when labels are unverified or the bundle is a smoke test.
     (The bundle contract has no 'data is synthetic' field, so an operator can force it with FORCE_DEMONSTRATION_BANNER.)"""
@@ -18,10 +21,18 @@ def is_demonstration(bundle: LoadedBundle, settings) -> bool:
     return bundle.provisional or bundle.fast_debug
 
 
+def _is_finite_number(v) -> bool:
+    """False for NaN, infinity AND integers too large to be a float (float() raises OverflowError for those)."""
+    try:
+        return math.isfinite(float(v))
+    except (OverflowError, ValueError, TypeError):
+        return False
+
+
 def validate_single_readings(readings: dict[str, float], bundle: LoadedBundle) -> np.ndarray:
     expected, provided = set(bundle.feature_names), set(readings)
     missing, unknown = sorted(expected - provided), sorted(provided - expected)
-    non_finite = sorted(n for n, v in readings.items() if not math.isfinite(float(v)))
+    non_finite = sorted(n for n, v in readings.items() if not _is_finite_number(v))
     if missing or unknown or non_finite:
         details = {"missing_features": missing, "unknown_features": unknown, "non_finite_values": non_finite}
         raise InputValidationError("Some sensor readings are missing or invalid. No prediction was made.", {k: v for k, v in details.items() if v})
@@ -41,9 +52,16 @@ def input_warnings(bundle: LoadedBundle, x_row: np.ndarray) -> list[dict]:
 
 
 def score_matrix(bundle: LoadedBundle, X: np.ndarray) -> np.ndarray:
-    scores = forward(bundle, X)
+    with np.errstate(over="ignore", invalid="ignore"):          # overflow is detected below and reported, not warned about
+        scores = forward(bundle, X)
     if not np.isfinite(scores).all():
-        raise PredictionError("The model produced an invalid score. No prediction was made.")
+        with np.errstate(over="ignore", invalid="ignore"):
+            standardised = np.abs((np.asarray(X, dtype="float64") - bundle.mean) / bundle.scale)
+        if not (standardised <= ABSURD_STANDARDISED_VALUE).all():
+            # The weights were verified finite when the bundle was loaded, so overflow can only come from a reading that is absurdly
+            # far from the training data (for example 1e308). That is the caller's mistake (4xx), not a server fault.
+            raise InputValidationError("A sensor reading is too large for the model to score. No prediction was made.")
+        raise PredictionError("The model produced an invalid score. No prediction was made.")    # sane input, bad output: a server-side problem
     return scores
 
 

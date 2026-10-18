@@ -20,7 +20,7 @@ import numpy as np
 from fastapi import UploadFile
 
 from app.core.errors import CsvValidationError, FileTooLargeError, UnsupportedFileError
-from app.schemas import ID_PATTERN
+from app.schemas import ID_PATTERN, MAX_YEAR, MIN_YEAR
 
 ALLOWED_CONTENT_TYPES = {"text/csv", "application/csv", "text/plain", "text/x-csv",
                          "application/vnd.ms-excel",   # what Windows browsers send for .csv
@@ -33,7 +33,7 @@ OPTIONAL_COLUMNS = ("measured_at",)
 MAX_ISSUES_REPORTED = 50
 MAX_COLUMNS = 60
 _ID_RE = re.compile(ID_PATTERN)
-_NUM_RE = re.compile(r"^[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$")   # plain decimal numbers only (no nan, inf, hex, underscores)
+_NUM_RE = re.compile(r"^[+-]?([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][+-]?[0-9]+)?$")   # plain ASCII decimal numbers only (no nan, inf, hex, underscores, non-Latin digits)
 
 
 def safe_filename(name: str | None) -> str:
@@ -113,7 +113,7 @@ def _parse_timestamp(value: str, mode: str, fmt: str | None) -> datetime:
             dt = dt.astimezone(timezone.utc).replace(tzinfo=None)
     else:
         dt = datetime.strptime(value, fmt)  # type: ignore[arg-type]
-    if not 1970 <= dt.year <= 2100:
+    if not MIN_YEAR <= dt.year <= MAX_YEAR:
         raise ValueError("year out of range")
     return dt
 
@@ -209,7 +209,7 @@ def analyse_csv(raw: bytes, bundle, max_rows: int) -> CsvAnalysis:
             if v:
                 try:
                     ts = _parse_timestamp(v, ts_mode, fmt)
-                except ValueError:
+                except (ValueError, OverflowError):      # OverflowError: a timezone offset pushed the date outside the supported range
                     res.add(line, "measured_at", f"Invalid timestamp '{_shorten(v)}' (must use the same format on every row).")
         for j, name in enumerate(features):
             v = cells[col[name]].strip()

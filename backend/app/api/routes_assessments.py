@@ -8,7 +8,7 @@ from fastapi import APIRouter, Depends, Header, Response
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.orm import Session
 
-from app.api.deps import api_key_guard, get_db, get_settings_dep, get_site_guidance, require_bundle
+from app.api.deps import row_id, api_key_guard, get_db, get_settings_dep, get_site_guidance, require_bundle
 from app.core.config import Settings
 from app.core.errors import BadQueryError, DatabaseUnavailableError, IdempotencyConflictError, NotFoundError
 from app.db import repository as repo
@@ -98,7 +98,7 @@ def create_assessment(body: AssessmentRequest, response: Response,
 
 @router.get("/assessments/{assessment_id}", response_model=AssessmentResponse, responses={404: {"model": ErrorResponse}}, tags=["Assessment"],
             summary="One stored assessment with its recommendations")
-def get_assessment(assessment_id: int, bundle: LoadedBundle = Depends(require_bundle), site=Depends(get_site_guidance), db: Session = Depends(get_db)):
+def get_assessment(assessment_id: int = row_id(), bundle: LoadedBundle = Depends(require_bundle), site=Depends(get_site_guidance), db: Session = Depends(get_db)):
     row = repo.get_prediction(db, assessment_id)
     if row is None:
         raise NotFoundError("No assessment with that ID.")

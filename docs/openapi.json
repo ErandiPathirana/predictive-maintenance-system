@@ -467,8 +467,12 @@
             "required": true,
             "schema": {
               "type": "integer",
+              "maximum": 9223372036854775807,
+              "minimum": 1,
+              "description": "Numeric ID (1 or greater).",
               "title": "Assessment Id"
-            }
+            },
+            "description": "Numeric ID (1 or greater)."
           }
         ],
         "responses": {
@@ -761,8 +765,12 @@
             "required": true,
             "schema": {
               "type": "integer",
+              "maximum": 9223372036854775807,
+              "minimum": 1,
+              "description": "Numeric ID (1 or greater).",
               "title": "Prediction Id"
-            }
+            },
+            "description": "Numeric ID (1 or greater)."
           }
         ],
         "responses": {
@@ -1067,6 +1075,7 @@
               ]
             },
             "type": "object",
+            "maxProperties": 100,
             "title": "Readings",
             "description": "One numeric value per model input, keyed by feature name (see GET /api/features). Text, booleans, NaN and infinity are rejected."
           }
@@ -2368,6 +2377,7 @@
               ]
             },
             "type": "object",
+            "maxProperties": 100,
             "title": "Readings",
             "description": "One numeric value per model input, keyed by feature name (see GET /api/features). Text and booleans are rejected."
           }

@@ -70,6 +70,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @app.middleware("http")
     async def log_and_harden(request: Request, call_next):
         rid, start = uuid.uuid4().hex[:12], time.perf_counter()
+        request.state.request_id = rid                 # lets the 500 handler (outside this middleware) return the same X-Request-ID
         try:
             response = await call_next(request)
         except Exception:

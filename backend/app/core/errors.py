@@ -11,6 +11,7 @@ from typing import Any
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from sqlalchemy.exc import SQLAlchemyError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 logger = logging.getLogger(__name__)
@@ -76,6 +77,16 @@ def _body(code: str, message: str, details: Any = None) -> dict[str, Any]:
     return {"error": err}
 
 
+def _safety_headers(request: Request) -> dict[str, str]:
+    """The security/correlation headers normally added by the request middleware. Responses produced by the outermost
+    (500) handler never pass through that middleware, so they must carry the headers themselves."""
+    headers = {"X-Content-Type-Options": "nosniff", "Cache-Control": "no-store"}
+    rid = getattr(request.state, "request_id", None)
+    if rid:
+        headers["X-Request-ID"] = rid
+    return headers
+
+
 def register_error_handlers(app: FastAPI) -> None:
     @app.exception_handler(AppError)
     async def _app_error(_: Request, exc: AppError) -> JSONResponse:
@@ -91,7 +102,15 @@ def register_error_handlers(app: FastAPI) -> None:
     async def _http(_: Request, exc: StarletteHTTPException) -> JSONResponse:
         return JSONResponse(status_code=exc.status_code, content=_body("http_error", str(exc.detail)))
 
+    @app.exception_handler(SQLAlchemyError)
+    async def _database(request: Request, exc: SQLAlchemyError) -> JSONResponse:
+        # Driver messages can contain SQL, parameters (IDs) or connection details, so only the exception TYPES are logged.
+        logger.error("Database error %s/%s on %s %s", type(exc).__name__, type(getattr(exc, "orig", None)).__name__, request.method, request.url.path)
+        return JSONResponse(status_code=503, headers=_safety_headers(request), content=_body(
+            "database_unavailable", "The database could not complete the request, so nothing was changed. Please try again."))
+
     @app.exception_handler(Exception)
-    async def _unexpected(_: Request, exc: Exception) -> JSONResponse:
+    async def _unexpected(request: Request, exc: Exception) -> JSONResponse:
         logger.error("Unhandled %s", type(exc).__name__, exc_info=exc)
-        return JSONResponse(status_code=500, content=_body("internal_error", "Something went wrong on the server. Please try again."))
+        return JSONResponse(status_code=500, headers=_safety_headers(request),
+                            content=_body("internal_error", "Something went wrong on the server. Please try again."))
