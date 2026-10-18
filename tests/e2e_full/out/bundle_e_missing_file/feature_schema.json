@@ -1,0 +1,103 @@
+{
+  "order_is_contract": true,
+  "features": [
+    {
+      "name": "de_h_velocity_mm_s",
+      "unit": "mm/s",
+      "description": "de_h_velocity_mm_s",
+      "observed_train_min": 0.01,
+      "observed_train_max": 14.73378882765028
+    },
+    {
+      "name": "de_h_ge",
+      "unit": "gE",
+      "description": "de_h_ge",
+      "observed_train_min": 0.01,
+      "observed_train_max": 2.2061222998399703
+    },
+    {
+      "name": "de_h_temp_c",
+      "unit": "degC",
+      "description": "de_h_temp_c",
+      "observed_train_min": 26.70480957385829,
+      "observed_train_max": 102.02048193858603
+    },
+    {
+      "name": "de_v_velocity_mm_s",
+      "unit": "mm/s",
+      "description": "de_v_velocity_mm_s",
+      "observed_train_min": 0.01,
+      "observed_train_max": 14.150014911312592
+    },
+    {
+      "name": "de_v_ge",
+      "unit": "gE",
+      "description": "de_v_ge",
+      "observed_train_min": 0.01,
+      "observed_train_max": 2.3103812740653584
+    },
+    {
+      "name": "de_v_temp_c",
+      "unit": "degC",
+      "description": "de_v_temp_c",
+      "observed_train_min": 30.6668773823882,
+      "observed_train_max": 107.38562760120651
+    },
+    {
+      "name": "nde_h_velocity_mm_s",
+      "unit": "mm/s",
+      "description": "nde_h_velocity_mm_s",
+      "observed_train_min": 0.01,
+      "observed_train_max": 14.8088396700733
+    },
+    {
+      "name": "nde_h_ge",
+      "unit": "gE",
+      "description": "nde_h_ge",
+      "observed_train_min": 0.01,
+      "observed_train_max": 2.069516967986791
+    },
+    {
+      "name": "nde_h_temp_c",
+      "unit": "degC",
+      "description": "nde_h_temp_c",
+      "observed_train_min": 28.53951902311011,
+      "observed_train_max": 102.8030185302938
+    },
+    {
+      "name": "nde_v_velocity_mm_s",
+      "unit": "mm/s",
+      "description": "nde_v_velocity_mm_s",
+      "observed_train_min": 0.01,
+      "observed_train_max": 13.719958041307388
+    },
+    {
+      "name": "nde_v_ge",
+      "unit": "gE",
+      "description": "nde_v_ge",
+      "observed_train_min": 0.01,
+      "observed_train_max": 2.109945436688804
+    },
+    {
+      "name": "nde_v_temp_c",
+      "unit": "degC",
+      "description": "nde_v_temp_c",
+      "observed_train_min": 32.20731062607734,
+      "observed_train_max": 98.72161114748016
+    },
+    {
+      "name": "rotational_speed_rpm",
+      "unit": "rpm",
+      "description": "rotational_speed_rpm",
+      "observed_train_min": 1413.5985069605003,
+      "observed_train_max": 1537.3074390778984
+    },
+    {
+      "name": "load_percent",
+      "unit": "%",
+      "description": "load_percent",
+      "observed_train_min": 0.01,
+      "observed_train_max": 142.3152156342461
+    }
+  ]
+}

@@ -1,0 +1,332 @@
+{
+  "test_metrics": {
+    "n": 720,
+    "accuracy": 0.9791666666666666,
+    "macro_f1": 0.9805941923967408,
+    "confusion_matrix(rows=truth,cols=pred)": [
+      [
+        335,
+        1,
+        0
+      ],
+      [
+        14,
+        199,
+        0
+      ],
+      [
+        0,
+        0,
+        171
+      ]
+    ]
+  },
+  "samples": {
+    "Normal": [
+      {
+        "truth": "Normal",
+        "readings": {
+          "de_h_velocity_mm_s": 0.783,
+          "de_h_ge": 0.565,
+          "de_h_temp_c": 57.579,
+          "de_v_velocity_mm_s": 0.933,
+          "de_v_ge": 0.441,
+          "de_v_temp_c": 40.553,
+          "nde_h_velocity_mm_s": 2.367,
+          "nde_h_ge": 0.747,
+          "nde_h_temp_c": 59.641,
+          "nde_v_velocity_mm_s": 0.693,
+          "nde_v_ge": 0.198,
+          "nde_v_temp_c": 54.331,
+          "rotational_speed_rpm": 1485.827,
+          "load_percent": 74.487
+        },
+        "reference_prediction": "Normal",
+        "reference_scores": {
+          "Normal": 0.9999999864583682,
+          "Alert": 1.3485894637731103e-08,
+          "Danger": 5.573715828856139e-11
+        }
+      },
+      {
+        "truth": "Normal",
+        "readings": {
+          "de_h_velocity_mm_s": 3.466,
+          "de_h_ge": 0.515,
+          "de_h_temp_c": 51.271,
+          "de_v_velocity_mm_s": 0.01,
+          "de_v_ge": 0.375,
+          "de_v_temp_c": 47.206,
+          "nde_h_velocity_mm_s": 0.722,
+          "nde_h_ge": 0.071,
+          "nde_h_temp_c": 62.624,
+          "nde_v_velocity_mm_s": 2.232,
+          "nde_v_ge": 0.296,
+          "nde_v_temp_c": 60.064,
+          "rotational_speed_rpm": 1479.158,
+          "load_percent": 61.208
+        },
+        "reference_prediction": "Normal",
+        "reference_scores": {
+          "Normal": 0.9999999952408913,
+          "Alert": 4.757405865033067e-09,
+          "Danger": 1.7028121610671478e-12
+        }
+      },
+      {
+        "truth": "Normal",
+        "readings": {
+          "de_h_velocity_mm_s": 0.01,
+          "de_h_ge": 0.601,
+          "de_h_temp_c": 49.646,
+          "de_v_velocity_mm_s": 3.554,
+          "de_v_ge": 0.358,
+          "de_v_temp_c": 63.499,
+          "nde_h_velocity_mm_s": 3.157,
+          "nde_h_ge": 0.316,
+          "nde_h_temp_c": 46.7,
+          "nde_v_velocity_mm_s": 0.238,
+          "nde_v_ge": 0.364,
+          "nde_v_temp_c": 59.276,
+          "rotational_speed_rpm": 1474.586,
+          "load_percent": 67.458
+        },
+        "reference_prediction": "Normal",
+        "reference_scores": {
+          "Normal": 0.999999946315238,
+          "Alert": 5.3609588130863344e-08,
+          "Danger": 7.517382261049533e-11
+        }
+      },
+      {
+        "truth": "Normal",
+        "readings": {
+          "de_h_velocity_mm_s": 0.01,
+          "de_h_ge": 0.222,
+          "de_h_temp_c": 56.106,
+          "de_v_velocity_mm_s": 2.125,
+          "de_v_ge": 0.01,
+          "de_v_temp_c": 61.722,
+          "nde_h_velocity_mm_s": 6.475,
+          "nde_h_ge": 0.037,
+          "nde_h_temp_c": 44.084,
+          "nde_v_velocity_mm_s": 0.01,
+          "nde_v_ge": 0.254,
+          "nde_v_temp_c": 55.857,
+          "rotational_speed_rpm": 1469.973,
+          "load_percent": 67.446
+        },
+        "reference_prediction": "Normal",
+        "reference_scores": {
+          "Normal": 0.9999999958593442,
+          "Alert": 4.127451748381813e-09,
+          "Danger": 1.3204088104617653e-11
+        }
+      }
+    ],
+    "Alert": [
+      {
+        "truth": "Alert",
+        "readings": {
+          "de_h_velocity_mm_s": 1.959,
+          "de_h_ge": 0.571,
+          "de_h_temp_c": 72.654,
+          "de_v_velocity_mm_s": 4.057,
+          "de_v_ge": 0.961,
+          "de_v_temp_c": 64.185,
+          "nde_h_velocity_mm_s": 3.44,
+          "nde_h_ge": 0.401,
+          "nde_h_temp_c": 48.946,
+          "nde_v_velocity_mm_s": 5.048,
+          "nde_v_ge": 0.33,
+          "nde_v_temp_c": 64.816,
+          "rotational_speed_rpm": 1483.191,
+          "load_percent": 43.024
+        },
+        "reference_prediction": "Alert",
+        "reference_scores": {
+          "Normal": 0.37246844731618517,
+          "Alert": 0.6273637722075835,
+          "Danger": 0.0001677804762314421
+        }
+      },
+      {
+        "truth": "Alert",
+        "readings": {
+          "de_h_velocity_mm_s": 5.542,
+          "de_h_ge": 0.83,
+          "de_h_temp_c": 72.707,
+          "de_v_velocity_mm_s": 2.649,
+          "de_v_ge": 1.319,
+          "de_v_temp_c": 75.261,
+          "nde_h_velocity_mm_s": 4.549,
+          "nde_h_ge": 0.659,
+          "nde_h_temp_c": 61.831,
+          "nde_v_velocity_mm_s": 6.557,
+          "nde_v_ge": 0.318,
+          "nde_v_temp_c": 64.997,
+          "rotational_speed_rpm": 1466.17,
+          "load_percent": 101.687
+        },
+        "reference_prediction": "Alert",
+        "reference_scores": {
+          "Normal": 0.0008234989583392053,
+          "Alert": 0.9976387413151007,
+          "Danger": 0.0015377597265601394
+        }
+      },
+      {
+        "truth": "Alert",
+        "readings": {
+          "de_h_velocity_mm_s": 7.81,
+          "de_h_ge": 0.738,
+          "de_h_temp_c": 59.342,
+          "de_v_velocity_mm_s": 6.187,
+          "de_v_ge": 0.641,
+          "de_v_temp_c": 60.433,
+          "nde_h_velocity_mm_s": 6.032,
+          "nde_h_ge": 0.354,
+          "nde_h_temp_c": 63.276,
+          "nde_v_velocity_mm_s": 1.716,
+          "nde_v_ge": 0.663,
+          "nde_v_temp_c": 54.941,
+          "rotational_speed_rpm": 1484.688,
+          "load_percent": 114.807
+        },
+        "reference_prediction": "Alert",
+        "reference_scores": {
+          "Normal": 0.02437898546788761,
+          "Alert": 0.9755921746204415,
+          "Danger": 2.8839911670917343e-05
+        }
+      },
+      {
+        "truth": "Alert",
+        "readings": {
+          "de_h_velocity_mm_s": 3.852,
+          "de_h_ge": 0.97,
+          "de_h_temp_c": 63.313,
+          "de_v_velocity_mm_s": 4.785,
+          "de_v_ge": 0.34,
+          "de_v_temp_c": 68.448,
+          "nde_h_velocity_mm_s": 3.622,
+          "nde_h_ge": 0.591,
+          "nde_h_temp_c": 65.664,
+          "nde_v_velocity_mm_s": 7.711,
+          "nde_v_ge": 0.975,
+          "nde_v_temp_c": 60.589,
+          "rotational_speed_rpm": 1480.341,
+          "load_percent": 72.521
+        },
+        "reference_prediction": "Alert",
+        "reference_scores": {
+          "Normal": 0.002248692893676296,
+          "Alert": 0.997625773285855,
+          "Danger": 0.00012553382046871298
+        }
+      }
+    ],
+    "Danger": [
+      {
+        "truth": "Danger",
+        "readings": {
+          "de_h_velocity_mm_s": 8.662,
+          "de_h_ge": 1.552,
+          "de_h_temp_c": 77.343,
+          "de_v_velocity_mm_s": 10.924,
+          "de_v_ge": 1.214,
+          "de_v_temp_c": 90.011,
+          "nde_h_velocity_mm_s": 10.341,
+          "nde_h_ge": 1.373,
+          "nde_h_temp_c": 84.349,
+          "nde_v_velocity_mm_s": 7.671,
+          "nde_v_ge": 1.379,
+          "nde_v_temp_c": 83.742,
+          "rotational_speed_rpm": 1462.736,
+          "load_percent": 74.711
+        },
+        "reference_prediction": "Danger",
+        "reference_scores": {
+          "Normal": 2.6826271135333284e-11,
+          "Alert": 8.458797060754879e-07,
+          "Danger": 0.9999991540934677
+        }
+      },
+      {
+        "truth": "Danger",
+        "readings": {
+          "de_h_velocity_mm_s": 6.702,
+          "de_h_ge": 1.447,
+          "de_h_temp_c": 80.757,
+          "de_v_velocity_mm_s": 10.571,
+          "de_v_ge": 0.641,
+          "de_v_temp_c": 72.362,
+          "nde_h_velocity_mm_s": 9.565,
+          "nde_h_ge": 1.613,
+          "nde_h_temp_c": 82.048,
+          "nde_v_velocity_mm_s": 7.168,
+          "nde_v_ge": 0.97,
+          "nde_v_temp_c": 73.119,
+          "rotational_speed_rpm": 1475.964,
+          "load_percent": 46.686
+        },
+        "reference_prediction": "Danger",
+        "reference_scores": {
+          "Normal": 1.2863484109841963e-08,
+          "Alert": 0.0006041081675442143,
+          "Danger": 0.9993958789689718
+        }
+      },
+      {
+        "truth": "Danger",
+        "readings": {
+          "de_h_velocity_mm_s": 5.468,
+          "de_h_ge": 1.857,
+          "de_h_temp_c": 90.781,
+          "de_v_velocity_mm_s": 8.406,
+          "de_v_ge": 1.467,
+          "de_v_temp_c": 84.979,
+          "nde_h_velocity_mm_s": 7.778,
+          "nde_h_ge": 1.248,
+          "nde_h_temp_c": 75.973,
+          "nde_v_velocity_mm_s": 8.732,
+          "nde_v_ge": 1.61,
+          "nde_v_temp_c": 72.289,
+          "rotational_speed_rpm": 1467.031,
+          "load_percent": 78.683
+        },
+        "reference_prediction": "Danger",
+        "reference_scores": {
+          "Normal": 7.564874015441124e-09,
+          "Alert": 0.00011083155993998195,
+          "Danger": 0.9998891608751861
+        }
+      },
+      {
+        "truth": "Danger",
+        "readings": {
+          "de_h_velocity_mm_s": 9.913,
+          "de_h_ge": 1.612,
+          "de_h_temp_c": 94.419,
+          "de_v_velocity_mm_s": 9.168,
+          "de_v_ge": 2.069,
+          "de_v_temp_c": 87.973,
+          "nde_h_velocity_mm_s": 8.402,
+          "nde_h_ge": 1.647,
+          "nde_h_temp_c": 75.566,
+          "nde_v_velocity_mm_s": 9.205,
+          "nde_v_ge": 1.204,
+          "nde_v_temp_c": 77.578,
+          "rotational_speed_rpm": 1493.66,
+          "load_percent": 43.193
+        },
+        "reference_prediction": "Danger",
+        "reference_scores": {
+          "Normal": 4.491600314098974e-13,
+          "Alert": 1.043818580774552e-07,
+          "Danger": 0.9999998956176928
+        }
+      }
+    ]
+  }
+}

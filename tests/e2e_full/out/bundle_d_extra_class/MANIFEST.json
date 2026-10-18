@@ -1,0 +1,12 @@
+{
+  "bundle": "pm_condition_ann_vTEST",
+  "files": {
+    "class_mapping.json": "e802190829b833b1943bd790ced6453bf452f7aa6d645beba0e6c5268f2af5ce",
+    "feature_schema.json": "64d31c2764bc19983f47db21f408b7eff0275e5b151e2075284c833d2aa20db6",
+    "model_architecture.json": "c1119845d8a19a883af8123d2d548fe594ce17a5bc7ee7f3702fd1e2da9c584d",
+    "parity_probe.json": "39189500a850cc7d74dc1e373bcc389ed29e68e9eb1d523dd9254e607c7879f8",
+    "preprocessing.json": "e94bc9af4df1eb3209e0cf5ac21eab0b6159a189e5310bd62f62011ca8134ce1",
+    "training_metadata.json": "f70dd5093602c8351acae533bdaf799502ade059f1cb1a7711e19a9fc8ddef2a",
+    "weights.npz": "f0ef177fdd6797cf3605cf59c9119f3b75c78464142bc7554aa8163fbf4e1f17"
+  }
+}

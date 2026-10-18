@@ -1,0 +1,330 @@
+{
+  "results": [
+    {
+      "id": "UI-A",
+      "status": "PASS",
+      "actual": [
+        "truth Normal; independent reference Normal; screen shows 'Normal' (assessment #1); API and database both say Normal"
+      ],
+      "evidence": [
+        "4 recommendation cards on screen == API items == database JSON (4); 0 safety notes identical; scores on screen match the database to 3 decimals; screenshot FULL-UI-Normal-result.png"
+      ],
+      "failure": "",
+      "nodes": [
+        "suite_full.mjs"
+      ]
+    },
+    {
+      "id": "UI-B",
+      "status": "PASS",
+      "actual": [
+        "truth Alert; independent reference Alert; screen shows 'Alert' (assessment #2); API and database both say Alert"
+      ],
+      "evidence": [
+        "5 recommendation cards on screen == API items == database JSON (5); 1 safety notes identical; scores on screen match the database to 3 decimals; screenshot FULL-UI-Alert-result.png"
+      ],
+      "failure": "",
+      "nodes": [
+        "suite_full.mjs"
+      ]
+    },
+    {
+      "id": "UI-C",
+      "status": "PASS",
+      "actual": [
+        "truth Danger; independent reference Danger; screen shows 'Danger' (assessment #3); API and database both say Danger"
+      ],
+      "evidence": [
+        "5 recommendation cards on screen == API items == database JSON (5); 2 safety notes identical; scores on screen match the database to 3 decimals; screenshot FULL-UI-Danger-result.png"
+      ],
+      "failure": "",
+      "nodes": [
+        "suite_full.mjs"
+      ]
+    },
+    {
+      "id": "UI-D",
+      "status": "PASS",
+      "actual": [
+        "14 single omissions: each shows exactly one listed problem and an inline error; 0 requests to the backend; database row count unchanged (3)"
+      ],
+      "evidence": [],
+      "failure": "",
+      "nodes": [
+        "suite_full.mjs"
+      ]
+    },
+    {
+      "id": "UI-E",
+      "status": "PASS",
+      "actual": [
+        "8 invalid texts blocked with a plain message (e.g. abc → Enter a number such as 4.2 (digits only, no units or letters).); future time warns; empty time is an error; 0 requests sent; database unchanged"
+      ],
+      "evidence": [],
+      "failure": "",
+      "nodes": [
+        "suite_full.mjs"
+      ]
+    },
+    {
+      "id": "UI-F",
+      "status": "PASS",
+      "actual": [
+        "missing de_h_ge; misnamed de_h_velocity; unknown column 'comment': each rejected with a message naming the column; Analyse disabled; database unchanged"
+      ],
+      "evidence": [],
+      "failure": "",
+      "nodes": [
+        "suite_full.mjs"
+      ]
+    },
+    {
+      "id": "UI-CSV",
+      "status": "PASS",
+      "actual": [
+        "results page and database rows agree with the reference for all 6 rows (Normal, Normal, Alert, Alert, Danger, Danger); export downloaded with 9 data rows and the 20 expected columns"
+      ],
+      "evidence": [],
+      "failure": "",
+      "nodes": [
+        "suite_full.mjs"
+      ]
+    },
+    {
+      "id": "UI-I",
+      "status": "PASS",
+      "actual": [
+        "double click → 1 row; identical re-send → message 'already saved … No second record was created'; still 1 row"
+      ],
+      "evidence": [],
+      "failure": "",
+      "nodes": [
+        "suite_full.mjs"
+      ]
+    },
+    {
+      "id": "UI-J",
+      "status": "PASS",
+      "actual": [
+        "empty state 'No stored predictions match these filters'; no table rows; no error box"
+      ],
+      "evidence": [],
+      "failure": "",
+      "nodes": [
+        "suite_full.mjs"
+      ]
+    },
+    {
+      "id": "UI-K",
+      "status": "PASS",
+      "actual": [
+        "History row: 11 UI-Danger-836540 Not recorded 2025-04-01 07:20 Danger Danger: 5 recommended actions. First: Notif; detail page shows Danger with the same 5 steps as the result screen and the database"
+      ],
+      "evidence": [],
+      "failure": "",
+      "nodes": [
+        "suite_full.mjs"
+      ]
+    },
+    {
+      "id": "UI-L",
+      "status": "PASS",
+      "actual": [
+        "4 rows == page count == 4 database Danger rows; 20 expected columns; scores equal the database"
+      ],
+      "evidence": [],
+      "failure": "",
+      "nodes": [
+        "suite_full.mjs"
+      ]
+    },
+    {
+      "id": "UI-FID",
+      "status": "PASS",
+      "actual": [
+        "altered response shown as-is: banner 'Normal', Danger score on screen 0.123. (The urgent red notice follows the response's own 'urgent' flag.) Static scan found 0 comparisons of predicted_condition to a literal class in components/pages"
+      ],
+      "evidence": [],
+      "failure": "",
+      "nodes": [
+        "suite_full.mjs"
+      ]
+    },
+    {
+      "id": "UI-G",
+      "status": "FAIL",
+      "actual": [],
+      "evidence": [],
+      "failure": "no explanation: New motor assessment",
+      "nodes": [
+        "suite_full.mjs"
+      ]
+    },
+    {
+      "id": "UI-H",
+      "status": "FAIL",
+      "actual": [],
+      "evidence": [],
+      "failure": "EPERM, Permission denied: \\\\?\\C:\\Users\\erand\\Documents\\pm-v2\\predictive-maintenance-system\\tests\\e2e_full\\out\\ui.db '\\\\?\\C:\\Users\\erand\\Documents\\pm-v2\\predictive-maintenance-system\\tests\\e2e_full\\out\\ui.db'",
+      "nodes": [
+        "suite_full.mjs"
+      ]
+    }
+  ],
+  "meta": {
+    "UI-A": {
+      "id": "UI-A",
+      "letter": "A",
+      "title": "Manual entry in the browser, Normal case: what the screen shows equals the backend answer and the saved database record",
+      "layer": "Frontend + backend + database (trained synthetic model)",
+      "severity_if_fail": "High",
+      "preconditions": "Backend on the trained synthetic model + fresh SQLite file; frontend build pointing at it; held-out synthetic row with truth label Normal",
+      "input": "14 readings typed into the form, motor id, timestamp, then 'Analyse motor'",
+      "expected": "Banner word, 4-5 recommendation cards, safety notes and scores on screen == API response == sqlite row; condition == independent NumPy reference; 'not a confirmed failure' statement present; red notice only for Danger",
+      "corrective_action": "Compare the three sources; if only the UI differs look in AssessmentResult.tsx, otherwise in the backend"
+    },
+    "UI-B": {
+      "id": "UI-B",
+      "letter": "B",
+      "title": "Manual entry in the browser, Alert case: what the screen shows equals the backend answer and the saved database record",
+      "layer": "Frontend + backend + database (trained synthetic model)",
+      "severity_if_fail": "High",
+      "preconditions": "Backend on the trained synthetic model + fresh SQLite file; frontend build pointing at it; held-out synthetic row with truth label Alert",
+      "input": "14 readings typed into the form, motor id, timestamp, then 'Analyse motor'",
+      "expected": "Banner word, 4-5 recommendation cards, safety notes and scores on screen == API response == sqlite row; condition == independent NumPy reference; 'not a confirmed failure' statement present; red notice only for Danger",
+      "corrective_action": "Compare the three sources; if only the UI differs look in AssessmentResult.tsx, otherwise in the backend"
+    },
+    "UI-C": {
+      "id": "UI-C",
+      "letter": "C",
+      "title": "Manual entry in the browser, Danger case: what the screen shows equals the backend answer and the saved database record",
+      "layer": "Frontend + backend + database (trained synthetic model)",
+      "severity_if_fail": "High",
+      "preconditions": "Backend on the trained synthetic model + fresh SQLite file; frontend build pointing at it; held-out synthetic row with truth label Danger",
+      "input": "14 readings typed into the form, motor id, timestamp, then 'Analyse motor'",
+      "expected": "Banner word, 4-5 recommendation cards, safety notes and scores on screen == API response == sqlite row; condition == independent NumPy reference; 'not a confirmed failure' statement present; red notice only for Danger",
+      "corrective_action": "Compare the three sources; if only the UI differs look in AssessmentResult.tsx, otherwise in the backend"
+    },
+    "UI-D": {
+      "id": "UI-D",
+      "letter": "D",
+      "title": "Missing sensor readings: the form refuses to send and says which fields",
+      "layer": "Frontend + backend + database (trained synthetic model)",
+      "severity_if_fail": "High",
+      "preconditions": "Form open; a baseline row count of the database",
+      "input": "each of the 14 readings left empty in turn (one at a time) and all left empty",
+      "expected": "inline error and error summary naming the field; NO request to POST /api/assessments leaves the browser; database unchanged",
+      "corrective_action": "assessmentForm.validateForm"
+    },
+    "UI-E": {
+      "id": "UI-E",
+      "letter": "E",
+      "title": "Invalid numeric values and timestamps are stopped in the browser (and the backend independently refuses them, see E2E-E)",
+      "layer": "Frontend + backend + database (trained synthetic model)",
+      "severity_if_fail": "High",
+      "preconditions": "Form open",
+      "input": "letters, 1,5, NaN, Infinity, 1e999, 12abc, negative-looking text; empty timestamp; timestamp in the future",
+      "expected": "inline message in plain words; no request sent; future time shows a warning but is allowed; database unchanged",
+      "corrective_action": "assessmentForm.ts"
+    },
+    "UI-F": {
+      "id": "UI-F",
+      "letter": "F",
+      "title": "CSV with missing or incorrectly named columns is rejected in the browser with a reason; nothing is stored",
+      "layer": "Frontend + backend + database (trained synthetic model)",
+      "severity_if_fail": "High",
+      "preconditions": "Upload page open",
+      "input": "CSV missing de_h_ge; CSV with 'de_h_velocity'; CSV with an unknown extra column; header-only CSV",
+      "expected": "plain explanation naming the column (local check or server check); 'Analyse file' stays disabled; no upload batch or prediction rows are created",
+      "corrective_action": "UploadPage.tsx / csv_io.py"
+    },
+    "UI-CSV": {
+      "id": "UI-CSV",
+      "letter": "F",
+      "title": "Valid CSV in the browser: preview, check, analyse; the results page, history and the downloaded export agree with the database",
+      "layer": "Frontend + backend + database (trained synthetic model)",
+      "severity_if_fail": "High",
+      "preconditions": "Upload page open",
+      "input": "6-row CSV, 2 held-out rows per class (chosen by truth label)",
+      "expected": "5-row preview, 'File check passed', 6 results whose conditions equal the independent reference and the 6 new database rows",
+      "corrective_action": "UploadPage / predict_batch"
+    },
+    "UI-I": {
+      "id": "UI-I",
+      "letter": "I",
+      "title": "Repeated submission from the browser: double click, and re-sending the identical readings, create exactly one record",
+      "layer": "Frontend + backend + database (trained synthetic model)",
+      "severity_if_fail": "High",
+      "preconditions": "Form filled",
+      "input": "double-click 'Analyse motor'; then 'Edit these readings' and 'Analyse motor' again with identical data",
+      "expected": "one database row; second result says it was already saved and no second record was created",
+      "corrective_action": "AssessPage.tsx busy guard and Idempotency-Key reuse"
+    },
+    "UI-J": {
+      "id": "UI-J",
+      "letter": "J",
+      "title": "History page for an unknown motor ID",
+      "layer": "Frontend + backend + database (trained synthetic model)",
+      "severity_if_fail": "High",
+      "preconditions": "History page with stored records",
+      "input": "Motor ID 'NO-SUCH-MOTOR' + Apply filters",
+      "expected": "plain 'No stored predictions match these filters', no error, no table",
+      "corrective_action": "HistoryPage.tsx"
+    },
+    "UI-K": {
+      "id": "UI-K",
+      "letter": "K",
+      "title": "A prediction saved from the form is found in History and its detail page shows the same condition, scores and steps as when it was made",
+      "layer": "Frontend + backend + database (trained synthetic model)",
+      "severity_if_fail": "High",
+      "preconditions": "A fresh assessment",
+      "input": "save a Danger assessment, then History → filter by its motor → open it",
+      "expected": "same condition and same recommendation texts as the result screen and as the database",
+      "corrective_action": "AssessmentDetailPage / HistoryPage"
+    },
+    "UI-L": {
+      "id": "UI-L",
+      "letter": "L",
+      "title": "Export from the History page: expected records and columns for a filtered selection",
+      "layer": "Frontend + backend + database (trained synthetic model)",
+      "severity_if_fail": "High",
+      "preconditions": "Records of several classes stored",
+      "input": "filter by condition Danger, press 'Export matching rows (CSV)'",
+      "expected": "download with the exact column list, only Danger rows, the same number of rows the page announces, values equal to the database",
+      "corrective_action": "HistoryPage doExport / routes_history"
+    },
+    "UI-FID": {
+      "id": "UI-FID",
+      "letter": "A-C",
+      "title": "The screen shows what the BACKEND returns, not a value of its own",
+      "layer": "Frontend + backend + database (trained synthetic model)",
+      "severity_if_fail": "High",
+      "preconditions": "Form filled with a Danger-labelled row",
+      "input": "the backend response is altered in flight: predicted_condition 'Danger' → 'Normal', Danger score → 0.123",
+      "expected": "banner shows Normal and the table shows 0.123 (the UI renders the response); with the real response the same inputs show Danger",
+      "corrective_action": "Look for hard-coded values in AssessmentResult / AssessPage"
+    },
+    "UI-G": {
+      "id": "UI-G",
+      "letter": "G",
+      "title": "Model artifact unavailable: the browser says so and offers no assessment",
+      "layer": "Frontend + backend + database (trained synthetic model)",
+      "severity_if_fail": "High",
+      "preconditions": "Backend restarted with no model bundle (REQUIRE_MODEL_AT_STARTUP=false)",
+      "input": "open New assessment and Upload",
+      "expected": "header 'no model'; New assessment explains that no prediction is made; no Analyse button; Upload cannot analyse; database unchanged",
+      "corrective_action": "AssessPage / ModelNotice"
+    },
+    "UI-H": {
+      "id": "UI-H",
+      "letter": "H",
+      "title": "Database failure: the browser must not show a result or claim it was saved",
+      "layer": "Frontend + backend + database (trained synthetic model)",
+      "severity_if_fail": "High",
+      "preconditions": "Backend restarted on the trained bundle; then the predictions table is dropped under the running server",
+      "input": "fill the form and press Analyse; then open History",
+      "expected": "'The assessment was not completed' + 'nothing is reported as saved'; no result banner; History shows an error with Try again; entries kept",
+      "corrective_action": "AssessPage error path / error handlers"
+    }
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "results": [
+    {
+      "id": "E2E-B1",
+      "status": "PASS",
+      "actual": [
+        "bundle pm_condition_ann_v1.0.0 loaded: version v1.0.0, 14 features, classes ['Normal', 'Alert', 'Danger']"
+      ],
+      "evidence": [],
+      "failure": "",
+      "nodes": [
+        "test_recommendation_rules.py::test_B1_real_bundle"
+      ]
+    },
+    {
+      "id": "E2E-B2",
+      "status": "BLOCKED",
+      "actual": [],
+      "evidence": [],
+      "failure": "BLOCKED: needs the real bundle (ml/artifacts) and PM_REAL_SAMPLES_CSV pointing to real rows with a condition_label column.",
+      "nodes": [
+        "test_recommendation_rules.py::test_B2_real_rows"
+      ]
+    }
+  ],
+  "meta": {
+    "E2E-R1": {
+      "id": "E2E-R1",
+      "letter": "A-C (rules)",
+      "title": "Recommendation rules for Normal, Alert and Danger, tested in isolation",
+      "preconditions": "No model involved: the rule function is called with each class name",
+      "input": "recommend('Normal' | 'Alert' | 'Danger')",
+      "expected": "Normal: routine monitoring and planned-maintenance items only. Alert: escalation to the maintenance engineer + qualified inspection. Danger: urgent, immediate engineer notification, stop/isolate ONLY via approved lockout/tagout, no shutdown order, no repair instructions for unqualified users; never an invented deadline, threshold, part or diagnosis",
+      "severity_if_fail": "Critical (safety wording)",
+      "corrective_action": "Edit services/recommendations.py, bump RULESET_VERSION, update docs/recommendation-rules.md",
+      "layer": "Recommendation rules (no model)"
+    },
+    "E2E-R2": {
+      "id": "E2E-R2",
+      "letter": "A-C (rules)",
+      "title": "Recommendation rules: unknown class is never given invented advice",
+      "preconditions": "No model involved",
+      "input": "recommend('Critical')",
+      "expected": "available=false, no items, tells the user to ask the maintenance engineer",
+      "severity_if_fail": "High",
+      "corrective_action": "recommendations.recommend",
+      "layer": "Recommendation rules (no model)"
+    },
+    "E2E-R3": {
+      "id": "E2E-R3",
+      "letter": "A-C (rules)",
+      "title": "Rules \u2192 API \u2192 database: recommendations stored equal the rules' output for each class (model replaced by a TEST DOUBLE)",
+      "preconditions": "In-process API with a real SQLite file; the scoring function is replaced by a controlled double that returns a chosen class (mock_ml)",
+      "input": "valid readings; double returns Normal, then Alert, then Danger",
+      "expected": "response and database both carry exactly recommend(class); stored summary/ruleset match",
+      "severity_if_fail": "High",
+      "corrective_action": "Check routes_assessments / repository.create_assessment",
+      "layer": "Recommendation rules (TEST DOUBLE model)"
+    },
+    "E2E-B1": {
+      "id": "E2E-B1",
+      "letter": "A-C (real)",
+      "title": "REAL trained model: bundle loads, parity probes pass, health and model-info are ready",
+      "preconditions": "Colab export copied to ml/artifacts/<bundle> (or PM_REAL_BUNDLE_DIR set)",
+      "input": "start backend on the real bundle",
+      "expected": "server starts (manifest hashes, feature order, parity probes verified); /api/health model_ready=true",
+      "severity_if_fail": "High",
+      "corrective_action": "Export the bundle from the Colab notebook (section 19) into ml/artifacts",
+      "layer": "Real artifacts"
+    },
+    "E2E-B2": {
+      "id": "E2E-B2",
+      "letter": "A-C (real)",
+      "title": "REAL model on REAL labelled rows: which classes does it actually produce, and does every saved record match?",
+      "preconditions": "Real bundle AND a CSV of real rows with the 14 inputs plus condition_label (PM_REAL_SAMPLES_CSV). The data stays on your machine",
+      "input": "up to 3 rows per true class, sent as manual assessments",
+      "expected": "201 each; DB row equals response; recommendations match the predicted class. Agreement with the label is REPORTED, not asserted (this is not an accuracy test)",
+      "severity_if_fail": "High",
+      "corrective_action": "Provide the real rows (never commit them to GitHub)",
+      "layer": "Real artifacts"
+    }
+  }
+}

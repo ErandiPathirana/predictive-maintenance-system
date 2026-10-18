@@ -1,0 +1,1 @@
+{"layers": [{"type": "dense", "units": 16, "activation": "relu"}, {"type": "dense", "units": 3, "activation": "softmax"}]}
