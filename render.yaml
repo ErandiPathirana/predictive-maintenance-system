@@ -1,0 +1,27 @@
+# Render "Blueprint" for the BACKEND only (the frontend is a static site on Vercel/Netlify; see docs/deployment.md).
+# No secrets in this file: values marked "sync: false" are typed into the Render dashboard.
+# The repository root is used (no rootDir) so the app can find ml/artifacts/ next to backend/.
+services:
+  - type: web
+    name: pm-backend
+    runtime: python
+    plan: free
+    buildCommand: pip install -r backend/requirements-postgres.txt
+    # Creates/updates the database tables, then starts the API. The model is only LOADED here, never trained.
+    startCommand: cd backend && python -m alembic upgrade head && python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: MODEL_BUNDLE_DIR
+        value: ml/artifacts/pm_condition_ann_v1.0.0
+      - key: REQUIRE_MODEL_AT_STARTUP
+        value: "true"
+      - key: STORE_INPUT_READINGS
+        value: "false"
+      - key: DATABASE_URL
+        value: sqlite:///predictions.db   # temporary on Render Free (see docs/deployment.md); replace with a PostgreSQL URL to keep history
+      - key: CORS_ORIGINS
+        sync: false                       # your frontend address, e.g. https://your-app.vercel.app (no trailing slash, no *)
+      - key: API_KEY
+        sync: false                       # optional; leave empty for an open demo

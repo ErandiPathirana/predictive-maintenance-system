@@ -18,7 +18,7 @@ export async function responsiveTests() {
           const burger = page.getByRole("button", { name: /navigation/i });
           expect(await burger.isVisible(), "no menu button on a narrow screen");
           await burger.click();
-          await page.getByRole("link", { name: /New assessment/ }).waitFor({ state: "visible", timeout: 3000 });
+          await page.getByRole("link", { name: /New Assessment/ }).waitFor({ state: "visible", timeout: 3000 });
           await shot("menu-open");
           await page.keyboard.press("Tab");
         }
@@ -89,20 +89,20 @@ export async function keyboardTests() {
   await test("K03", "Route change: keyboard/screen-reader user is told the page changed (focus or title moves)", async (page) => {
     await page.goto(FRONTEND + "/#/"); await page.waitForTimeout(600);
     const t0 = await page.title();
-    await page.getByRole("link", { name: /Assessment history/ }).click(); await page.waitForTimeout(600);
+    await page.getByRole("link", { name: /Assessment History/ }).click(); await page.waitForTimeout(600);
     const t1 = await page.title();
     const focusInMain = await page.evaluate(() => { const a = document.activeElement; return !!a && a !== document.body && !!a.closest("main, h1"); });
     expect(t0 !== t1 || focusInMain, `document title stays "${t1}" and focus is not moved after navigating`);
   });
   await test("K04", "Mobile menu: Escape/Burger closes it and focus returns to the menu button", async (page) => {
     await page.goto(FRONTEND + "/#/"); const b = page.getByRole("button", { name: /Open navigation/ }); await b.focus(); await page.keyboard.press("Enter");
-    await page.getByRole("link", { name: /Upload a CSV file/ }).waitFor({ state: "visible" });
-    await page.getByRole("link", { name: /Upload a CSV file/ }).click();
+    await page.getByRole("link", { name: /Upload Bulk CSV File/ }).waitFor({ state: "visible" });
+    await page.getByRole("link", { name: /Upload Bulk CSV File/ }).click();
     await page.waitForTimeout(500);
     expect(page.url().endsWith("#/upload"), "menu link did not navigate");
     await page.waitForTimeout(500);
-    const box = await page.getByRole("link", { name: /Upload a CSV file/ }).boundingBox();
-    expect(!box || box.x + box.width <= 1 || !(await page.getByRole("link", { name: /Upload a CSV file/ }).isVisible()), "menu stays open over the page after choosing a page");
+    const box = await page.getByRole("link", { name: /Upload Bulk CSV File/ }).boundingBox();
+    expect(!box || box.x + box.width <= 1 || !(await page.getByRole("link", { name: /Upload Bulk CSV File/ }).isVisible()), "menu stays open over the page after choosing a page");
   }, { viewport: "mobile" });
   await test("K05", "Text size: page still works with browser zoom 200% (viewport 640 wide ≈ 1280 at 200%)", async (page) => {
     await page.setViewportSize({ width: 640, height: 800 });

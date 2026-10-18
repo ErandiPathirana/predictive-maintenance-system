@@ -1,0 +1,26 @@
+{
+  "layers": [
+    {
+      "type": "dense",
+      "units": 64,
+      "activation": "relu"
+    },
+    {
+      "type": "dense",
+      "units": 64,
+      "activation": "relu"
+    },
+    {
+      "type": "dense",
+      "units": 64,
+      "activation": "relu"
+    },
+    {
+      "type": "dense",
+      "units": 3,
+      "activation": "softmax"
+    }
+  ],
+  "input_features": 14,
+  "note": "Dropout and L2 are training-time only and are inactive at inference."
+}

@@ -74,7 +74,7 @@ export default function UploadPage() {
               <span style={{ wordBreak: "break-word" }}>{featureNames.join(", ")}.</span></>) : "The column list appears once the backend answers."}
           </Text>
           <Text size="sm" c="dimmed" mb="xs">
-            Use <code>YYYY-MM-DD HH:MM:SS</code> for times, one format on every row. Extra columns are ignored. Up to {formatInt(CLIENT_MAX_ROWS)} rows and 2 MB by default.
+            Use <code>YYYY-MM-DD HH:MM:SS</code> for times, one format on every row. Only the template's columns are accepted: an unrecognised column name is reported, so a misspelled name is never silently skipped (a <code>condition_label</code> column is allowed and ignored). Up to {formatInt(CLIENT_MAX_ROWS)} rows and 2 MB by default.
           </Text>
           <Button variant="default" onClick={() => download(downloadTemplate)} disabled={!bundle}>Download CSV template</Button>
         </section>

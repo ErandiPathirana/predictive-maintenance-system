@@ -63,8 +63,10 @@ def _safe_cell(value):
     return value
 
 
-def build_report_csv(rows: list[Prediction]) -> str:
-    class_cols: list[str] = []
+def build_report_csv(rows: list[Prediction], class_names: list[str] | None = None) -> str:
+    # The score columns come from the loaded model's class list, so an export with no rows has the SAME header as one with rows
+    # (a program reading the file must not see the columns change with the filter). Without a model they come from the rows.
+    class_cols: list[str] = list(class_names or [])
     for r in rows:
         for c in r.scores:
             if c not in class_cols:
@@ -86,9 +88,10 @@ def build_report_csv(rows: list[Prediction]) -> str:
 
 @router.get("/reports/predictions.csv", tags=["History"], summary="Export prediction results to CSV (same filters as the history)",
             responses={200: {"content": {"text/csv": {}}}, 422: {"model": ErrorResponse}})
-def export_csv(f: repo.PredictionFilters = Depends(history_filters), db: Session = Depends(get_db), settings: Settings = Depends(get_settings_dep)):
+def export_csv(f: repo.PredictionFilters = Depends(history_filters), db: Session = Depends(get_db), settings: Settings = Depends(get_settings_dep),
+               registry: ModelRegistry = Depends(get_registry)):
     total, rows = repo.query_for_export(db, f, settings.max_export_rows)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
-    return Response(build_report_csv(rows), media_type="text/csv", headers={
+    return Response(build_report_csv(rows, list(registry.bundle.class_names) if registry.is_ready else None), media_type="text/csv", headers={
         "Content-Disposition": f'attachment; filename="predictions_{stamp}.csv"',
         "X-Total-Matching": str(total), "X-Rows-Exported": str(len(rows)), "X-Export-Truncated": str(total > len(rows)).lower()})

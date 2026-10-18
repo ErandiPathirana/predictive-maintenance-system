@@ -81,9 +81,8 @@ export default function DashboardPage() {
               The server holds {formatInt(all.total)} stored predictions. This page summarises the newest {formatInt(all.items.length)}. Use Assessment history for all of them.
             </Text>
           )}
-          <SimpleGrid cols={{ base: 2, sm: 3, lg: 5 }} spacing="sm" mb="md">
+          <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="sm" mb="md">
             <StatCard label="Distinct motors" value={formatInt(latest.length)} />
-            <StatCard label="Records analysed" value={formatInt(all.total)} note="stored predictions" />
             {CONDITION_ORDER.map((c) => (
               <StatCard key={c} label={`Motors latest ${c}`} value={formatInt(counts[c] ?? 0)} note={<ConditionBadge condition={c} />} />
             ))}
@@ -116,7 +115,6 @@ export default function DashboardPage() {
             columns={[
               { key: "w", header: "Stored at (UTC)", render: (r) => formatTimestamp(r.created_at) },
               { key: "m", header: "Motor", render: (r) => r.motor_id ?? "Not recorded" },
-              { key: "r", header: "Record", render: (r) => r.record_id ?? "Not recorded" },
               { key: "c", header: "Predicted condition", render: (r) => <ConditionBadge condition={r.predicted_condition} /> },
               { key: "src", header: "Source", render: (r) => (r.source === "csv" ? "CSV upload" : "Manual entry") },
             ]}

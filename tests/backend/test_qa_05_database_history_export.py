@@ -312,3 +312,10 @@ def test_a17_invalid_requests_never_write_anything(client, readings, loaded):
     upload(client, csv_text(loaded, rows=3, mutate=lambda r, v: v.update(de_h_ge="nan")))
     upload(client, b"%PDF-1.4 junk", name="x.csv")
     assert db_counts(client) == (0, 0)
+
+
+def test_empty_export_has_same_header_as_populated_export_when_classes_known():
+    """Regression for E2E defect E2: model_score_* columns must not depend on whether any row matched."""
+    from app.api.routes_history import build_report_csv
+    empty = build_report_csv([], ["Normal", "Alert", "Danger"]).splitlines()[0]
+    assert "model_score_Normal,model_score_Alert,model_score_Danger" in empty

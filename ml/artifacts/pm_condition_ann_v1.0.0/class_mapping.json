@@ -1,0 +1,17 @@
+{
+  "ordered_by_severity": true,
+  "classes": [
+    {
+      "id": 0,
+      "name": "Normal"
+    },
+    {
+      "id": 1,
+      "name": "Alert"
+    },
+    {
+      "id": 2,
+      "name": "Danger"
+    }
+  ]
+}

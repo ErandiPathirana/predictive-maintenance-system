@@ -4,13 +4,15 @@ React 19 + TypeScript + Vite, Mantine 9 (components), Recharts (charts), PapaPar
 The frontend is a **separate service**: it only talks to the backend through `frontend/src/api/client.ts`.
 
 ## Pages
+The sidebar lists them in this order.
 | Page | Route | Data source |
 |---|---|---|
 | Dashboard | `#/` | `GET /api/predictions` (newest 5,000 stored predictions, summarised in the browser) + the file loaded in this session |
-| Motor monitoring | `#/monitoring` | The CSV loaded on the Upload page (kept in memory only) |
-| Upload and analyse | `#/upload` | `GET /api/template.csv`, `POST /api/uploads/validate`, `POST /api/predict/batch`, `GET /api/reports/predictions.csv` |
-| Prediction results | `#/results` | Response of the last `POST /api/predict/batch` in this tab |
-| Prediction history | `#/history` | `GET /api/predictions`, `GET /api/reports/predictions.csv` |
+| New Assessment | `#/assess` | `POST /api/assessments` |
+| Upload Bulk CSV File | `#/upload` | `GET /api/template.csv`, `POST /api/uploads/validate`, `POST /api/predict/batch`, `GET /api/reports/predictions.csv` |
+| Motor Monitoring | `#/monitoring` | The CSV loaded on the Upload page (kept in memory only) |
+| Prediction Results | `#/results` | Response of the last `POST /api/predict/batch` in this tab |
+| Assessment History | `#/history` | `GET /api/predictions`, `GET /api/reports/predictions.csv` |
 
 Only endpoints that exist in the backend are used. Because the backend has no summary endpoint and does not store sensor readings by default:
 - Dashboard counts are computed in the browser from the newest stored predictions (a notice appears if there are more than it loaded).

@@ -1,0 +1,104 @@
+{
+  "order_is_contract": true,
+  "features": [
+    {
+      "name": "de_h_velocity_mm_s",
+      "unit": "mm/s",
+      "description": "Drive end, 'Header' (assumed horizontal): vibration velocity",
+      "observed_train_min": 0.3,
+      "observed_train_max": 6.78
+    },
+    {
+      "name": "de_h_ge",
+      "unit": "gE",
+      "description": "Drive end, 'Header': gE reading",
+      "observed_train_min": 0.142,
+      "observed_train_max": 2.867
+    },
+    {
+      "name": "de_h_temp_c",
+      "unit": "degC",
+      "description": "Drive end, 'Header': temperature",
+      "observed_train_min": 29.3,
+      "observed_train_max": 67.4
+    },
+    {
+      "name": "de_v_velocity_mm_s",
+      "unit": "mm/s",
+      "description": "Drive end, 'Vrtex' (assumed vertical): vibration velocity",
+      "observed_train_min": 0.26,
+      "observed_train_max": 3.84
+    },
+    {
+      "name": "de_v_ge",
+      "unit": "gE",
+      "description": "Drive end, 'Vrtex': gE reading",
+      "observed_train_min": 0.122,
+      "observed_train_max": 3.359
+    },
+    {
+      "name": "de_v_temp_c",
+      "unit": "degC",
+      "description": "Drive end, 'Vrtex': temperature",
+      "observed_train_min": 28.8,
+      "observed_train_max": 69.3
+    },
+    {
+      "name": "nde_h_velocity_mm_s",
+      "unit": "mm/s",
+      "description": "Non-drive end, 'Header': vibration velocity",
+      "observed_train_min": 0.35,
+      "observed_train_max": 3.51
+    },
+    {
+      "name": "nde_h_ge",
+      "unit": "gE",
+      "description": "Non-drive end, 'Header': gE reading",
+      "observed_train_min": 0.065,
+      "observed_train_max": 3.094
+    },
+    {
+      "name": "nde_h_temp_c",
+      "unit": "degC",
+      "description": "Non-drive end, 'Header': temperature",
+      "observed_train_min": 24.5,
+      "observed_train_max": 66.2
+    },
+    {
+      "name": "nde_v_velocity_mm_s",
+      "unit": "mm/s",
+      "description": "Non-drive end, 'Vrtex': vibration velocity",
+      "observed_train_min": 0.27,
+      "observed_train_max": 3.21
+    },
+    {
+      "name": "nde_v_ge",
+      "unit": "gE",
+      "description": "Non-drive end, 'Vrtex': gE reading",
+      "observed_train_min": 0.067,
+      "observed_train_max": 5.385
+    },
+    {
+      "name": "nde_v_temp_c",
+      "unit": "degC",
+      "description": "Non-drive end, 'Vrtex': temperature",
+      "observed_train_min": 28.1,
+      "observed_train_max": 64.1
+    },
+    {
+      "name": "rotational_speed_rpm",
+      "unit": "rpm",
+      "description": "Rotational speed (measured or nominal: unconfirmed)",
+      "observed_train_min": 1050.0,
+      "observed_train_max": 2965.0
+    },
+    {
+      "name": "load_percent",
+      "unit": "%",
+      "description": "Motor load (measured or nominal: unconfirmed)",
+      "observed_train_min": 20.0,
+      "observed_train_max": 100.0
+    }
+  ],
+  "note": "observed_train_min/max describe the training data. They are NOT validity limits or alarm thresholds."
+}

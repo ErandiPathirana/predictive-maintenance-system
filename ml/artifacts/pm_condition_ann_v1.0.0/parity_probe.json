@@ -1,0 +1,78 @@
+{
+  "tolerance": 1e-05,
+  "note": "Artificial inputs built from training mean and SD. For software parity tests only.",
+  "probes": [
+    {
+      "name": "training_mean",
+      "readings": {
+        "de_h_velocity_mm_s": 1.3006013745704468,
+        "de_h_ge": 0.47025000000000006,
+        "de_h_temp_c": 51.90859106529209,
+        "de_v_velocity_mm_s": 0.997216494845361,
+        "de_v_ge": 0.5435618556701031,
+        "de_v_temp_c": 51.799570446735395,
+        "nde_h_velocity_mm_s": 1.1007646048109965,
+        "nde_h_ge": 0.33879896907216495,
+        "nde_h_temp_c": 49.65335051546392,
+        "nde_v_velocity_mm_s": 0.8126374570446736,
+        "nde_v_ge": 0.3720713058419244,
+        "nde_v_temp_c": 49.87920962199312,
+        "rotational_speed_rpm": 2058.6993127147766,
+        "load_percent": 65.6131443298969
+      },
+      "expected_probabilities": {
+        "Normal": 0.6278515458106995,
+        "Alert": 0.3212538957595825,
+        "Danger": 0.050894543528556824
+      }
+    },
+    {
+      "name": "mean_plus_1sd",
+      "readings": {
+        "de_h_velocity_mm_s": 1.9541298487223542,
+        "de_h_ge": 0.8215075839026695,
+        "de_h_temp_c": 57.171773997556265,
+        "de_v_velocity_mm_s": 1.4305106195352841,
+        "de_v_ge": 0.9784125791053503,
+        "de_v_temp_c": 57.14710334171666,
+        "nde_h_velocity_mm_s": 1.5473569136269594,
+        "nde_h_ge": 0.6095085574432653,
+        "nde_h_temp_c": 55.003691492248535,
+        "nde_v_velocity_mm_s": 1.1205221073760674,
+        "nde_v_ge": 0.7175457381859829,
+        "nde_v_temp_c": 55.01435040418846,
+        "rotational_speed_rpm": 2865.59342421991,
+        "load_percent": 80.34510367669336
+      },
+      "expected_probabilities": {
+        "Normal": 0.011931581422686577,
+        "Alert": 0.7072643637657166,
+        "Danger": 0.2808040678501129
+      }
+    },
+    {
+      "name": "mean_minus_1sd",
+      "readings": {
+        "de_h_velocity_mm_s": 0.6470729004185395,
+        "de_h_ge": 0.11899241609733058,
+        "de_h_temp_c": 46.64540813302792,
+        "de_v_velocity_mm_s": 0.5639223701554379,
+        "de_v_ge": 0.10871113223485585,
+        "de_v_temp_c": 46.45203755175413,
+        "nde_h_velocity_mm_s": 0.6541722959950336,
+        "nde_h_ge": 0.06808938070106457,
+        "nde_h_temp_c": 44.303009538679305,
+        "nde_v_velocity_mm_s": 0.5047528067132798,
+        "nde_v_ge": 0.02659687349786588,
+        "nde_v_temp_c": 44.74406883979778,
+        "rotational_speed_rpm": 1251.8052012096434,
+        "load_percent": 50.88118498310043
+      },
+      "expected_probabilities": {
+        "Normal": 0.9995208978652954,
+        "Alert": 0.0004789553349837661,
+        "Danger": 1.4706587592172582e-07
+      }
+    }
+  ]
+}

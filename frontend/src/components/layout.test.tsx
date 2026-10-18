@@ -30,8 +30,8 @@ describe("Skip link (F1)", () => {
 describe("Page titles (F4)", () => {
   it("every menu page and the detail page have their own title", () => {
     expect(titleFor("/")).toBe("Dashboard - Motor condition monitor");
-    expect(titleFor("/assess")).toBe("New assessment - Motor condition monitor");
-    expect(titleFor("/history")).toBe("Assessment history - Motor condition monitor");
+    expect(titleFor("/assess")).toBe("New Assessment - Motor condition monitor");
+    expect(titleFor("/history")).toBe("Assessment History - Motor condition monitor");
     expect(titleFor("/assessment/12")).toBe("Assessment details - Motor condition monitor");
     expect(titleFor("/nope")).toBe("Page not found - Motor condition monitor");
   });
@@ -40,8 +40,8 @@ describe("Page titles (F4)", () => {
     mockApi({});
     renderApp(ui);
     await waitFor(() => expect(document.title).toBe("Dashboard - Motor condition monitor"));
-    fireEvent.click(await screen.findByRole("link", { name: /Assessment history/ }));
-    await waitFor(() => expect(document.title).toBe("Assessment history - Motor condition monitor"));
+    fireEvent.click(await screen.findByRole("link", { name: /Assessment History/ }));
+    await waitFor(() => expect(document.title).toBe("Assessment History - Motor condition monitor"));
     expect(document.activeElement?.id).toBe("main");
   });
 });

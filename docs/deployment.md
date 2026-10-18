@@ -1,55 +1,103 @@
-# Deployment instructions
+# Deployment guide (public URL)
 
-Goal: viva panel members open a web address on their own device. This needs a hosted **frontend** (static files) and a hosted **backend** (Python service).
+Goal: the supervisor and viva panel open one web address on their own device.
 
-> I have not verified any hosting provider's current free-tier limits, prices or screens. Provider websites change, so check their current documentation before the viva. Free backend services often "sleep" when idle, so the first request can take up to a minute. **Open the site a few minutes before your viva to wake it up.**
+## Architecture (inspected from the code)
+| Part | Technology | Where it runs |
+|---|---|---|
+| Frontend | React + TypeScript + Vite, hash routes (`#/...`) | Static host (Vercel recommended) |
+| Backend | FastAPI (Python 3.12), NumPy-only inference | Render Free web service |
+| Model | Exported bundle `ml/artifacts/pm_condition_ann_v1.0.0/` (NumPy weights, no pickle). Loaded once at startup, never trained | Inside the backend repository (private) |
+| Database | SQLAlchemy: SQLite file (default) or PostgreSQL via `DATABASE_URL` | See "Data persistence" |
 
-## Stage plan
-Deployment files (hosting configuration) are added in a later build stage, once the prediction form exists. This page explains the approach so you can plan.
+The frontend calls the backend address baked in at build time (`VITE_API_BASE_URL`). Hash routes mean page refresh and direct links work on any static host without rewrite rules.
 
-## Step 1: Put code on GitHub
-```powershell
-git init
-git add .
-git status        # CHECK: no .env, no .csv, no .joblib files listed
-git commit -m "Initial project structure"
-```
-Create an empty GitHub repository (preferably **private**), then follow the commands GitHub shows (`git remote add origin ...`, `git push -u origin main`).
+## Costs and limits (checked in the providers' documentation on 2026-10-19; verify again before the viva)
+**Render Free web service** ([docs](https://render.com/docs/free))
+- Spins down after 15 minutes without traffic; waking takes about one minute. **Open the site 5 minutes before the viva.**
+- 750 free instance hours per month; if used up, free services are suspended until next month.
+- The filesystem is **ephemeral**: files (including a SQLite database) are lost on redeploy, restart or spin-down. No persistent disk on the free plan.
+- Free Render PostgreSQL: 1 GB, **expires 30 days after creation** (14-day grace), one per workspace, no backups.
 
-## Step 2: Backend host
-Any host that runs a Python web service works (Render, Railway, Fly.io, etc.).
-- Root directory: `backend`
-- Install command: `pip install -r requirements-postgres.txt`
-- Release/pre-start command: `python -m alembic upgrade head`
-- Start command: `python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-- Python version: **3.12**
-- Environment variables (set on the host, never in Git): `ENVIRONMENT=production`, `CORS_ORIGINS=<your frontend address>` (no `*`),
-  `DATABASE_URL=<hosted PostgreSQL URL>`, `MODEL_BUNDLE_DIR=<path to the bundle>`, `API_KEY=<long random string>` (recommended),
-  `REQUIRE_MODEL_AT_STARTUP=true`. In production the app refuses `*` CORS, smoke-test bundles and auto-created tables.
+**Vercel Hobby (free)** ([docs](https://vercel.com/docs/plans/hobby)): free for personal, non-commercial use, which fits an academic demonstration. Check that "Vercel Authentication" is not forcing visitors to log in (test in a private window).
 
-## Step 3: Getting the model bundle onto the backend
-The bundle is not in GitHub. It contains no pickle and no code that the backend runs, and `MANIFEST.json` lets the server detect a damaged copy. Options:
-1. **Small bundle in a private repository:** add `ml/artifacts/pm_condition_ann_v1.0.0/` with `git add -f`. Acceptable only if the model reveals nothing confidential and the repository stays private. Delete `model.keras` and any `__pycache__` first (the backend does not need them).
-2. **Persistent disk/volume** (if the host offers one): upload the bundle there and set `MODEL_BUNDLE_DIR` to the mount path.
-3. **Private object storage download at build/start:** needs extra deployment code (not built yet).
+Other limits in this app: upload limit 2,000,000 bytes and 5,000 rows per CSV (`MAX_UPLOAD_BYTES`, `MAX_BATCH_ROWS`).
 
-Run `python ml/scripts/validate_artifacts.py` locally first. On the host, the server logs `Model bundle ... loaded and verified` or stops with the reason.
+## Data persistence
+- Default `DATABASE_URL=sqlite:///predictions.db`: history is kept across normal requests but **is erased whenever Render restarts, redeploys or spins the service down**. Acceptable for a demonstration if you upload a CSV before showing the dashboard.
+- To keep history for the viva: create a Render PostgreSQL database (free, valid 30 days, so create it close to the viva) and set `DATABASE_URL` to its **Internal Database URL**. The code converts `postgres://` URLs and `psycopg` is already in `backend/requirements-postgres.txt`.
+- `STORE_INPUT_READINGS=false` (default): raw sensor values are not written to the database.
 
-## Step 4: Frontend host
-Any static host works (Vercel, Netlify, Cloudflare Pages, GitHub Pages).
-- Root directory: `frontend`
-- Build command: `npm run build`
-- Output directory: `dist`
-- Environment variable: `VITE_API_BASE_URL=<your backend address>` (set it **before** building; it is baked into the build)
+## Environment variables (backend)
+| Variable | Value | Secret? |
+|---|---|---|
+| `ENVIRONMENT` | `production` | no |
+| `CORS_ORIGINS` | your frontend address, e.g. `https://your-app.vercel.app` (no trailing slash, **no `*`**) | no |
+| `MODEL_BUNDLE_DIR` | `ml/artifacts/pm_condition_ann_v1.0.0` | no |
+| `REQUIRE_MODEL_AT_STARTUP` | `true` | no |
+| `DATABASE_URL` | `sqlite:///predictions.db` or the PostgreSQL URL | **yes if PostgreSQL** |
+| `API_KEY` | optional long random string. If set, viewers must type it into the "Key (access)" button | **yes** |
+| `STORE_INPUT_READINGS` | `false` | no |
 
-## Step 5: Connect them
-1. Put the frontend address into the backend's `CORS_ORIGINS` (no trailing slash).
-2. Open the frontend. The top-right light should read **Model <version> ready**. The Dashboard and Research information pages show more detail.
+Frontend (set in the static host before building): `VITE_API_BASE_URL` = the backend address (no trailing slash). Never put secrets in a `VITE_` variable: it is visible in the browser.
+
+Files already prepared: `render.yaml` (backend blueprint) and `.python-version` (`3.12`, because Render's newer default Python may not have builds for the pinned packages).
+
+## Step 1: Put the code on GitHub (private repository)
+1. Run `python ml/scripts/validate_artifacts.py` locally and confirm the bundle is valid.
+2. Delete `model.keras` and any `__pycache__` folders from the bundle folder (the backend does not need them).
+3. In PowerShell, from the project folder:
+   ```powershell
+   git init
+   git add .
+   git add -f ml/artifacts/pm_condition_ann_v1.0.0     # the bundle is ignored by default, so force it in
+   git status                                         # CHECK: no .env, no .csv data, no .db, no .keras
+   git commit -m "Prepare deployment"
+   ```
+4. On github.com choose **New repository**, name it, select **Private**, create it, then run the two commands GitHub shows (`git remote add origin ...` and `git push -u origin main`).
+   Only do this if the model reveals nothing confidential.
+
+## Step 2: Deploy the backend on Render
+1. Open https://render.com and sign in with GitHub.
+2. Choose **New > Web Service** and connect your private repository (branch `main`).
+3. Settings: Language **Python 3**, Region nearest to you, Instance type **Free**, Root Directory **leave empty**.
+   - Build Command: `pip install -r backend/requirements-postgres.txt`
+   - Start Command: `cd backend && python -m alembic upgrade head && python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+   - Health Check Path: `/api/health`
+   (Alternatively choose **New > Blueprint** to read these from `render.yaml`.)
+4. Under **Environment**, add the variables in the table above. For now set `CORS_ORIGINS` to `https://placeholder.invalid`; you will correct it in Step 4.
+5. Click **Create Web Service**. Open the **Logs** tab and wait for `Model bundle ... loaded and verified`, then `Application startup complete`.
+6. Copy the service address (like `https://pm-backend-xxxx.onrender.com`). Open `<address>/api/health`: it must show `"model_ready": true` and `"database": "ok"`. `<address>/docs` shows the API documentation.
+
+## Step 3: Deploy the frontend on Vercel
+1. Open https://vercel.com, sign in with GitHub, choose **Add New > Project**, import the same repository.
+2. **Root Directory: `frontend`**. Framework preset: **Vite**. Build Command `npm run build`. Output Directory `dist`.
+3. Under **Environment Variables** add `VITE_API_BASE_URL` = your Render address from Step 2.
+4. Click **Deploy**. Copy the address (like `https://your-app.vercel.app`).
+
+## Step 4: Connect them
+1. In Render > your service > **Environment**, set `CORS_ORIGINS` to the Vercel address exactly (no trailing slash). Save; the service restarts.
+2. Open the Vercel address. The top-right light must read **Model ... ready**.
+3. If you change `VITE_API_BASE_URL` later, **redeploy** the frontend (it is baked into the build).
+
+## Reading logs and fixing errors
+| Symptom | Likely cause and fix |
+|---|---|
+| Build fails installing numpy/pydantic | Python version too new. Confirm `.python-version` (`3.12`) is in the repo root |
+| `STARTUP ABORTED: database tables are missing` | The start command did not run `alembic upgrade head`; copy the full command above |
+| `STARTUP ABORTED` and a model message | Bundle missing or damaged in the repository: re-run Step 1 (`git add -f`), check `MODEL_BUNDLE_DIR` |
+| Browser shows "backend unreachable" | Backend asleep (wait about a minute and reload), wrong `VITE_API_BASE_URL`, or `CORS_ORIGINS` not equal to the frontend address |
+| Browser console shows a CORS error | `CORS_ORIGINS` has a typo, a trailing slash or `http` instead of `https` |
+| Every request says access key needed | `API_KEY` is set; click **Key (access)** and type it, or remove the variable |
+
+## Security notes
+- `.env`, datasets, databases and trained files are ignored by `.gitignore`; keep the repository private and use no real company data.
+- Without `API_KEY`, anyone with the address can use the API and see stored predictions. Use only demo data, or set `API_KEY` and share it with the panel. The key is typed into a browser, so it is not strong secrecy.
+- The access key is held in memory only, and the production settings refuse `*` for CORS.
 
 ## Pre-viva checklist
-- [ ] Works on a phone and a laptop that you did not develop on
-- [ ] Opened the site 10 minutes before the viva
-- [ ] `/docs` on the backend loads and `GET /api/health` shows `"status": "ok"`
-- [ ] `API_KEY` is set if real data is used
-- [ ] A local copy runs too (backup if the internet fails). Keep screenshots as a last resort.
-- [ ] No secrets in the repository (`git log` and GitHub search for `.env`)
+- [ ] `<backend>/api/health` shows `model_ready: true`
+- [ ] Opened the site 5 minutes before the viva (wakes the backend)
+- [ ] Six menu items work; download the CSV template on the Upload page, fill it with safe test values, upload it and see results; invalid CSV shows a clear message
+- [ ] Tested on a phone and on a device you did not develop on, in a private window
+- [ ] A local copy runs too (backup if the internet fails) and screenshots are saved

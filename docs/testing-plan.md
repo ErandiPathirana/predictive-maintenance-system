@@ -35,3 +35,5 @@ The suite was also checked by *mutation*: deliberately breaking the code (CSV-fo
 
 ## Planned for later stages
 Prediction form tests, boundary and invalid-input tests against your real feature ranges, latency measurements, cross-browser and cross-device checks on the deployed site.
+
+| Full-stack end-to-end (A–L) | `tests/e2e_full/` – see `docs/e2e-test-report.md` and `docs/e2e-reproduction-vscode-windows.md` | synthetic-trained model; real model BLOCKED until exported |

@@ -7,11 +7,11 @@ import { AccessKeyModal } from "./AccessKeyModal";
 
 export const NAV_ITEMS = [
   { to: "/", label: "Dashboard", hint: "Overview of all motors" },
-  { to: "/assess", label: "New assessment", hint: "Enter readings and get next steps" },
-  { to: "/monitoring", label: "Motor monitoring", hint: "Sensor trends for one motor" },
-  { to: "/upload", label: "Upload a CSV file", hint: "Check and analyse many records" },
-  { to: "/results", label: "Prediction results", hint: "Results of the latest analysis" },
-  { to: "/history", label: "Assessment history", hint: "Saved results, steps and export" },
+  { to: "/assess", label: "New Assessment", hint: "Enter readings and get next steps" },
+  { to: "/upload", label: "Upload Bulk CSV File", hint: "Check and analyse many records" },
+  { to: "/monitoring", label: "Motor Monitoring", hint: "Sensor trends for one motor" },
+  { to: "/results", label: "Prediction Results", hint: "Results of the latest analysis" },
+  { to: "/history", label: "Assessment History", hint: "Saved results, steps and export" },
 ] as const;
 
 const APP_NAME = "Motor condition monitor";
