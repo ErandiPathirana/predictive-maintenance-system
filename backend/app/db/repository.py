@@ -8,7 +8,7 @@ import numpy as np
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from app.db.models import Prediction, UploadBatch
+from app.db.models import MaintenanceCase, Prediction, UploadBatch
 
 
 @dataclass
@@ -21,6 +21,7 @@ class PredictionFilters:
     date_to: date | None = None
     measured_from: date | None = None    # measurement time, inclusive
     measured_to: date | None = None
+    maintenance_status: str | None = None  # "none" (no case), "open" (any unfinished case) or one status value
 
 
 def _conditions(f: PredictionFilters) -> list:
@@ -33,6 +34,14 @@ def _conditions(f: PredictionFilters) -> list:
     if f.date_to: c.append(Prediction.created_at < datetime.combine(f.date_to + timedelta(days=1), time.min))
     if f.measured_from: c.append(Prediction.measured_at >= datetime.combine(f.measured_from, time.min))
     if f.measured_to: c.append(Prediction.measured_at < datetime.combine(f.measured_to + timedelta(days=1), time.min))
+    if f.maintenance_status:
+        has_case = select(MaintenanceCase.assessment_id)
+        if f.maintenance_status == "none":
+            c.append(Prediction.id.not_in(has_case))
+        elif f.maintenance_status == "open":
+            c.append(Prediction.id.in_(has_case.where(MaintenanceCase.status != "verified_closed")))
+        else:
+            c.append(Prediction.id.in_(has_case.where(MaintenanceCase.status == f.maintenance_status)))
     return c
 
 

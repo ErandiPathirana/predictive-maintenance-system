@@ -9,6 +9,7 @@ import { ModelNotice, NotConfirmedStatement } from "../components/DemoNotice";
 import { PageHeader } from "../components/PageHeader";
 import { EmptyState, ErrorState, LoadingBlock } from "../components/StateViews";
 import { CONDITION_ORDER } from "../lib/condition";
+import { STATUS_LABEL } from "../lib/maintenance";
 import { formatInt, formatScore, formatTimestamp } from "../lib/format";
 import { topScore } from "../lib/aggregate";
 import type { HistoryFilters, PredictionPage } from "../types/api";
@@ -16,10 +17,11 @@ import type { HistoryFilters, PredictionPage } from "../types/api";
 const LIMIT = 50;
 type DateBasis = "measured" | "stored";
 
-interface FormState { motor: string; condition: string | null; from: string; to: string; basis: DateBasis }
+interface FormState { motor: string; condition: string | null; from: string; to: string; basis: DateBasis; status: string | null }
 
 function toFilters(f: FormState): HistoryFilters {
   const out: HistoryFilters = {};
+  if (f.status) out.maintenance_status = f.status;
   if (f.motor.trim()) out.motor_id = f.motor.trim();
   if (f.condition) out.predicted_condition = f.condition;
   if (f.basis === "measured") { if (f.from) out.measured_from = f.from; if (f.to) out.measured_to = f.to; }
@@ -29,8 +31,8 @@ function toFilters(f: FormState): HistoryFilters {
 
 export default function HistoryPage() {
   const [params] = useSearchParams();
-  const [form, setForm] = useState<FormState>({ motor: params.get("motor_id") ?? "", condition: null, from: "", to: "", basis: "measured" });
-  const [applied, setApplied] = useState<HistoryFilters>(() => toFilters({ motor: params.get("motor_id") ?? "", condition: null, from: "", to: "", basis: "measured" }));
+  const [form, setForm] = useState<FormState>({ motor: params.get("motor_id") ?? "", condition: null, from: "", to: "", basis: "measured", status: null });
+  const [applied, setApplied] = useState<HistoryFilters>(() => toFilters({ motor: params.get("motor_id") ?? "", condition: null, from: "", to: "", basis: "measured", status: null }));
   const [offset, setOffset] = useState(0);
   const [data, setData] = useState<PredictionPage | null>(null);
   const [loading, setLoading] = useState(true);
@@ -51,7 +53,7 @@ export default function HistoryPage() {
   }, [applied, offset, tick]);
 
   const apply = (e: React.FormEvent) => { e.preventDefault(); if (rangeBad) return; setOffset(0); setApplied(toFilters(form)); setExportMsg(null); };
-  const reset = () => { const f: FormState = { motor: "", condition: null, from: "", to: "", basis: "measured" }; setForm(f); setOffset(0); setApplied({}); setExportMsg(null); };
+  const reset = () => { const f: FormState = { motor: "", condition: null, from: "", to: "", basis: "measured", status: null }; setForm(f); setOffset(0); setApplied({}); setExportMsg(null); };
 
   const doExport = useCallback(async () => {
     setExporting(true); setExportMsg(null);
@@ -76,6 +78,10 @@ export default function HistoryPage() {
           <Group align="flex-end" gap="md" wrap="wrap">
             <TextInput label="Motor ID" value={form.motor} onChange={(e) => setForm({ ...form, motor: e.currentTarget.value })} w={170} maxLength={64} />
             <Select label="Predicted condition" data={CONDITION_ORDER.map((c) => ({ value: c, label: c }))} value={form.condition} onChange={(v) => setForm({ ...form, condition: v })} clearable placeholder="All" w={180} />
+            <Select label="Maintenance status" w={250} clearable placeholder="All" value={form.status} onChange={(v) => setForm({ ...form, status: v })}
+              data={[{ value: "open", label: "Open: awaiting inspection, repair or verification" }, { value: "pending_inspection", label: STATUS_LABEL.pending_inspection },
+                { value: "maintenance_in_progress", label: STATUS_LABEL.maintenance_in_progress }, { value: "repair_completed_verification_required", label: STATUS_LABEL.repair_completed_verification_required },
+                { value: "verified_closed", label: STATUS_LABEL.verified_closed }, { value: "none", label: "No follow-up started" }]} />
             <div>
               <Text size="sm" fw={500} id="basis-label">Dates refer to</Text>
               <SegmentedControl aria-labelledby="basis-label" data={[{ value: "measured", label: "Measurement time" }, { value: "stored", label: "Time analysed" }]} value={form.basis} onChange={(v) => setForm({ ...form, basis: v as DateBasis })} />
@@ -116,6 +122,10 @@ export default function HistoryPage() {
                 { key: "r", header: "Record", render: (r) => r.record_id ?? "Not recorded" },
                 { key: "at", header: "Measured at", render: (r) => formatTimestamp(r.measured_at) },
                 { key: "c", header: "Predicted condition", render: (r) => <ConditionBadge condition={r.predicted_condition} /> },
+                { key: "ms", header: "Maintenance status", render: (r) => r.maintenance_status
+                    ? <Anchor component={Link} to={`/assessment/${r.id}`} aria-label={`Open maintenance notes for assessment ${r.id}`}>{STATUS_LABEL[r.maintenance_status]}</Anchor>
+                    : <Text size="sm" c="dimmed" component="span">{r.follows_assessment_id ? `Reassessment of #${r.follows_assessment_id}` : "None"}</Text> },
+                { key: "rs", header: "Report e-mailed", render: (r) => r.report_sent_at ? `Accepted ${formatTimestamp(r.report_sent_at)} UTC` : (r.predicted_condition === "Normal" ? "Not needed" : "Not sent") },
                 { key: "rec", header: "Recommended next step", render: (r) => r.recommendation_summary ?? <Text size="sm" c="dimmed" component="span">Open the record to see the steps</Text> },
                 { key: "s", header: "Model score (predicted class)", numeric: true, render: (r) => formatScore(topScore(r)) },
                 { key: "st", header: "Analysed (UTC)", render: (r) => formatTimestamp(r.created_at) },

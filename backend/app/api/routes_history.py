@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from app.api.deps import row_id, api_key_guard, get_db, get_registry, get_settings_dep
 from app.core.config import Settings
 from app.core.errors import BadQueryError, NotFoundError
+from app.db import maintenance_repo as mrepo
 from app.db import repository as repo
 from app.db.models import Prediction
 from app.schemas import BatchList, BatchSummary, ErrorResponse, HistoryItem, INTERPRETATION_NOTE, PredictionPage
@@ -26,12 +27,14 @@ def history_filters(
     date_to: date | None = Query(None, description="Predictions made on/before this UTC date (inclusive)"),
     measured_from: date | None = Query(None, description="Readings measured on/after this date"),
     measured_to: date | None = Query(None, description="Readings measured on/before this date (inclusive)"),
+    maintenance_status: str | None = Query(None, pattern="^(none|open|pending_inspection|maintenance_in_progress|repair_completed_verification_required|verified_closed)$",
+                                           description="Follow-up status: none, open (any unfinished case) or one exact status"),
 ) -> repo.PredictionFilters:
     if date_from and date_to and date_from > date_to:
         raise BadQueryError("date_from must not be after date_to.")
     if measured_from and measured_to and measured_from > measured_to:
         raise BadQueryError("measured_from must not be after measured_to.")
-    return repo.PredictionFilters(motor_id, record_id, batch_id, predicted_condition, date_from, date_to, measured_from, measured_to)
+    return repo.PredictionFilters(motor_id, record_id, batch_id, predicted_condition, date_from, date_to, measured_from, measured_to, maintenance_status)
 
 
 @router.get("/predictions", response_model=PredictionPage, responses={422: {"model": ErrorResponse}}, tags=["History"],
@@ -39,7 +42,15 @@ def history_filters(
 def list_predictions(f: repo.PredictionFilters = Depends(history_filters), limit: int = Query(50, ge=1, le=500), offset: int = Query(0, ge=0),
                      db: Session = Depends(get_db)):
     total, rows = repo.query_page(db, f, limit, offset)
-    return PredictionPage(total=total, limit=limit, offset=offset, items=[HistoryItem.model_validate(r) for r in rows])
+    extras = mrepo.history_extras(db, [r.id for r in rows])
+    return PredictionPage(total=total, limit=limit, offset=offset, items=[_item(r, extras) for r in rows])
+
+
+def _item(r: Prediction, extras: dict) -> HistoryItem:
+    item = HistoryItem.model_validate(r)
+    for k, v in extras.get(r.id, {}).items():
+        setattr(item, k, v)
+    return item
 
 
 @router.get("/predictions/{prediction_id}", response_model=HistoryItem, responses={404: {"model": ErrorResponse}}, tags=["History"],
@@ -48,7 +59,7 @@ def get_one(prediction_id: int = row_id(), db: Session = Depends(get_db)):
     row = repo.get_prediction(db, prediction_id)
     if row is None:
         raise NotFoundError("No prediction with that ID.")
-    return HistoryItem.model_validate(row)
+    return _item(row, mrepo.history_extras(db, [row.id]))
 
 
 @router.get("/batches", response_model=BatchList, tags=["History"], summary="Recent CSV upload batches")

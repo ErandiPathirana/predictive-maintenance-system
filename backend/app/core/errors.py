@@ -66,6 +66,30 @@ class IdempotencyConflictError(AppError):
     status_code, code = 409, "idempotency_conflict"
 
 
+class EmailNotConfiguredError(AppError):
+    status_code, code = 503, "email_not_configured"
+
+
+class EmailSendError(AppError):
+    status_code, code = 502, "email_failed"
+
+
+class DuplicateSendError(AppError):
+    status_code, code = 409, "duplicate_send"
+
+
+class RateLimitError(AppError):
+    status_code, code = 429, "email_rate_limited"
+
+
+class WorkflowStateError(AppError):
+    status_code, code = 409, "invalid_state"
+
+
+class MaintenanceInputError(AppError):
+    status_code, code = 422, "invalid_maintenance_update"
+
+
 class PredictionError(AppError):
     status_code, code = 500, "prediction_failed"
 

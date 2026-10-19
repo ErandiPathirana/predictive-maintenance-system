@@ -38,6 +38,10 @@ Other limits in this app: upload limit 2,000,000 bytes and 5,000 rows per CSV (`
 | `DATABASE_URL` | `sqlite:///predictions.db` or the PostgreSQL URL | **yes if PostgreSQL** |
 | `API_KEY` | optional long random string. If set, viewers must type it into the "Key (access)" button | **yes** |
 | `STORE_INPUT_READINGS` | `false` | no |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURITY`, `SMTP_USERNAME`, `SMTP_FROM` | optional, only to e-mail reports (see `docs/maintenance_workflow.md`) | no |
+| `SMTP_PASSWORD` | the mail account's password or app password | **yes** |
+| `EMAIL_ALLOWED_DOMAINS` | e.g. `your-company.example`; required (or `API_KEY`) when e-mail is on in production | no |
+| `PUBLIC_APP_URL` | optional: your frontend address, adds a link in the e-mail | no |
 
 Frontend (set in the static host before building): `VITE_API_BASE_URL` = the backend address (no trailing slash). Never put secrets in a `VITE_` variable: it is visible in the browser.
 
@@ -45,7 +49,7 @@ Files already prepared: `render.yaml` (backend blueprint) and `.python-version` 
 
 ## Step 1: Put the code on GitHub (private repository)
 1. Run `python ml/scripts/validate_artifacts.py` locally and confirm the bundle is valid.
-2. Delete `model.keras` and any `__pycache__` folders from the bundle folder (the backend does not need them).
+2. Delete only `__pycache__` folders from the bundle folder. **Do not delete any file listed in `MANIFEST.json`** (including `model.keras`): the backend refuses to start if a listed file is missing, even though it never loads `model.keras`. If you really want to leave `model.keras` out, also remove its line from `MANIFEST.json`, then run `python ml/scripts/validate_artifacts.py`. Note that `.gitignore` ignores `*.keras`, so a `model.keras` that stays in the bundle must be added with `git add -f`.
 3. In PowerShell, from the project folder:
    ```powershell
    git init

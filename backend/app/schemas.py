@@ -168,6 +168,10 @@ class HistoryItem(BaseModel):
     model_version: str
     provisional_label_provenance: bool
     demonstration_only: bool
+    maintenance_status: str | None = Field(default=None, description="Status of the follow-up case opened for this assessment, if any.")
+    maintenance_case_id: int | None = None
+    report_sent_at: datetime | None = Field(default=None, description="When the mail server last accepted a report for this assessment (UTC).")
+    follows_assessment_id: int | None = Field(default=None, description="Set when this assessment is a reassessment linked to an earlier case.")
 
 
 class PredictionPage(BaseModel):

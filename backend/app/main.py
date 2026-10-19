@@ -13,7 +13,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import inspect
 
-from app.api import routes_assessments, routes_history, routes_predict, routes_system
+from app.api import routes_assessments, routes_history, routes_maintenance, routes_predict, routes_system
 from app.core.config import Settings, get_settings
 from app.core.errors import register_error_handlers
 from app.core.logging_utils import install_privacy_filters
@@ -84,7 +84,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return response
 
     register_error_handlers(app)
-    for r in (routes_system.router, routes_system.guarded, routes_predict.router, routes_assessments.router, routes_history.router):
+    for r in (routes_system.router, routes_system.guarded, routes_predict.router, routes_assessments.router, routes_history.router, routes_maintenance.router):
         app.include_router(r)
 
     @app.get("/", include_in_schema=False)

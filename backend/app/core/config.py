@@ -4,7 +4,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field, field_validator, model_validator
+from pydantic import Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BACKEND_DIR = Path(__file__).resolve().parents[2]
@@ -49,6 +49,18 @@ class Settings(BaseSettings):
     # Optional shared secret. When set, every endpoint except /api/health needs header X-API-Key.
     api_key: str | None = None
 
+    # E-mail of assessment reports. Off until SMTP_HOST and SMTP_FROM are set. Credentials come ONLY from the environment (never from code or Git).
+    smtp_host: str | None = None
+    smtp_port: int = Field(587, gt=0, le=65535)
+    smtp_username: str | None = None
+    smtp_password: SecretStr | None = None
+    smtp_from: str | None = None                                  # sender address shown to the recipient
+    smtp_security: Literal["starttls", "ssl", "none"] = "starttls"   # "none" is for a local test mail server only
+    smtp_timeout_seconds: int = Field(15, gt=0, le=120)
+    public_app_url: str | None = None                             # frontend address; if set, reports contain a link to the assessment
+    email_allowed_domains: str = ""                               # optional comma-separated recipient domains, e.g. "myplant.example"
+    email_max_per_hour: int = Field(20, gt=0, le=1000)            # sending cap for the whole server (abuse protection)
+
     @field_validator("model_bundle_dir")
     @classmethod
     def _resolve_bundle_dir(cls, value: Path) -> Path:
@@ -81,6 +93,11 @@ class Settings(BaseSettings):
     def _log_level_any_case(cls, v):
         return v.strip().upper() if isinstance(v, str) else v
 
+    @field_validator("smtp_host", "smtp_username", "smtp_from", "public_app_url", mode="before")
+    @classmethod
+    def _blank_is_none(cls, v):
+        return None if isinstance(v, str) and not v.strip() else (v.strip() if isinstance(v, str) else v)
+
     @field_validator("api_key")
     @classmethod
     def _blank_key_is_none(cls, v: str | None) -> str | None:
@@ -100,7 +117,18 @@ class Settings(BaseSettings):
                 raise ValueError("ALLOW_SMOKE_TEST_BUNDLE must be false in production.")
             if self.auto_create_tables:
                 raise ValueError("AUTO_CREATE_TABLES must be false in production; use 'alembic upgrade head'.")
+        if self.environment == "production" and self.email_enabled and not (self.api_key or self.email_allowed_domain_list):
+            raise ValueError("In production, e-mail sending needs API_KEY or EMAIL_ALLOWED_DOMAINS so the server cannot be used to send "
+                             "mail to anyone. Set one of them, or leave SMTP_HOST empty to keep e-mail off.")
         return self
+
+    @property
+    def email_enabled(self) -> bool:
+        return bool(self.smtp_host and self.smtp_from)
+
+    @property
+    def email_allowed_domain_list(self) -> list[str]:
+        return [d.strip().lower().lstrip("@") for d in self.email_allowed_domains.split(",") if d.strip()]
 
     @property
     def cors_origin_list(self) -> list[str]:

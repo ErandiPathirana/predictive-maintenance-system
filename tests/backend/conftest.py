@@ -6,6 +6,7 @@ It exists only to test the software. Its predictions mean nothing.
 
 import hashlib
 import json
+import os
 import shutil
 from pathlib import Path
 
@@ -65,6 +66,14 @@ def make_bundle(d: Path, *, version="v9.9.9", provisional=True, fast_debug=False
     (d / "parity_probe.json").write_text(json.dumps({"tolerance": 1e-5, "probes": probes}))
     sign_manifest(d)
     return {"mean": mean, "scale": scale, "layers": layers}
+
+
+@pytest.fixture(autouse=True)
+def _ignore_mail_settings_from_the_shell(monkeypatch):
+    """A developer may have SMTP_* variables set in the terminal (to try real e-mail). Tests must never pick those up."""
+    for k in list(os.environ):
+        if k.startswith(("SMTP_", "EMAIL_")) or k == "PUBLIC_APP_URL":
+            monkeypatch.delenv(k)
 
 
 def make_settings(bundle_dir, **kw) -> Settings:

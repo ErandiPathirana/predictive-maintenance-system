@@ -144,3 +144,8 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: 0.005em; }
   .panel, .result-banner, .rec-item { break-inside: avoid; }
   .result-banner { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
+
+/* maintenance follow-up */
+.followup-steps, .log-list { margin: 0; padding-left: 1.25rem; }
+.followup-steps li { padding: 2px 0; }
+.log-entry { margin-bottom: 10px; padding-left: 4px; border-left: 3px solid var(--border); padding-left: 10px; }

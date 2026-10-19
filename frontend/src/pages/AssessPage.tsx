@@ -1,6 +1,8 @@
 import { Alert, Autocomplete, Button, Group, List, SimpleGrid, Stack, Text, TextInput } from "@mantine/core";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ApiError, createAssessment, getMotors } from "../api/client";
+import { useSearchParams } from "react-router-dom";
+import { ApiError, createAssessment, getAssessment, getMotors, linkReassessment } from "../api/client";
+import { BeforeAfter } from "../components/BeforeAfter";
 import { AssessmentResult } from "../components/AssessmentResult";
 import { ConfirmModal } from "../components/ConfirmModal";
 import { ModelNotice, NotConfirmedStatement } from "../components/DemoNotice";
@@ -11,7 +13,8 @@ import {
   buildRequest, emptyForm, fieldLabel, groupFeatures, hasErrors, isInFuture, MAX_DESCRIPTION, MAX_RECORDED_BY, newIdempotencyKey,
   nowLocalInput, outsideTrainingRange, validateForm, type FormValues,
 } from "../lib/assessmentForm";
-import type { AssessmentResponse, FeatureInfo } from "../types/api";
+import { assessmentRef } from "../lib/maintenance";
+import type { AssessmentResponse, FeatureInfo, MaintenanceCase } from "../types/api";
 
 const fmtRange = (f: FeatureInfo) =>
   f.observed_train_min !== null && f.observed_train_max !== null ? `Seen in training data: ${f.observed_train_min.toFixed(1)} to ${f.observed_train_max.toFixed(1)}. Not a limit.` : undefined;
@@ -26,13 +29,18 @@ export default function AssessPage() {
   const [result, setResult] = useState<AssessmentResponse | null>(null);
   const [confirmClear, setConfirmClear] = useState(false);
   const [motors, setMotors] = useState<string[]>([]);
+  const [params] = useSearchParams();
+  const caseParam = Number(params.get("case"));
+  const caseId = Number.isInteger(caseParam) && caseParam > 0 ? caseParam : null;      // set when this is a reassessment after a repair
+  const prefillMotor = params.get("motor_id") ?? "";
+  const [follow, setFollow] = useState<{ case?: MaintenanceCase; original?: AssessmentResponse; error?: string } | null>(null);
   const busy = useRef(false);
   const lastPayload = useRef<string>("");
   const key = useRef<string>(newIdempotencyKey());
   const summaryRef = useRef<HTMLDivElement>(null);
 
   // The form is built from the model's own feature list, so names, units and order always match the loaded model.
-  const form = useMemo(() => values ?? (features.length ? emptyForm(features) : null), [values, features]);
+  const form = useMemo(() => values ?? (features.length ? { ...emptyForm(features), motorId: prefillMotor } : null), [values, features, prefillMotor]);
   const groups = useMemo(() => groupFeatures(features), [features]);
 
   useEffect(() => {
@@ -62,7 +70,7 @@ export default function AssessPage() {
   const dirty = form.motorId || form.equipment || form.measuredAt || form.recordedBy || Object.values(form.readings).some((v) => v !== "");
 
   const clear = () => {
-    setValues(null); setTouched({}); setAttempted(false); setApiError(null); setResult(null); setConfirmClear(false);
+    setValues(null); setTouched({}); setAttempted(false); setApiError(null); setResult(null); setFollow(null); setConfirmClear(false);
     key.current = newIdempotencyKey(); lastPayload.current = "";
   };
 
@@ -80,8 +88,19 @@ export default function AssessPage() {
     if (payload !== lastPayload.current) { key.current = newIdempotencyKey(); lastPayload.current = payload; }
     busy.current = true; setSubmitting(true);
     try {
-      setResult(await createAssessment(body, key.current));
+      const saved = await createAssessment(body, key.current);
+      setResult(saved); setFollow(null);
       window.scrollTo({ top: 0 });
+      if (caseId) {
+        // The assessment is already saved on its own. Linking it to the case is a separate step that can fail without losing the result.
+        try {
+          const c = await linkReassessment(caseId, saved.assessment_id);
+          const original = await getAssessment(c.assessment_id).catch(() => undefined);
+          setFollow({ case: c, original });
+        } catch (le) {
+          setFollow({ error: le instanceof ApiError ? le.message : "The reassessment could not be linked to the case." });
+        }
+      }
     } catch (err) {
       setApiError(err as ApiError);
       setTimeout(() => summaryRef.current?.focus(), 0);
@@ -94,6 +113,16 @@ export default function AssessPage() {
     return (
       <>
         <PageHeader title="Assessment result" intro="Check the steps below, then record what was done." />
+        {caseId && follow?.error && <Alert color="red" variant="light" role="alert" mb="md" title="Saved, but not linked to the follow-up case">{follow.error} The assessment itself is saved as {assessmentRef(result.assessment_id)}.</Alert>}
+        {caseId && follow?.case && (
+          <Alert color="blue" variant="light" role="status" mb="md" title={`Linked to follow-up ${follow.case.reference}`} data-testid="linked-note">
+            {follow.original && (
+              <BeforeAfter before={{ label: `Original ${follow.case.assessment_reference}`, condition: follow.original.predicted_condition, readings: follow.original.readings, scores: follow.original.scores }}
+                after={{ label: `Reassessment ${assessmentRef(result.assessment_id)}`, condition: result.predicted_condition, readings: result.readings, scores: result.scores }} />
+            )}
+            <Button component="a" href={`#/assessment/${follow.case.assessment_id}`} mt="xs">Open the follow-up case to record the verification</Button>
+          </Alert>
+        )}
         <AssessmentResult a={result} features={features} actions={
           <>
             <Button variant="default" className="no-print" onClick={() => setResult(null)}>Edit these readings</Button>

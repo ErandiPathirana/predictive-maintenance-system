@@ -1,7 +1,7 @@
 /** The ONLY module that talks to the backend. Pages never call fetch directly. */
 import type {
   ApiErrorBody, AssessmentRequest, AssessmentResponse, BatchList, MotorList, BatchPredictionResponse, CsvValidationReport, FeatureListResponse, HealthResponse,
-  HistoryFilters, ModelInfoResponse, PredictionPage,
+  EmailReportRequest, EmailReportResponse, EmailStatus, HistoryFilters, MaintenanceCase, MaintenanceDetail, MaintenanceUpdateRequest, ModelInfoResponse, PredictionPage,
 } from "../types/api";
 
 export const DEFAULT_TIMEOUT_MS = 20_000;
@@ -102,6 +102,16 @@ export const createAssessment = (body: AssessmentRequest, idempotencyKey: string
   json<AssessmentResponse>("/api/assessments", {
     method: "POST", body: JSON.stringify(body), headers: { "Content-Type": "application/json", "Idempotency-Key": idempotencyKey },
   });
+
+const post = <T>(path: string, body: unknown) =>
+  json<T>(path, { method: "POST", body: JSON.stringify(body), headers: { "Content-Type": "application/json" } });
+export const getEmailStatus = () => json<EmailStatus>("/api/email-status");
+/** Sends only when a person clicks Send. The server answers 200 only after the mail server accepted the message. */
+export const emailReport = (id: number, body: EmailReportRequest) => post<EmailReportResponse>(`/api/assessments/${id}/email-report`, body);
+export const getMaintenance = (assessmentId: number) => json<MaintenanceDetail>(`/api/assessments/${assessmentId}/maintenance`);
+export const openMaintenanceCase = (assessmentId: number) => post<MaintenanceDetail>(`/api/assessments/${assessmentId}/maintenance-case`, {});
+export const addMaintenanceUpdate = (caseId: number, body: MaintenanceUpdateRequest) => post<MaintenanceCase>(`/api/maintenance-cases/${caseId}/updates`, body);
+export const linkReassessment = (caseId: number, assessmentId: number) => post<MaintenanceCase>(`/api/maintenance-cases/${caseId}/reassessments`, { assessment_id: assessmentId });
 
 export function getPredictions(filters: HistoryFilters, limit: number, offset: number) {
   return json<PredictionPage>("/api/predictions", { query: { ...filters, limit, offset } });

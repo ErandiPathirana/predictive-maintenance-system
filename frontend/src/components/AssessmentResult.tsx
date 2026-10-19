@@ -8,6 +8,8 @@ import type { AssessmentResponse, FeatureInfo, RecommendationItem } from "../typ
 import { ConditionBadge } from "./ConditionBadge";
 import { DataTable } from "./DataTable";
 import { NotConfirmedStatement } from "./DemoNotice";
+import { FollowUpPanel } from "./FollowUpPanel";
+import { assessmentRef } from "../lib/maintenance";
 
 const ICON: Record<string, string> = { circle: "●", triangle: "▲", diamond: "◆" };
 
@@ -84,9 +86,17 @@ export function AssessmentResult({ a, features, actions }: { a: AssessmentRespon
 
       <Banner a={a} />
 
+      {a.predicted_condition === "Alert" && (
+        <Alert color="orange" variant="light" title="Alert: prompt inspection recommended" role="alert" data-testid="alert-notice" icon={<span aria-hidden="true">▲</span>}>
+          <Text size="sm">Attention: This motor has been classified as {a.predicted_condition} by the assessment system. Prompt inspection by the responsible Plant Engineer is recommended. Follow the site&apos;s approved safety procedures.</Text>
+          <Text size="sm" mt={4}>This is decision support, not a confirmed fault. It does not replace professional inspection.</Text>
+        </Alert>
+      )}
+
       {r.urgent && (
-        <Alert color="red" variant="filled" title="Contact the responsible maintenance engineer now" role="alert" data-testid="danger-notice" icon={<span aria-hidden="true">◆</span>}>
+        <Alert color="red" variant="filled" title="Danger: high priority" role="alert" data-testid="danger-notice" icon={<span aria-hidden="true">◆</span>}>
           <Stack gap={4}>
+            <Text size="sm" c="white" fw={600}>Attention: This motor has been classified as {a.predicted_condition} by the assessment system. Contact the responsible Plant Engineer immediately for inspection and follow the site&apos;s approved safety procedures.</Text>
             <Text size="sm" c="white">This is a decision-support prediction, not a confirmed fault and not a shutdown order. Your site safety procedures always take precedence.</Text>
             <Text size="sm" c="white">Do not open electrical equipment, remove guards or touch moving parts unless you are qualified and authorised. Stop or isolate the motor only through the site&apos;s approved shutdown and lockout/tagout procedure.</Text>
           </Stack>
@@ -118,6 +128,7 @@ export function AssessmentResult({ a, features, actions }: { a: AssessmentRespon
         <Title order={2} size="h3" id="facts-h">Assessment details</Title>
         <dl className="facts">
           <Fact label="Motor">{a.motor_id ?? "Not recorded"}{a.equipment_description ? ` (${a.equipment_description})` : ""}</Fact>
+          <Fact label="Assessment reference"><span data-testid="assessment-ref">{assessmentRef(a.assessment_id)}</span></Fact>
           <Fact label="Readings taken">{formatTimestamp(a.measured_at)}</Fact>
           <Fact label="Model version">{a.model_version}</Fact>
           <Fact label="Recorded by">{a.recorded_by ? `${a.recorded_by} (not verified)` : "Not given"}</Fact>
@@ -154,6 +165,8 @@ export function AssessmentResult({ a, features, actions }: { a: AssessmentRespon
               ]} />
           : <Text size="sm" c="dimmed">{a.readings_stored ? "Readings are not shown for this record." : "The server does not store raw sensor readings by default, so they are not shown for a saved record. They were used for this prediction only."}</Text>}
       </section>
+
+      <FollowUpPanel a={a} readableName={readableName} />
 
       <Group className="no-print" gap="sm">
         <Button onClick={() => window.print()}>Print or save as PDF</Button>

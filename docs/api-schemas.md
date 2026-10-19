@@ -20,6 +20,12 @@ Generated from the running application (`backend/scripts/generate_api_docs.py`).
 | GET | `/api/predictions/{prediction_id}` | One stored prediction |
 | GET | `/api/batches` | Recent CSV upload batches |
 | GET | `/api/reports/predictions.csv` | Export prediction results to CSV (same filters as the history) |
+| GET | `/api/email-status` | Whether report e-mail is set up (never returns credentials) |
+| POST | `/api/assessments/{assessment_id}/email-report` | E-mail the report of an Alert or Danger assessment (only when a person asks) |
+| GET | `/api/assessments/{assessment_id}/maintenance` | Maintenance case, report e-mails and reassessment links for an assessment |
+| POST | `/api/assessments/{assessment_id}/maintenance-case` | Open a follow-up case (status Pending Inspection) for an Alert or Danger assessment |
+| POST | `/api/maintenance-cases/{case_id}/updates` | Record a status change or note on a case (appended; earlier entries are never edited) |
+| POST | `/api/maintenance-cases/{case_id}/reassessments` | Link a later assessment of the same motor to the case (the new assessment is saved separately, as usual) |
 
 ## Schemas
 
@@ -144,6 +150,45 @@ A manual motor assessment. The same strict checks and preprocessing as CSV rows 
 | `issues` | list[ValidationIssue] | yes |  |
 | `note` | string | no |  |
 
+### EmailLogOut
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `id` | integer | yes |  |
+| `recipient` | string | yes |  |
+| `status` | string | yes |  |
+| `error_summary` | string or null | no |  |
+| `created_at` | date-time | yes |  |
+
+### EmailReportRequest
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `recipient` | string | yes | One e-mail address. |
+| `note` | string or null | no | Optional note from the sender. |
+| `readings` | dict[str, integer or number] or null | no | Only needed when the server does not store readings. They are checked against the saved result and are NOT stored. |
+
+### EmailReportResponse
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `sent` | boolean | yes |  |
+| `assessment_id` | integer | yes |  |
+| `reference` | string | yes |  |
+| `recipient` | string | yes |  |
+| `sent_at` | date-time | yes |  |
+| `readings_included` | boolean | yes |  |
+| `message` | string | yes |  |
+
+### EmailStatus
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `configured` | boolean | yes | False until the administrator sets SMTP_HOST and SMTP_FROM. |
+| `recipients_restricted` | boolean | yes | True when only recipients at approved domains are accepted. |
+| `link_in_report` | boolean | yes | True when the report contains a link to the assessment. |
+| `max_per_hour` | integer | yes |  |
+
 ### ErrorBody
 
 | Field | Type | Required | Description |
@@ -207,6 +252,10 @@ A manual motor assessment. The same strict checks and preprocessing as CSV rows 
 | `model_version` | string | yes |  |
 | `provisional_label_provenance` | boolean | yes |  |
 | `demonstration_only` | boolean | yes |  |
+| `maintenance_status` | string or null | no | Status of the follow-up case opened for this assessment, if any. |
+| `maintenance_case_id` | integer or null | no |  |
+| `report_sent_at` | date-time or null | no | When the mail server last accepted a report for this assessment (UTC). |
+| `follows_assessment_id` | integer or null | no | Set when this assessment is a reassessment linked to an earlier case. |
 
 ### InputWarning
 
@@ -217,6 +266,73 @@ A manual motor assessment. The same strict checks and preprocessing as CSV rows 
 | `observed_train_min` | number or null | yes |  |
 | `observed_train_max` | number or null | yes |  |
 | `message` | string | yes |  |
+
+### MaintenanceCaseOut
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `id` | integer | yes |  |
+| `reference` | string | yes |  |
+| `assessment_id` | integer | yes |  |
+| `assessment_reference` | string | yes |  |
+| `motor_id` | string | yes |  |
+| `status` | string | yes |  |
+| `status_label` | string | yes |  |
+| `created_at` | date-time | yes |  |
+| `updated_at` | date-time | yes |  |
+| `allowed_next_statuses` | list[string] | yes |  |
+| `updates` | list[MaintenanceUpdateOut] | yes |  |
+| `reassessments` | list[ReassessmentOut] | yes |  |
+
+### MaintenanceDetail
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `assessment_id` | integer | yes |  |
+| `predicted_condition` | string | yes |  |
+| `eligible` | boolean | yes | True when a follow-up case can be opened (Alert or Danger, with a motor ID, and none yet). |
+| `reason` | string or null | no | Why a case cannot be opened, when eligible is false and there is no case. |
+| `case` | MaintenanceCaseOut or null | no |  |
+| `emails` | list[EmailLogOut] | no |  |
+| `follows_assessment_id` | integer or null | no | Set when this assessment is a reassessment linked to an earlier case. |
+| `follows_case_id` | integer or null | no |  |
+
+### MaintenanceUpdateOut
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `id` | integer | yes |  |
+| `created_at` | date-time | yes |  |
+| `kind` | string | yes |  |
+| `from_status` | string or null | yes |  |
+| `to_status` | string | yes |  |
+| `updated_by` | string or null | yes |  |
+| `responsible_engineer` | string or null | yes |  |
+| `started_on` | date or null | yes |  |
+| `completed_on` | date or null | yes |  |
+| `fault_found` | string or null | yes |  |
+| `actions_performed` | string or null | yes |  |
+| `parts_notes` | string or null | yes |  |
+| `comment` | string or null | yes |  |
+| `verification_outcome` | string or null | yes |  |
+| `reassessment_date` | date or null | yes |  |
+| `reassessment_assessment_id` | integer or null | yes |  |
+
+### MaintenanceUpdateRequest
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `to_status` | string | yes |  |
+| `updated_by` | string or null | no | Free text. NOT a verified identity: there is no login. |
+| `responsible_engineer` | string or null | no |  |
+| `started_on` | date or null | no |  |
+| `completed_on` | date or null | no |  |
+| `fault_found` | string or null | no |  |
+| `actions_performed` | string or null | no |  |
+| `parts_notes` | string or null | no |  |
+| `comment` | string or null | no |  |
+| `verification_outcome` | string or null | no |  |
+| `reassessment_date` | date or null | no |  |
 
 ### ModelInfoResponse
 
@@ -267,6 +383,24 @@ A manual motor assessment. The same strict checks and preprocessing as CSV rows 
 | `demonstration_only` | boolean | yes |  |
 | `input_warnings` | list[InputWarning] | no |  |
 | `interpretation_note` | string | no |  |
+
+### ReassessmentLinkRequest
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `assessment_id` | integer | yes |  |
+| `reassessment_date` | date or null | no |  |
+
+### ReassessmentOut
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `assessment_id` | integer | yes |  |
+| `created_at` | date-time | yes |  |
+| `measured_at` | date-time or null | yes |  |
+| `predicted_condition` | string | yes |  |
+| `scores` | dict[str, number] | yes |  |
+| `readings` | dict[str, number] or null | no | Only when the server stores readings. |
 
 ### RecommendationBlock
 

@@ -124,6 +124,11 @@ export interface HistoryItem {
   recorded_by?: string | null;
   recommendation_summary?: string | null;
   ruleset_version?: string | null;
+  // Follow-up information (GET /api/predictions); absent or null when there is none.
+  maintenance_status?: MaintenanceStatus | null;
+  maintenance_case_id?: number | null;
+  report_sent_at?: string | null; // when the mail server last accepted a report (UTC)
+  follows_assessment_id?: number | null; // set when this assessment is a reassessment
 }
 
 export interface PredictionPage {
@@ -155,6 +160,7 @@ export interface HistoryFilters {
   date_to?: string;
   measured_from?: string; // YYYY-MM-DD, measurement time
   measured_to?: string;
+  maintenance_status?: string; // none | open | one MaintenanceStatus value
 }
 
 /** Every backend error has this shape. */
@@ -232,4 +238,39 @@ export interface MotorSummary {
 export interface MotorList {
   items: MotorSummary[];
   note: string;
+}
+
+// ---------- report e-mail and maintenance follow-up (backend/app/schemas_workflow.py) ----------
+export type MaintenanceStatus = "pending_inspection" | "maintenance_in_progress" | "repair_completed_verification_required" | "verified_closed";
+
+export interface EmailStatus { configured: boolean; recipients_restricted: boolean; link_in_report: boolean; max_per_hour: number }
+export interface EmailReportRequest { recipient: string; note?: string; readings?: Record<string, number> }
+export interface EmailReportResponse {
+  sent: boolean; assessment_id: number; reference: string; recipient: string; sent_at: string; readings_included: boolean; message: string;
+}
+export interface EmailLog { id: number; recipient: string; status: "sent" | "failed"; error_summary: string | null; created_at: string }
+
+export interface MaintenanceUpdateRequest {
+  to_status: MaintenanceStatus;
+  updated_by?: string; responsible_engineer?: string; started_on?: string; completed_on?: string;
+  fault_found?: string; actions_performed?: string; parts_notes?: string; comment?: string;
+  verification_outcome?: "verified" | "not_verified"; reassessment_date?: string;
+}
+export interface MaintenanceUpdate {
+  id: number; created_at: string; kind: "opened" | "update" | "reassessment"; from_status: string | null; to_status: MaintenanceStatus;
+  updated_by: string | null; responsible_engineer: string | null; started_on: string | null; completed_on: string | null;
+  fault_found: string | null; actions_performed: string | null; parts_notes: string | null; comment: string | null;
+  verification_outcome: string | null; reassessment_date: string | null; reassessment_assessment_id: number | null;
+}
+export interface Reassessment {
+  assessment_id: number; created_at: string; measured_at: string | null; predicted_condition: string;
+  scores: Record<string, number>; readings: Record<string, number> | null;
+}
+export interface MaintenanceCase {
+  id: number; reference: string; assessment_id: number; assessment_reference: string; motor_id: string; status: MaintenanceStatus; status_label: string;
+  created_at: string; updated_at: string; allowed_next_statuses: MaintenanceStatus[]; updates: MaintenanceUpdate[]; reassessments: Reassessment[];
+}
+export interface MaintenanceDetail {
+  assessment_id: number; predicted_condition: string; eligible: boolean; reason: string | null; case: MaintenanceCase | null; emails: EmailLog[];
+  follows_assessment_id: number | null; follows_case_id: number | null;
 }

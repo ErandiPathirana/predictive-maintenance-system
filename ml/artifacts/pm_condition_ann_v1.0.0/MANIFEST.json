@@ -3,7 +3,6 @@
   "files": {
     "class_mapping.json": "1735b1b07f17815fab8cd1e11af2920990227e3fceadd88efe9e74b7ad34cd23",
     "feature_schema.json": "621f8175818c40d807966dc96a7b1f541c6d6ca4760fbb47240b9758d602ff4f",
-    "model.keras": "1744f371f68942761d85a381da8c4eb433ea066c9eecc90a3879e782ea8aa019",
     "model_architecture.json": "39e25afc9c33fad0474b238249f3554cb6b1f4b585d03116c948f7dba485582f",
     "model_card.md": "859527db80225394e78e294f54acdb1323e6259ec3680cdc642b5f15f658f2bc",
     "parity_probe.json": "576adbca5c731738760f911b35172f878709c6c93f0980661dfd255b1c6c474c",

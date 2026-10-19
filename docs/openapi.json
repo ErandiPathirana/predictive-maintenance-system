@@ -153,7 +153,7 @@
             }
           },
           "422": {
-            "description": "Unprocessable Content",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -163,7 +163,7 @@
             }
           },
           "413": {
-            "description": "Content Too Large",
+            "description": "Request Entity Too Large",
             "content": {
               "application/json": {
                 "schema": {
@@ -229,7 +229,7 @@
             }
           },
           "422": {
-            "description": "Unprocessable Content",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -239,7 +239,7 @@
             }
           },
           "413": {
-            "description": "Content Too Large",
+            "description": "Request Entity Too Large",
             "content": {
               "application/json": {
                 "schema": {
@@ -305,7 +305,7 @@
             }
           },
           "422": {
-            "description": "Unprocessable Content",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -315,7 +315,7 @@
             }
           },
           "413": {
-            "description": "Content Too Large",
+            "description": "Request Entity Too Large",
             "content": {
               "application/json": {
                 "schema": {
@@ -413,7 +413,7 @@
                 }
               }
             },
-            "description": "Unprocessable Content"
+            "description": "Unprocessable Entity"
           },
           "409": {
             "content": {
@@ -720,6 +720,25 @@
               "title": "Measured To"
             },
             "description": "Readings measured on/before this date (inclusive)"
+          },
+          {
+            "name": "maintenance_status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^(none|open|pending_inspection|maintenance_in_progress|repair_completed_verification_required|verified_closed)$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Follow-up status: none, open (any unfinished case) or one exact status",
+              "title": "Maintenance Status"
+            },
+            "description": "Follow-up status: none, open (any unfinished case) or one exact status"
           }
         ],
         "responses": {
@@ -741,7 +760,7 @@
                 }
               }
             },
-            "description": "Unprocessable Content"
+            "description": "Unprocessable Entity"
           }
         }
       }
@@ -995,6 +1014,25 @@
               "title": "Measured To"
             },
             "description": "Readings measured on/before this date (inclusive)"
+          },
+          {
+            "name": "maintenance_status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^(none|open|pending_inspection|maintenance_in_progress|repair_completed_verification_required|verified_closed)$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Follow-up status: none, open (any unfinished case) or one exact status",
+              "title": "Maintenance Status"
+            },
+            "description": "Follow-up status: none, open (any unfinished case) or one exact status"
           }
         ],
         "responses": {
@@ -1015,7 +1053,448 @@
                 }
               }
             },
-            "description": "Unprocessable Content"
+            "description": "Unprocessable Entity"
+          }
+        }
+      }
+    },
+    "/api/email-status": {
+      "get": {
+        "tags": [
+          "Maintenance"
+        ],
+        "summary": "Whether report e-mail is set up (never returns credentials)",
+        "operationId": "email_status_api_email_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailStatus"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/api/assessments/{assessment_id}/email-report": {
+      "post": {
+        "tags": [
+          "Maintenance"
+        ],
+        "summary": "E-mail the report of an Alert or Danger assessment (only when a person asks)",
+        "operationId": "email_report_api_assessments__assessment_id__email_report_post",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "assessment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "maximum": 9223372036854775807,
+              "minimum": 1,
+              "description": "Numeric ID (1 or greater).",
+              "title": "Assessment Id"
+            },
+            "description": "Numeric ID (1 or greater)."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailReportRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailReportResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Gateway"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/api/assessments/{assessment_id}/maintenance": {
+      "get": {
+        "tags": [
+          "Maintenance"
+        ],
+        "summary": "Maintenance case, report e-mails and reassessment links for an assessment",
+        "operationId": "get_maintenance_api_assessments__assessment_id__maintenance_get",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "assessment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "maximum": 9223372036854775807,
+              "minimum": 1,
+              "description": "Numeric ID (1 or greater).",
+              "title": "Assessment Id"
+            },
+            "description": "Numeric ID (1 or greater)."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          }
+        }
+      }
+    },
+    "/api/assessments/{assessment_id}/maintenance-case": {
+      "post": {
+        "tags": [
+          "Maintenance"
+        ],
+        "summary": "Open a follow-up case (status Pending Inspection) for an Alert or Danger assessment",
+        "operationId": "open_case_api_assessments__assessment_id__maintenance_case_post",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "assessment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "maximum": 9223372036854775807,
+              "minimum": 1,
+              "description": "Numeric ID (1 or greater).",
+              "title": "Assessment Id"
+            },
+            "description": "Numeric ID (1 or greater)."
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          }
+        }
+      }
+    },
+    "/api/maintenance-cases/{case_id}/updates": {
+      "post": {
+        "tags": [
+          "Maintenance"
+        ],
+        "summary": "Record a status change or note on a case (appended; earlier entries are never edited)",
+        "operationId": "add_case_update_api_maintenance_cases__case_id__updates_post",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "case_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "maximum": 9223372036854775807,
+              "minimum": 1,
+              "description": "Numeric ID (1 or greater).",
+              "title": "Case Id"
+            },
+            "description": "Numeric ID (1 or greater)."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MaintenanceUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceCaseOut"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          }
+        }
+      }
+    },
+    "/api/maintenance-cases/{case_id}/reassessments": {
+      "post": {
+        "tags": [
+          "Maintenance"
+        ],
+        "summary": "Link a later assessment of the same motor to the case (the new assessment is saved separately, as usual)",
+        "operationId": "link_reassessment_api_maintenance_cases__case_id__reassessments_post",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "case_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "maximum": 9223372036854775807,
+              "minimum": 1,
+              "description": "Numeric ID (1 or greater).",
+              "title": "Case Id"
+            },
+            "description": "Numeric ID (1 or greater)."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReassessmentLinkRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceCaseOut"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
           }
         }
       }
@@ -1582,6 +2061,173 @@
         ],
         "title": "CsvValidationReport"
       },
+      "EmailLogOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "recipient": {
+            "type": "string",
+            "title": "Recipient"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "error_summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Summary"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "recipient",
+          "status",
+          "created_at"
+        ],
+        "title": "EmailLogOut"
+      },
+      "EmailReportRequest": {
+        "properties": {
+          "recipient": {
+            "type": "string",
+            "maxLength": 254,
+            "title": "Recipient",
+            "description": "One e-mail address."
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note",
+            "description": "Optional note from the sender."
+          },
+          "readings": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "number"
+                    }
+                  ]
+                },
+                "type": "object",
+                "maxProperties": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Readings",
+            "description": "Only needed when the server does not store readings. They are checked against the saved result and are NOT stored."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "recipient"
+        ],
+        "title": "EmailReportRequest"
+      },
+      "EmailReportResponse": {
+        "properties": {
+          "sent": {
+            "type": "boolean",
+            "title": "Sent"
+          },
+          "assessment_id": {
+            "type": "integer",
+            "title": "Assessment Id"
+          },
+          "reference": {
+            "type": "string",
+            "title": "Reference"
+          },
+          "recipient": {
+            "type": "string",
+            "title": "Recipient"
+          },
+          "sent_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Sent At"
+          },
+          "readings_included": {
+            "type": "boolean",
+            "title": "Readings Included"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "sent",
+          "assessment_id",
+          "reference",
+          "recipient",
+          "sent_at",
+          "readings_included",
+          "message"
+        ],
+        "title": "EmailReportResponse"
+      },
+      "EmailStatus": {
+        "properties": {
+          "configured": {
+            "type": "boolean",
+            "title": "Configured",
+            "description": "False until the administrator sets SMTP_HOST and SMTP_FROM."
+          },
+          "recipients_restricted": {
+            "type": "boolean",
+            "title": "Recipients Restricted",
+            "description": "True when only recipients at approved domains are accepted."
+          },
+          "link_in_report": {
+            "type": "boolean",
+            "title": "Link In Report",
+            "description": "True when the report contains a link to the assessment."
+          },
+          "max_per_hour": {
+            "type": "integer",
+            "title": "Max Per Hour"
+          }
+        },
+        "type": "object",
+        "required": [
+          "configured",
+          "recipients_restricted",
+          "link_in_report",
+          "max_per_hour"
+        ],
+        "title": "EmailStatus"
+      },
       "ErrorBody": {
         "properties": {
           "code": {
@@ -1882,6 +2528,54 @@
           "demonstration_only": {
             "type": "boolean",
             "title": "Demonstration Only"
+          },
+          "maintenance_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Maintenance Status",
+            "description": "Status of the follow-up case opened for this assessment, if any."
+          },
+          "maintenance_case_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Maintenance Case Id"
+          },
+          "report_sent_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Report Sent At",
+            "description": "When the mail server last accepted a report for this assessment (UTC)."
+          },
+          "follows_assessment_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Follows Assessment Id",
+            "description": "Set when this assessment is a reassessment linked to an earlier case."
           }
         },
         "type": "object",
@@ -1948,6 +2642,482 @@
           "message"
         ],
         "title": "InputWarning"
+      },
+      "MaintenanceCaseOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "reference": {
+            "type": "string",
+            "title": "Reference"
+          },
+          "assessment_id": {
+            "type": "integer",
+            "title": "Assessment Id"
+          },
+          "assessment_reference": {
+            "type": "string",
+            "title": "Assessment Reference"
+          },
+          "motor_id": {
+            "type": "string",
+            "title": "Motor Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "status_label": {
+            "type": "string",
+            "title": "Status Label"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "allowed_next_statuses": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Allowed Next Statuses"
+          },
+          "updates": {
+            "items": {
+              "$ref": "#/components/schemas/MaintenanceUpdateOut"
+            },
+            "type": "array",
+            "title": "Updates"
+          },
+          "reassessments": {
+            "items": {
+              "$ref": "#/components/schemas/ReassessmentOut"
+            },
+            "type": "array",
+            "title": "Reassessments"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "reference",
+          "assessment_id",
+          "assessment_reference",
+          "motor_id",
+          "status",
+          "status_label",
+          "created_at",
+          "updated_at",
+          "allowed_next_statuses",
+          "updates",
+          "reassessments"
+        ],
+        "title": "MaintenanceCaseOut"
+      },
+      "MaintenanceDetail": {
+        "properties": {
+          "assessment_id": {
+            "type": "integer",
+            "title": "Assessment Id"
+          },
+          "predicted_condition": {
+            "type": "string",
+            "title": "Predicted Condition"
+          },
+          "eligible": {
+            "type": "boolean",
+            "title": "Eligible",
+            "description": "True when a follow-up case can be opened (Alert or Danger, with a motor ID, and none yet)."
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason",
+            "description": "Why a case cannot be opened, when eligible is false and there is no case."
+          },
+          "case": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MaintenanceCaseOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "emails": {
+            "items": {
+              "$ref": "#/components/schemas/EmailLogOut"
+            },
+            "type": "array",
+            "title": "Emails",
+            "default": []
+          },
+          "follows_assessment_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Follows Assessment Id",
+            "description": "Set when this assessment is a reassessment linked to an earlier case."
+          },
+          "follows_case_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Follows Case Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "assessment_id",
+          "predicted_condition",
+          "eligible"
+        ],
+        "title": "MaintenanceDetail"
+      },
+      "MaintenanceUpdateOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "kind": {
+            "type": "string",
+            "title": "Kind"
+          },
+          "from_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "From Status"
+          },
+          "to_status": {
+            "type": "string",
+            "title": "To Status"
+          },
+          "updated_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated By"
+          },
+          "responsible_engineer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Responsible Engineer"
+          },
+          "started_on": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started On"
+          },
+          "completed_on": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed On"
+          },
+          "fault_found": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fault Found"
+          },
+          "actions_performed": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actions Performed"
+          },
+          "parts_notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parts Notes"
+          },
+          "comment": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comment"
+          },
+          "verification_outcome": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verification Outcome"
+          },
+          "reassessment_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reassessment Date"
+          },
+          "reassessment_assessment_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reassessment Assessment Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "created_at",
+          "kind",
+          "from_status",
+          "to_status",
+          "updated_by",
+          "responsible_engineer",
+          "started_on",
+          "completed_on",
+          "fault_found",
+          "actions_performed",
+          "parts_notes",
+          "comment",
+          "verification_outcome",
+          "reassessment_date",
+          "reassessment_assessment_id"
+        ],
+        "title": "MaintenanceUpdateOut"
+      },
+      "MaintenanceUpdateRequest": {
+        "properties": {
+          "to_status": {
+            "type": "string",
+            "enum": [
+              "pending_inspection",
+              "maintenance_in_progress",
+              "repair_completed_verification_required",
+              "verified_closed"
+            ],
+            "title": "To Status"
+          },
+          "updated_by": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated By",
+            "description": "Free text. NOT a verified identity: there is no login."
+          },
+          "responsible_engineer": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Responsible Engineer"
+          },
+          "started_on": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started On"
+          },
+          "completed_on": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed On"
+          },
+          "fault_found": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fault Found"
+          },
+          "actions_performed": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actions Performed"
+          },
+          "parts_notes": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parts Notes"
+          },
+          "comment": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comment"
+          },
+          "verification_outcome": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "verified",
+                  "not_verified"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verification Outcome"
+          },
+          "reassessment_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reassessment Date"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "to_status"
+        ],
+        "title": "MaintenanceUpdateRequest"
       },
       "ModelInfoResponse": {
         "properties": {
@@ -2174,6 +3344,94 @@
           "demonstration_only"
         ],
         "title": "PredictionResult"
+      },
+      "ReassessmentLinkRequest": {
+        "properties": {
+          "assessment_id": {
+            "type": "integer",
+            "maximum": 9.223372036854776e+18,
+            "minimum": 1.0,
+            "title": "Assessment Id"
+          },
+          "reassessment_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reassessment Date"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "assessment_id"
+        ],
+        "title": "ReassessmentLinkRequest"
+      },
+      "ReassessmentOut": {
+        "properties": {
+          "assessment_id": {
+            "type": "integer",
+            "title": "Assessment Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "measured_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Measured At"
+          },
+          "predicted_condition": {
+            "type": "string",
+            "title": "Predicted Condition"
+          },
+          "scores": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Scores"
+          },
+          "readings": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "number"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Readings",
+            "description": "Only when the server stores readings."
+          }
+        },
+        "type": "object",
+        "required": [
+          "assessment_id",
+          "created_at",
+          "measured_at",
+          "predicted_condition",
+          "scores"
+        ],
+        "title": "ReassessmentOut"
       },
       "RecommendationBlock": {
         "properties": {
