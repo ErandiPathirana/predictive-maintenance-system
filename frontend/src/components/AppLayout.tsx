@@ -79,7 +79,7 @@ export function AppLayout() {
                 active={n.to === "/" ? pathname === "/" : pathname.startsWith(n.to)}
                 aria-current={(n.to === "/" ? pathname === "/" : pathname.startsWith(n.to)) ? "page" : undefined}
                 onClick={close}
-                styles={{ description: { color: "#a9c4cb" } }}
+                styles={{ description: { color: "#d1fae5", opacity: 1 } }}
               />
             ))}
           </nav>

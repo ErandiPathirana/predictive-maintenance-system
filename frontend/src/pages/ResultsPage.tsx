@@ -79,8 +79,6 @@ export default function ResultsPage() {
                 { key: "at", header: "Measured at", render: (r) => formatTimestamp(r.measured_at) },
                 { key: "c", header: "Predicted condition", render: (r) => <ConditionBadge condition={r.predicted_condition} /> },
                 ...classNames.map((c) => ({ key: `s-${c}`, header: `${scoreLabel}: ${c}`, numeric: true, render: (r: PredictionResult) => formatScore(r.scores[c]) })),
-                { key: "w", header: "Input warnings", render: (r) => (r.input_warnings.length ? <details><summary>{r.input_warnings.length} warning{r.input_warnings.length > 1 ? "s" : ""}</summary><ul style={{ margin: 0, paddingLeft: 18 }}>{r.input_warnings.map((w) => <li key={w.feature}>{w.message}</li>)}</ul></details> : "None") },
-                { key: "v", header: "Model version", render: (r) => r.model_version },
               ]}
             />
             {pageCount > 1 && <Pagination total={pageCount} value={page} onChange={setPage} aria-label="Result pages" />}

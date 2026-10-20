@@ -87,9 +87,9 @@ export function AssessmentResult({ a, features, actions }: { a: AssessmentRespon
       <Banner a={a} />
 
       {a.predicted_condition === "Alert" && (
-        <Alert color="orange" variant="light" title="Alert: prompt inspection recommended" role="alert" data-testid="alert-notice" icon={<span aria-hidden="true">▲</span>}>
+        <Alert color="orange" variant="light" title="Alert: prompt inspection recommended" role="alert" styles={{ root: { background: "var(--status-alert-soft)" }, title: { color: "var(--status-alert)" }, icon: { color: "var(--status-alert)" } }} data-testid="alert-notice" icon={<span aria-hidden="true">▲</span>}>
           <Text size="sm">Attention: This motor has been classified as {a.predicted_condition} by the assessment system. Prompt inspection by the responsible Plant Engineer is recommended. Follow the site&apos;s approved safety procedures.</Text>
-          <Text size="sm" mt={4}>This is decision support, not a confirmed fault. It does not replace professional inspection.</Text>
+          <Text size="sm" mt={4}>This is decision support, not a confirmed fault. It is not a substitute for professional inspection.</Text>
         </Alert>
       )}
 

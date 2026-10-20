@@ -1,17 +1,20 @@
 /* Design tokens. Light theme only. Status colours are reserved for condition labels and always shown with a shape and a word. */
 :root {
-  --bg: #e9edef;
+  --bg: #f8fafc;
   --surface: #ffffff;
-  --surface-2: #f3f5f6;
-  --border: #ccd4d8;
-  --text-primary: #14212a;
-  --text-secondary: #46545e;
+  --surface-2: #f0fdf4;
+  --border: #a7f3d0;
+  --text-primary: #1f2937;
+  --text-secondary: #374151;
   --text-muted: #5b6770;
-  --accent: #0f5c73;
-  --accent-strong: #0a4659;
-  --nav-bg: #14303a;
-  --nav-text: #dbe9ec;
-  --nav-active: #1f4b59;
+  --accent: #047857;
+  --accent-strong: #065f46;
+  --emerald: #059669;
+  --emerald-light: #ecfdf5;
+  --emerald-border: #a7f3d0;
+  --nav-bg: #064e3b;
+  --nav-text: #d1fae5;
+  --nav-active: #047857;
 
   --status-normal: #1b6e36;   --status-normal-soft: #e2f2e6;
   --status-alert: #7d5200;    --status-alert-soft: #fdf0cf;
@@ -23,7 +26,7 @@
   --series-3: #1baf7a;
   --series-4: #eda100;
 
-  --grid: #dfe5e8;
+  --grid: #e5efe9;
   --font-display: Bahnschrift, "Segoe UI Semibold", system-ui, sans-serif;
   --font-body: "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
 }
@@ -53,11 +56,12 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: 0.005em; }
 .skip-link:focus { top: 8px; }
 
 .brand { display: inline-block; min-height: 24px; padding: 3px 0; font-family: var(--font-display); font-size: 1.05rem; line-height: 1.15; color: #fff; text-decoration: none; }
-.brand small { display: block; font-family: var(--font-body); font-size: 0.72rem; color: #a9c4cb; letter-spacing: 0; }
+.brand small { display: block; font-family: var(--font-body); font-size: 0.72rem; color: #a7f3d0; letter-spacing: 0; }
 
 .nav-link { color: var(--nav-text) !important; border-radius: 4px; }
 .nav-link[data-active] { background: var(--nav-active) !important; color: #fff !important; font-weight: 600; }
-.nav-link:hover { background: rgba(255,255,255,0.08) !important; }
+.nav-link { transition: background-color 0.15s ease; }
+.nav-link:hover { background: rgba(255,255,255,0.1) !important; }
 
 .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 16px; }
 .panel > h2, .panel > h3 { margin-top: 0; }
@@ -74,7 +78,10 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: 0.005em; }
 .data-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
 .data-table caption { text-align: left; padding: 10px 12px; color: var(--text-secondary); font-size: 0.85rem; }
 .data-table th, .data-table td { padding: 8px 12px; text-align: left; border-top: 1px solid var(--border); vertical-align: top; }
-.data-table thead th { background: var(--surface-2); font-weight: 600; white-space: nowrap; }
+.data-table thead th { background: var(--emerald-light); color: var(--accent-strong); font-weight: 600; white-space: nowrap; border-bottom: 1px solid var(--emerald-border); }
+.data-table tbody tr { transition: background-color 0.15s ease; }
+.data-table tbody tr:hover { background: #f0fdf4; }
+.data-table tbody tr[aria-selected="true"], .data-table tbody tr[data-selected] { background: var(--emerald-light); }
 .data-table td.num, .data-table th.num { text-align: right; }
 
 .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; padding: 0; list-style: none; font-size: 0.85rem; }
@@ -149,3 +156,10 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: 0.005em; }
 .followup-steps, .log-list { margin: 0; padding-left: 1.25rem; }
 .followup-steps li { padding: 2px 0; }
 .log-entry { margin-bottom: 10px; padding-left: 4px; border-left: 3px solid var(--border); padding-left: 10px; }
+
+/* New assessment: light emerald result container. The banner and notices inside keep their own Normal green / Alert amber / Danger red. */
+.result { background: var(--emerald-light); border: 1px solid var(--emerald-border); border-radius: 10px; padding: 16px; color: var(--text-primary); transition: border-color 0.2s ease; }
+.result:hover { border-color: #6ee7b7; }
+.result h2, .result h3 { color: var(--accent-strong); }
+.result .rec-item, .result .panel { background: #fff; }
+@media (max-width: 36em) { .result { padding: 10px; border-radius: 8px; } }

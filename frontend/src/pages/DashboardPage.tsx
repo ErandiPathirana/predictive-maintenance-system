@@ -103,7 +103,6 @@ export default function DashboardPage() {
               { key: "t", header: "Measured at", render: (r) => (r.basis === "measured_at" ? formatTimestamp(r.item.measured_at) : `${formatTimestamp(r.item.created_at)} *`) },
               { key: "s", header: "Model score", numeric: true, render: (r) => formatScore(topScore(r.item)) },
               { key: "n", header: "Records", numeric: true, render: (r) => formatInt(r.recordCount) },
-              { key: "v", header: "Model version", render: (r) => r.item.model_version },
             ]}
           />
           <Text size="xs" c="dimmed" mt={4}>Model score is the model's output for the predicted class. It is not a calibrated probability.</Text>

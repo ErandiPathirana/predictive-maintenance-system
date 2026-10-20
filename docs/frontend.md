@@ -62,7 +62,7 @@ It writes `frontend\public\evaluation_report.json`. Rebuild (or restart `npm run
 - Removing a file asks for confirmation.
 
 ## Accessibility and design choices
-Skip link, landmarks, keyboard-reachable tables and filters, visible focus, status shown as **shape + word + colour** (never colour alone), light theme only, no decorative animation (and none at all when the system asks for reduced motion). Charts use four fixed series colours (blue, orange, aqua, yellow) plus different line patterns, a show/hide checkbox legend, hover values, and a **Show as table** switch for every chart.
+Skip link, landmarks, keyboard-reachable tables and filters, visible focus, status shown as **shape + word + colour** (never colour alone), light theme only with an emerald accent (primary shade #047857 so white text keeps 4.5:1 contrast; Alert stays amber and Danger red), no decorative animation (and none at all when the system asks for reduced motion). Charts use four fixed series colours (blue, orange, aqua, yellow) plus different line patterns, a show/hide checkbox legend, hover values, and a **Show as table** switch for every chart.
 
 ## Tests
 `src/**/*.test.ts(x)` (Vitest + Testing Library). `src/test/fixtures/*.json` are real backend responses captured by `backend/scripts/export_api_fixtures.py` from a **random-weight test model**. They are test data, not research results. `src/types/fixtures.test.ts` assigns them to the TypeScript interfaces, so `npm run typecheck` fails if the backend schema and frontend types drift apart. To refresh them: `python backend\scripts\export_api_fixtures.py`.
@@ -83,3 +83,8 @@ Skip link, landmarks, keyboard-reachable tables and filters, visible focus, stat
 - Fixtures `assessment*.json` and `motors.json` are real backend responses (`backend/scripts/export_api_fixtures.py`).
 
 > The Model evaluation and Research information pages were removed from the website. The evaluation export script (`ml/scripts/export_evaluation_report.py`) still works and can feed a report or the written thesis.
+
+
+## Table columns and theme (UI only)
+
+The tables no longer show Model version (Dashboard, Prediction results, Assessment history), Input warnings (Prediction results) or Label status (Assessment history). The data is still stored and returned by the API, and Model version still appears in the assessment details and CSV export. The "Only records with input warnings" filter on Prediction results still works. Colours live in `src/theme.ts` (the `emerald` tuple) and the `:root` tokens in `src/styles/global.css`. The New Assessment result sits in a light emerald container (`.result`); the banner and notices inside keep Normal green, Alert amber and Danger red.

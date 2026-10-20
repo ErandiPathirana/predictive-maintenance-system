@@ -129,8 +129,6 @@ export default function HistoryPage() {
                 { key: "rec", header: "Recommended next step", render: (r) => r.recommendation_summary ?? <Text size="sm" c="dimmed" component="span">Open the record to see the steps</Text> },
                 { key: "s", header: "Model score (predicted class)", numeric: true, render: (r) => formatScore(topScore(r)) },
                 { key: "st", header: "Analysed (UTC)", render: (r) => formatTimestamp(r.created_at) },
-                { key: "v", header: "Model version", render: (r) => r.model_version },
-                { key: "f", header: "Label status", render: (r) => [r.demonstration_only ? "Demonstration" : null, r.provisional_label_provenance ? "Provisional labels" : null].filter(Boolean).join(", ") || "No flags" },
               ]}
             />
             <Group justify="space-between">
